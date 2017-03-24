@@ -5,9 +5,14 @@
 
 public class CodeParsing {
 
-    private String Label = "", Mnemonic = "", Operand = "", Comment = "";
+    private String Address = "",Label = "", Mnemonic = "", Operand = "", Comment = "";
 
     /*Getters*/
+    public String get_Address()
+    {
+        return Address;
+    }
+
     public String get_Label()
     {
         return Label;
@@ -29,6 +34,11 @@ public class CodeParsing {
     }
 
     /*Setters*/
+
+    public void set_Address(String Address)
+    {
+        this.Address = Address;
+    }
 
     public void set_Label(String Label)
     {
