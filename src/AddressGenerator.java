@@ -78,7 +78,8 @@ public class AddressGenerator {
 
     /********************Hexadecimels Incrementation********************/
 
-    public void leftmostbit(char c, int n)
+
+    public int leftmostbit(char c, int n)
     {
         switch(c)
         {
@@ -109,9 +110,10 @@ public class AddressGenerator {
             default:
                 n = c -'0';
         }
+        return n;
     }
 
-    public void remainder_extention(int n, String s)
+    public String remainder_extention(int n, String s)
     {
         switch(n)
         {
@@ -139,24 +141,28 @@ public class AddressGenerator {
                 s = "F";
                 break;
         }
+        return s;
     }
 
 
-    /*The function od addition*/
-    String add(String loc, String bytee)
+    /*The function of addition*/
+    public String add(String loc, String bytee)
     {
-        String result_remainder = new String(), result = new String(), string_remainder = new String(), string_carry = new String();
-        int carry = 0, remainder = 0;
+        String result_remainder = new String(), result = new String(), temp = new String(), reverse = new String();
+        String string_remainder = new String(), string_carry = new String(), ans = new String(), final_ans = new String();
+        int carry = 0, remainder = 0, ansdiff = 0;
         int locsz, bytesz, k, p = 0, q = 0, diff;
         locsz = loc.length();
         bytesz = bytee.length();
         diff = locsz - bytesz;
+        if(diff < 0)
+            return add(bytee, loc);
         result = loc.substring(0,diff);
         for(int i = bytesz - 1 ; i >= 0 ; i--)
         {
 
-            leftmostbit(loc.charAt(diff+i), p);
-            leftmostbit(bytee.charAt(i), q);
+           p = leftmostbit(loc.charAt(diff+i), p);
+           q = leftmostbit(bytee.charAt(i), q);
 
 
             k = p + q + carry;
@@ -170,7 +176,7 @@ public class AddressGenerator {
             carry = k/16;
 
             if (remainder > 9)
-                remainder_extention(remainder, string_remainder);
+                string_remainder = remainder_extention(remainder, string_remainder);
 
             else
                 string_remainder = Integer.toString(remainder);
@@ -182,8 +188,143 @@ public class AddressGenerator {
         if(carry > 0)
             result = add(result, string_carry);
 
-        return result + result_remainder;
+        ans = result +  result_remainder;
+        //return ans;
+
+        ansdiff = ans.length() - bytesz;
+        temp = ans.substring(ansdiff, ans.length());
+        reverse = new StringBuffer(temp).reverse().toString();
+
+        final_ans = ans.substring(0, ansdiff);
+        final_ans += reverse;
+        return final_ans;
     }
-    
+    /*Convert Decimel to Hex*/
+    public String convertDecToHex(int decimalNumber)
+    {
+        return  Integer.toHexString(decimalNumber);
+    }
+
+
+
+    /****The Directives****/
+    public Boolean isReserveByte(String Mnemonic)
+    {
+        if(Mnemonic.equals("RESB"))
+            return true;
+        else
+            return false;
+    }
+
+    public Boolean isReserveWord(String Mnemonic)
+    {
+        if(Mnemonic.equals("RESW"))
+            return true;
+        else
+            return false;
+    }
+
+    public Boolean isByte(String Mnemonic)
+    {
+        if(Mnemonic.equals("BYTE"))
+            return true;
+        else
+            return false;
+    }
+
+    public Boolean isWord(String Mnemonic)
+    {
+        if(Mnemonic.equals("WORD"))
+            return true;
+        else
+            return false;
+    }
+
+
+    public void adrs_gen()
+    {
+        array_of_cp.get(0).set_Address(array_of_cp.get(0).get_Operand());
+        array_of_cp.get(1).set_Address(array_of_cp.get(0).get_Operand());
+
+        for(int i = 2 ; i < number_of_lines ; i++)
+        {
+
+            String Mnemonic;
+            Mnemonic = array_of_cp.get(i-1).get_Mnemonic();
+            if(isReserveByte(Mnemonic))
+            {
+
+                //System.out.println(Mnemonic);
+                int int_temp_resb_value = Integer.parseInt(array_of_cp.get(i-1).get_Operand());
+                String hex_string_temp_resb_value = "";
+                hex_string_temp_resb_value = convertDecToHex(int_temp_resb_value);
+                //System.out.println(hex_string_temp_resb_value);
+
+                array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), hex_string_temp_resb_value)); // Increment Address
+            }
+
+            else if(isReserveWord(Mnemonic))
+            {
+                int int_temp_resb_value = Integer.parseInt(array_of_cp.get(i-1).get_Operand()) * 3;
+                String hex_string_temp_resb_value = new String ();
+                hex_string_temp_resb_value = convertDecToHex(int_temp_resb_value);
+                array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), hex_string_temp_resb_value)); // Increment Address
+            }
+
+            else if(isWord(Mnemonic))
+            {
+                int int_temp_word_value = Integer.parseInt(array_of_cp.get(i-1).get_Operand()); // Convert value of word to int
+                if(int_temp_word_value == 0)
+                {
+                    array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), "3"));
+                    continue;
+                }
+
+                int_temp_word_value *= 3; // Multiply it by 3 to get its value in terms of Bytes
+
+                String hex_string_temp_word_value = convertDecToHex(int_temp_word_value); // Convert it to string
+                array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), hex_string_temp_word_value)); // Increment Address
+            }
+
+            else if(isByte(Mnemonic))
+            {
+                //Case I : Hex
+                {
+                    //Length of hex
+
+                    int int_temp_length_OX_value =  array_of_cp.get(i-1).get_Operand().length() - 3; // Because we don't need C or single quotes
+                    String string_temp_length_OX_value = Integer.toString(int_temp_length_OX_value); // Convert it to string
+                    if(array_of_cp.get(i-1).get_Operand().charAt(0) == 'X')
+                    {
+                        int_temp_length_OX_value /=2; // every 2 Hexa worth 1 byte
+                        System.out.println(int_temp_length_OX_value);
+                        string_temp_length_OX_value = Integer.toString(int_temp_length_OX_value); // Convert it to string
+
+                        array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), string_temp_length_OX_value));
+
+
+                    }
+                  // Case II : Character, we put the length as it is because every character worth 1 byte
+                    else
+                        array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), string_temp_length_OX_value)); // Increment Address
+
+
+                }
+            }
+            else if(array_of_cp.get(i-1).get_Comment().length() > 0)
+            {
+                array_of_cp.get(i).set_Address(array_of_cp.get(i-1).get_Address());
+            }
+
+            else
+            {
+                array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), "3"));
+            }
+
+
+
+        }
+    }
+
 }
 

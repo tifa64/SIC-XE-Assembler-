@@ -19,9 +19,11 @@ public class Main {
 
         //for(int i = 0 ; i < sz; i++)
         //System.out.println(ag.records.get(i));
-
+        ag.adrs_gen();
         for(int i = 0 ; i < array_of_cp.size() ; i++)
         {
+            System.out.print(array_of_cp.get(i).get_Address()+' ');
+
             if(array_of_cp.get(i).get_Label() != null)
                 System.out.print(array_of_cp.get(i).get_Label()+' ');
 
