@@ -67,6 +67,15 @@ public class CodeParsing {
         int len = tokens.length;
 
 
+        if(tokens[0].charAt(0) == '.')
+        {
+            String temp = new String();
+            for(int i = 0 ; i < len ; i++)
+                temp += tokens[i] + ' ';
+            cp.set_Comment(temp);
+
+            return  cp;
+        }
         if(len > 0)
             cp.set_Label(tokens[0]);
 
@@ -91,6 +100,11 @@ public class CodeParsing {
 
         return cp;
 
+    }
+
+    public Boolean isValid(String s)
+    {
+        return (s != null && s.length() != 0);
     }
 
 }
