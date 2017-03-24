@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         AddressGenerator ag = new AddressGenerator();
+        CodeParsing cp = new CodeParsing();
         ArrayList<CodeParsing> cf = new ArrayList<CodeParsing>();
 
         ag.readFile("Copy.asm");
@@ -22,17 +23,19 @@ public class Main {
         {
             System.out.print(array_of_cp.get(i).get_Address()+"    ");
 
-            if(array_of_cp.get(i).get_Label() != null)
+            if(cp.isValid(array_of_cp.get(i).get_Label()))
                 System.out.print(array_of_cp.get(i).get_Label()+"    ");
 
-            if(array_of_cp.get(i).get_Mnemonic() != null)
+            if(cp.isValid(array_of_cp.get(i).get_Mnemonic()))
                 System.out.print(array_of_cp.get(i).get_Mnemonic()+"    ");
 
-            if(array_of_cp.get(i).get_Operand() != null)
+            if(cp.isValid(array_of_cp.get(i).get_Operand()))
                 System.out.print(array_of_cp.get(i).get_Operand()+"    ");
 
-            if(array_of_cp.get(i).get_Comment() != null)
-                System.out.println(array_of_cp.get(i).get_Comment());
+            if(cp.isValid(array_of_cp.get(i).get_Comment()))
+                System.out.print(array_of_cp.get(i).get_Comment());
+
+            System.out.println();
 
         }
 
