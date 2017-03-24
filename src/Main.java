@@ -11,27 +11,25 @@ public class Main {
         ag.readFile("Copy.asm");
         ArrayList<String> records = ag.get_records();
         ArrayList<CodeParsing> array_of_cp = ag.get_array_of_cp();
-        //System.out.println(records.size());
         ag.formated_code();
 
         System.out.println(array_of_cp.size());
         int sz = ag.get_number_of_lines();
 
-        //for(int i = 0 ; i < sz; i++)
-        //System.out.println(ag.records.get(i));
+
         ag.adrs_gen();
-        for(int i = 0 ; i < array_of_cp.size() ; i++)
+        for(int i = 0 ; i < sz ; i++)
         {
-            System.out.print(array_of_cp.get(i).get_Address()+' ');
+            System.out.print(array_of_cp.get(i).get_Address()+"    ");
 
             if(array_of_cp.get(i).get_Label() != null)
-                System.out.print(array_of_cp.get(i).get_Label()+' ');
+                System.out.print(array_of_cp.get(i).get_Label()+"    ");
 
             if(array_of_cp.get(i).get_Mnemonic() != null)
-                System.out.print(array_of_cp.get(i).get_Mnemonic()+' ');
+                System.out.print(array_of_cp.get(i).get_Mnemonic()+"    ");
 
             if(array_of_cp.get(i).get_Operand() != null)
-                System.out.print(array_of_cp.get(i).get_Operand()+' ');
+                System.out.print(array_of_cp.get(i).get_Operand()+"    ");
 
             if(array_of_cp.get(i).get_Comment() != null)
                 System.out.println(array_of_cp.get(i).get_Comment());

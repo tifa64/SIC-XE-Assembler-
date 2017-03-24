@@ -8,9 +8,9 @@ public class AddressGenerator {
 
     /* Members*/
 
-    private static int number_of_lines = 0;
-    private static ArrayList<CodeParsing> array_of_cp = new  ArrayList<CodeParsing>();
-    private static ArrayList<String> records = new ArrayList<String>();
+    private static int number_of_lines = 0; //# of lines in the code*/
+    private static ArrayList<CodeParsing> array_of_cp = new  ArrayList<CodeParsing>(); //Address -- Label -- Mnemonic -- Operand -- Comment
+    private static ArrayList<String> records = new ArrayList<String>(); //To save each line as a string
 
 
 
@@ -29,14 +29,12 @@ public class AddressGenerator {
                 number_of_lines++;
             }
             reader.close();
-            //System.out.println("g");
-            //return records;
+
         }
         catch (Exception e)
         {
             System.err.format("Exception occurred trying to read '%s'.", filename);
             e.printStackTrace();
-            //return null;
         }
 
 
@@ -44,7 +42,7 @@ public class AddressGenerator {
     }
 
 
-    /*Parsing the code and putting the result in the object "AraayList array_of_cp"*/
+    /********************Parsing the code and putting the result in the object "AraayList array_of_cp"********************/
     public void formated_code()
     {
         for(int i = 0 ; i < number_of_lines; i++)
@@ -54,12 +52,11 @@ public class AddressGenerator {
             array_of_cp.add(temp_cf);
 
 
-            //System.out.println(array_of_cp.size());
 
         }
     }
 
-    /*Getters*/
+    /********************Getters********************/
 
     public ArrayList<CodeParsing> get_array_of_cp()
     {
@@ -78,7 +75,7 @@ public class AddressGenerator {
 
     /********************Hexadecimels Incrementation********************/
 
-
+    /********************Helping functions********************/
     public int leftmostbit(char c, int n)
     {
         switch(c)
@@ -145,7 +142,7 @@ public class AddressGenerator {
     }
 
 
-    /*The function of addition*/
+    /********************The function of addition********************/
     public String add(String loc, String bytee)
     {
         String result_remainder = new String(), result = new String(), temp = new String(), reverse = new String();
@@ -207,7 +204,7 @@ public class AddressGenerator {
 
 
 
-    /****The Directives****/
+    /********************The Directives********************/
     public Boolean isReserveByte(String Mnemonic)
     {
         if(Mnemonic.equals("RESB"))
@@ -240,7 +237,7 @@ public class AddressGenerator {
             return false;
     }
 
-
+    /********************The address generator********************/
     public void adrs_gen()
     {
         array_of_cp.get(0).set_Address(array_of_cp.get(0).get_Operand());
@@ -254,19 +251,19 @@ public class AddressGenerator {
             if(isReserveByte(Mnemonic))
             {
 
-                //System.out.println(Mnemonic);
+                //Getting integer value then parse it to string
                 int int_temp_resb_value = Integer.parseInt(array_of_cp.get(i-1).get_Operand());
                 String hex_string_temp_resb_value = "";
-                hex_string_temp_resb_value = convertDecToHex(int_temp_resb_value);
-                //System.out.println(hex_string_temp_resb_value);
-
+                hex_string_temp_resb_value = convertDecToHex(int_temp_resb_value);//Converting it from decimel to hex
                 array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), hex_string_temp_resb_value)); // Increment Address
             }
 
             else if(isReserveWord(Mnemonic))
             {
-                int int_temp_resb_value = Integer.parseInt(array_of_cp.get(i-1).get_Operand()) * 3;
+                //Getting integer value then parse it to string
+                int int_temp_resb_value = Integer.parseInt(array_of_cp.get(i-1).get_Operand()) * 3; // Multiply it with 3
                 String hex_string_temp_resb_value = new String ();
+                //Converting it from decimel to hex
                 hex_string_temp_resb_value = convertDecToHex(int_temp_resb_value);
                 array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), hex_string_temp_resb_value)); // Increment Address
             }
@@ -297,10 +294,9 @@ public class AddressGenerator {
                     if(array_of_cp.get(i-1).get_Operand().charAt(0) == 'X')
                     {
                         int_temp_length_OX_value /=2; // every 2 Hexa worth 1 byte
-                        System.out.println(int_temp_length_OX_value);
                         string_temp_length_OX_value = Integer.toString(int_temp_length_OX_value); // Convert it to string
 
-                        array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), string_temp_length_OX_value));
+                        array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), string_temp_length_OX_value)); // Increment Address
 
 
                     }
@@ -313,12 +309,12 @@ public class AddressGenerator {
             }
             else if(array_of_cp.get(i-1).get_Comment().length() > 0)
             {
-                array_of_cp.get(i).set_Address(array_of_cp.get(i-1).get_Address());
+                array_of_cp.get(i).set_Address(array_of_cp.get(i-1).get_Address()); // Case of comment don't increment the address counter
             }
 
             else
             {
-                array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), "3"));
+                array_of_cp.get(i).set_Address(add(array_of_cp.get(i-1).get_Address(), "3")); // Will be modified according to the format type
             }
 
 
