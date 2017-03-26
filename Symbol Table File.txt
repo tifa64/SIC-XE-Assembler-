@@ -1,4 +1,0 @@
-3a0			TERMPROJ
-3a0			LBL1
-3a6			LBL2
-3ad			TOP

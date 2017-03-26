@@ -9,5 +9,5 @@ SIC/XE Assembler for System Programming project by Java
 - [ ] Input isn't justified by space.
 - [x] RESB or RESW = 0.
 - [ ] Printing with Justify.
-- [ ] Non-Case sensitive.
+- [x] Non-Case sensitive.
 - [ ] Print addressees with capital.

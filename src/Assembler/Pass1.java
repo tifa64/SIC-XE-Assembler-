@@ -35,12 +35,14 @@ public class Pass1 {
                 }
             }
             int address = 0;
+
             ArrayList<String> listingFileLines = new ArrayList<>();
             ArrayList<String> SYMTAB_Lines = new ArrayList<>();
+
             for (String line : lines) {
                 AssemblyLine al = null;
                 try {
-                    al = AssemblyLine.getAssemblyLineInstance(address, line + spacesPadding);
+                    al = AssemblyLine.getAssemblyLineInstance(address, line.toUpperCase() + spacesPadding);
                     listingFileLines.add(al.toString());
                 } catch (Exception e) {
                     listingFileLines.add(e.getMessage() + "\n");
@@ -74,6 +76,7 @@ public class Pass1 {
             Files.write(SYMTAB_File, SYMTAB_Lines, Charset.forName("UTF-8"));
 
             System.out.println("done");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
