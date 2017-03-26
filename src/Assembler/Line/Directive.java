@@ -4,10 +4,20 @@ package Assembler.Line;
  * Created by louay on 3/26/2017.
  */
 public class Directive extends AssemblyLine {
-
+    protected final String label, mnemonic, operand, comment;
+    protected final int address;
 
     protected Directive(int address, String line) {
         super(address, line);
+        this.label = line.substring(0, 8).replaceAll("\\s+","");
+        this.mnemonic = line.substring(9, 15).replaceAll("\\s+","");
+        this.operand = line.substring(17, 35).replaceAll("\\s+","");
+        this.comment = line.substring(35, 66).replaceAll("\\s+","");
+        if (mnemonic.equals("START")){
+            this.address = Integer.parseInt(operand, 16);
+        } else {
+            this.address = super.address;
+        }
     }
 
     @Override
@@ -17,6 +27,6 @@ public class Directive extends AssemblyLine {
 
     @Override
     public int getNextAddress() {
-        return 0; //lessa fiha kalam
+        return this.address; //lessa fiha kalam
     }
 }

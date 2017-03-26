@@ -5,9 +5,11 @@ package Assembler.Line;
  */
 public class Format4 extends Format {
 
+    private final String mnemonicProper;
 
     protected Format4(int address, String line) {
         super(address, line);
+        this.mnemonicProper = this.mnemonic.substring(1);
     }
 
     @Override
