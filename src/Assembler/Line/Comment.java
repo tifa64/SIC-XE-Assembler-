@@ -21,10 +21,10 @@ public class Comment extends AssemblyLine {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(Integer.toHexString(this.address).toUpperCase());
-        for (int i = sb.toString().length(); i <= 6; i++){
+        for (int i = sb.toString().length(); i <= 6; i++) {
             sb.append(" ");
         }
         sb.append("\t");
@@ -33,8 +33,7 @@ public class Comment extends AssemblyLine {
     }
 
     @Override
-    public String getLabel()
-    {
+    public String getLabel() {
         return null;
     }
 }

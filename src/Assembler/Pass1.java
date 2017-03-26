@@ -17,12 +17,12 @@ import java.util.List;
  */
 public class Pass1 {
 
-    private Pass1() { }
-
     protected final static ArrayList<AssemblyLine> instructions = new ArrayList<>();
-    protected final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer> ();
-
+    protected final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
     private final static String spacesPadding = "                                                                      ";
+
+    private Pass1() {
+    }
 
     public static void generatePass1Files(File file) {
         List<String> lines = null;
@@ -52,43 +52,41 @@ public class Pass1 {
                         listingFileLines.add("---- END OF FILE ----");
                     }
                     String tempLabel = al.getLabel();
-                    if(tempLabel != null)
-                    {
+                    if (tempLabel != null) {
                         if (SYMTAB.containsKey(tempLabel))
                             listingFileLines.add("****** ERROR :: Symbol " + tempLabel + " is already defined ******");
 
-                        else
-                        {
+                        else {
                             SYMTAB.put(tempLabel, al.getAddress());
-                            SYMTAB_Lines.add(Integer.toHexString(al.getAddress())+"\t\t\t"+tempLabel);
+                            SYMTAB_Lines.add(Integer.toHexString(al.getAddress()) + "\t\t\t" + tempLabel);
                         }
 
                     }
                 } catch (Exception e) {
                     //printing unknown command to listing file.
                     String lineWithPadding = line + spacesPadding;
-                    String label = lineWithPadding.substring(0, 8).replaceAll("\\s+","");
-                    String mnemonic = lineWithPadding.substring(9, 15).replaceAll("\\s+","");
-                    String operand = lineWithPadding.substring(17, 35).replaceAll("\\s+","");
-                    String comment = lineWithPadding.substring(35, 66).replaceAll("\\s+","");
+                    String label = lineWithPadding.substring(0, 8).replaceAll("\\s+", "");
+                    String mnemonic = lineWithPadding.substring(9, 15).replaceAll("\\s+", "");
+                    String operand = lineWithPadding.substring(17, 35).replaceAll("\\s+", "");
+                    String comment = lineWithPadding.substring(35, 66).replaceAll("\\s+", "");
                     StringBuilder sb = new StringBuilder();
                     sb.append(Integer.toHexString(address));
-                    for (int i = sb.toString().length(); i <= 6; i++){
+                    for (int i = sb.toString().length(); i <= 6; i++) {
                         sb.append(" ");
                     }
                     sb.append("\t");
                     sb.append(label);
-                    for (int i = sb.toString().length(); i <= 15; i++){
+                    for (int i = sb.toString().length(); i <= 15; i++) {
                         sb.append(" ");
                     }
                     sb.append("\t");
                     sb.append(mnemonic);
-                    for (int i = sb.toString().length(); i <= 22; i++){
+                    for (int i = sb.toString().length(); i <= 22; i++) {
                         sb.append(" ");
                     }
                     sb.append("\t");
                     sb.append(operand);
-                    for (int i = sb.toString().length(); i <= 41; i++){
+                    for (int i = sb.toString().length(); i <= 41; i++) {
                         sb.append(" ");
                     }
                     sb.append("\t");
