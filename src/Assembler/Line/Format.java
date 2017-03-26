@@ -29,4 +29,12 @@ public abstract class Format extends AssemblyLine{
         sb.append("\n");
         return sb.toString();
     }
+
+    @Override
+    public String getLabel()
+    {
+        if(label.length() == 0)
+            return null;
+        return label;
+    }
 }
