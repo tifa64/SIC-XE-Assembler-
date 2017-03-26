@@ -31,4 +31,13 @@ public abstract class AssemblyLine {
     public abstract int getType();
 
     public abstract int getNextAddress() throws Exception;
+
+    public int getAddress()
+    {
+        return address;
+    }
+
+    public abstract String getLabel();
+
+
 }

@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -19,6 +20,8 @@ public class Pass1 {
     private Pass1() { }
 
     protected final static ArrayList<AssemblyLine> instructions = new ArrayList<>();
+    protected final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer> ();
+
     private final static String spacesPadding = "                                                                      ";
 
     public static void generatePass1Files(File file) {
@@ -33,6 +36,7 @@ public class Pass1 {
             }
             int address = 0;
             ArrayList<String> listingFileLines = new ArrayList<>();
+            ArrayList<String> SYMTAB_Lines = new ArrayList<>();
             for (String line : lines) {
                 AssemblyLine al = null;
                 try {
@@ -48,14 +52,31 @@ public class Pass1 {
                 } catch (Exception e) {
                     listingFileLines.add("---- END OF FILE ----");
                 }
+                String tempLabel = al.getLabel();
+                if(tempLabel != null)
+                {
+                    if (SYMTAB.containsKey(tempLabel))
+                        listingFileLines.add("****** ERROR :: Symbol " + tempLabel + " is already defined ******");
+
+                    else
+                    {
+                        SYMTAB.put(tempLabel, al.getAddress());
+                        SYMTAB_Lines.add(Integer.toHexString(al.getAddress())+"\t\t\t"+tempLabel);
+                    }
+
+                }
             }
 
             Path listingFile = Paths.get("ListingFile.txt");
             Files.write(listingFile, listingFileLines, Charset.forName("UTF-8"));
+
+            Path SYMTAB_File = Paths.get("Symbol Table File.txt");
+            Files.write(SYMTAB_File, SYMTAB_Lines, Charset.forName("UTF-8"));
 
             System.out.println("done");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

@@ -29,4 +29,10 @@ public class Comment extends AssemblyLine {
         sb.append("\n");
         return sb.toString();
     }
+
+    @Override
+    public String getLabel()
+    {
+        return null;
+    }
 }
