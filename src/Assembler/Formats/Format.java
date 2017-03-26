@@ -11,14 +11,14 @@ public abstract class Format {
 
     public static Format getFormat(int address, String command) throws Exception {
         String label = command.substring(0, 8).replaceAll("\\s+","");
-        String operation = command.substring(9, 15).replaceAll("\\s+","");
+        String mnemonic = command.substring(9, 15).replaceAll("\\s+","");
         String operand = command.substring(17, 35).replaceAll("\\s+","");
         String comment = command.substring(35, 66).replaceAll("\\s+","");
-        switch (InstructionSetLoader.getLoader().getFormatType(operation)){
-            case 1: return new Format1(label, operation, operand, comment);
-            case 2: return new Format2(label, operation, operand, comment);
-            case 3: return new Format3(label, operation, operand, comment);
-            case 4: return new Format4(label, operation.substring(1), operand, comment);
+        switch (InstructionSetLoader.getLoader().getFormatType(mnemonic)){
+            case 1: return new Format1(label, mnemonic, operand, comment);
+            case 2: return new Format2(label, mnemonic, operand, comment);
+            case 3: return new Format3(label, mnemonic, operand, comment);
+            case 4: return new Format4(label, mnemonic.substring(1), operand, comment);
             default: throw new Exception("Unknown instruction");
         }
     }
