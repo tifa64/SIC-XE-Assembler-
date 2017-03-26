@@ -10,4 +10,4 @@ SIC/XE Assembler for System Programming project by Java
 - [x] RESB or RESW = 0.
 - [x] Printing with Justify.
 - [x] Non-Case sensitive.
-- [ ] Print addressees with capital.
+- [x] Print addressees with capital.
