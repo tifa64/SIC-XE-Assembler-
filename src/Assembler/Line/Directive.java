@@ -35,7 +35,7 @@ public class Directive extends AssemblyLine {
 
         else if (mnemonic.equals("END"))
         {
-            return this.address;
+            throw new Exception("End Of File");
         }
 
         else if(mnemonic.equals("RESB"))
@@ -101,5 +101,11 @@ public class Directive extends AssemblyLine {
         if(label.length() == 0)
             return null;
         return label;
+    }
+
+    @Override
+    public int getAddress()
+    {
+        return address;
     }
 }
