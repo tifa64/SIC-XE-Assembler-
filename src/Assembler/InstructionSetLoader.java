@@ -29,11 +29,17 @@ public class InstructionSetLoader {
         }
     }
 
-    public int getFormatType(String operation) throws Exception {
-        if (operation.charAt(0) == '+' && this.instructionSet.containsKey(operation.substring(1)) && this.instructionSet.get(operation.substring(1)).equals("3/4")){
+    public int getFormatType(String line) throws Exception {
+        if (line.charAt(0) == '.'){
+            return 0;
+        }
+
+        String mnemonic = line.substring(9, 15).replaceAll("\\s+","");
+
+        if (mnemonic.charAt(0) == '+' && this.instructionSet.containsKey(mnemonic.substring(1)) && this.instructionSet.get(mnemonic.substring(1)).equals("3/4")){
             return 4;
-        } else if (this.instructionSet.containsKey(operation)){
-            String format = this.instructionSet.get(operation);
+        } else if (this.instructionSet.containsKey(mnemonic)){
+            String format = this.instructionSet.get(mnemonic);
             if (format.equals("3/4")){
                 return 3;
             }

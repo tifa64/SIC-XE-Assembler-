@@ -1,40 +1,34 @@
 package Assembler.Line;
 
 import Assembler.InstructionSetLoader;
-import Assembler.Line.Formats.Format1;
-import Assembler.Line.Formats.Format2;
-import Assembler.Line.Formats.Format3;
-import Assembler.Line.Formats.Format4;
 
 /**
  * Created by louay on 3/25/2017.
  */
 public abstract class AssemblyLine {
 
-    protected final String label, operation, operand, comment;
+    protected final String line;
     protected final int address;
 
-    public static AssemblyLine getFormat(int address, String command) throws Exception {
-        String label = command.substring(0, 8).replaceAll("\\s+","");
-        String mnemonic = command.substring(9, 15).replaceAll("\\s+","");
-        String operand = command.substring(17, 35).replaceAll("\\s+","");
-        String comment = command.substring(35, 66).replaceAll("\\s+","");
-        switch (InstructionSetLoader.getLoader().getFormatType(mnemonic)){
-            case 1: return new Format1(address, label, mnemonic, operand, comment);
-            case 2: return new Format2(address, label, mnemonic, operand, comment);
-            case 3: return new Format3(address, label, mnemonic, operand, comment);
-            case 4: return new Format4(address, label, mnemonic.substring(1), operand, comment);
+    public static AssemblyLine getAssemblyLineInstance(int address, String line) throws Exception {
+
+        switch (InstructionSetLoader.getLoader().getFormatType(line)){
+            case -1: return new Directive(address, line);
+            case 0: return new Comment(address, line);
+            case 1: return new Format1(address, line);
+            case 2: return new Format2(address, line);
+            case 3: return new Format3(address, line);
+            case 4: return new Format4(address, line);
             default: throw new Exception("Unknown instruction");
         }
     }
 
-    protected AssemblyLine(int address, String label, String operation, String operand, String comment) {
+    protected AssemblyLine(int address, String line) {
         this.address = address;
-        this.label = label;
-        this.operation = operation;
-        this.operand = operand;
-        this.comment = comment;
+        this.line = line;
     }
 
     public abstract int getType();
+
+    public abstract int getNextAddress();
 }

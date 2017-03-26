@@ -32,7 +32,7 @@ public class FormatsTesting {
                 }
                 ArrayList<AssemblyLine> instructions = new ArrayList<>();
                 for (String line : lines){
-                    instructions.add(AssemblyLine.getFormat(0, line + spacesPadding));
+                    instructions.add(AssemblyLine.getAssemblyLineInstance(0, line + spacesPadding));
                 }
                 System.out.println("done");
             } catch (IOException e) {
