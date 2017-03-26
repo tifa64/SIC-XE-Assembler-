@@ -5,4 +5,9 @@ LBL2     RESB    4
 LBL2     RESW    1
 TOP      LDA     ZERO
          LDX     #INDEX
-
+TOP      LDA     ZERO
+         LDX     #INDEX
+         ADDR    r1,r2
+         +ADD    m
+         FIX
+         END     3A0
