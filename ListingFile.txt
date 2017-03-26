@@ -1,0 +1,29 @@
+3a0		TERMPROJ		START		3A0		
+
+3a0		.THIS IS A COMMENT LINE                                                                       
+
+3a0		LBL1		BYTE		C'ABCDEF'		
+
+3a6		LBL2		RESB		4		.Tagroba
+
+3aa		LBL2		RESW		1		
+
+****** ERROR :: Symbol LBL2 is already defined ******
+3ad		TOP		LDA		ZERO		
+
+3b0				LDX		#INDEX		
+
+3b3		TOP		LDA		ZERO		
+
+****** ERROR :: Symbol TOP is already defined ******
+3b6				LDX		#INDEX		
+
+3b9				ADDR		r1,r2		
+
+3bb				+ADD		m		
+
+3bf				FIX				
+
+3c0				END		3A0		
+
+---- END OF FILE ----

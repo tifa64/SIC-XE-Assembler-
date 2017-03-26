@@ -1,0 +1,5 @@
+TOP      LDA     ZERO
+         LDX     #INDEX
+         ADDR    r1,r2
+         +ADD    m
+         FIX
