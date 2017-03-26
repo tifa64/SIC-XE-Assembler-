@@ -30,5 +30,5 @@ public abstract class AssemblyLine {
 
     public abstract int getType();
 
-    public abstract int getNextAddress();
+    public abstract int getNextAddress() throws Exception;
 }
