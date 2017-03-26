@@ -307,7 +307,7 @@ public class AddressGenerator {
 
                 }
             }
-            else if(array_of_cp.get(i-1).get_Comment().length() > 0 || array_of_cp.get(i-1).get_Label().charAt(0) == '.')
+            else if(array_of_cp.get(i-1).get_Comment().length() > 0)
             {
                 //System.out.println(array_of_cp.get(i-1).get_Label().charAt(0));
                 array_of_cp.get(i).set_Address(array_of_cp.get(i-1).get_Address()); // Case of comment don't increment the address counter
