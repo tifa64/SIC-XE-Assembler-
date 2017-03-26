@@ -1,6 +1,6 @@
 package Assembler;
 
-import Assembler.Formats.Format;
+import Assembler.Line.AssemblyLine;
 
 import javax.swing.*;
 import java.io.File;
@@ -30,9 +30,9 @@ public class FormatsTesting {
                         i--;
                     }
                 }
-                ArrayList<Format> instructions = new ArrayList<>();
+                ArrayList<AssemblyLine> instructions = new ArrayList<>();
                 for (String line : lines){
-                    instructions.add(Format.getFormat(0, line + spacesPadding));
+                    instructions.add(AssemblyLine.getFormat(0, line + spacesPadding));
                 }
                 System.out.println("done");
             } catch (IOException e) {
