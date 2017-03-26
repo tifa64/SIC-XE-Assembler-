@@ -5,7 +5,9 @@ SIC/XE Assembler for System Programming project by Java
 ## To Do ##
 
 - [ ] User didn't start with Start.
-- [ ] Line is emoty.
+- [x] Line is emoty.
 - [ ] Input isn't justified by space.
-- [ ] RESB or RESW = 0.
+- [x] RESB or RESW = 0.
 - [ ] Printing with Justify.
+- [ ] Non-Case sensitive.
+- [ ] Print addressees with capital.
