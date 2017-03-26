@@ -29,4 +29,20 @@ public class Directive extends AssemblyLine {
     public int getNextAddress() {
         return this.address; //lessa fiha kalam
     }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(Integer.toHexString(this.address));
+        sb.append("\t");
+        sb.append(this.label);
+        sb.append("\t");
+        sb.append(this.mnemonic);
+        sb.append("\t");
+        sb.append(this.operand);
+        sb.append("\t");
+        sb.append(this.comment);
+        sb.append("\n");
+        return sb.toString();
+    }
 }

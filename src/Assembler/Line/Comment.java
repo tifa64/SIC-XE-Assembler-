@@ -19,4 +19,13 @@ public class Comment extends AssemblyLine {
     public int getNextAddress() {
         return this.address;
     }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(Integer.toHexString(this.address));
+        sb.append("\t");
+        sb.append(this.line);
+        return sb.toString();
+    }
 }
