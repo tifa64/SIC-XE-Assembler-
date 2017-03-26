@@ -26,8 +26,57 @@ public class Directive extends AssemblyLine {
     }
 
     @Override
-    public int getNextAddress() {
-        return this.address; //lessa fiha kalam
+    public int getNextAddress() throws Exception{
+
+        if(mnemonic.equals("START"))
+        {
+            return this.address;
+        }
+
+        else if (mnemonic.equals("END"))
+        {
+            return this.address;
+        }
+
+        else if(mnemonic.equals("RESB"))
+        {
+            int decimal = Integer.parseInt(operand);
+
+            return this.address + decimal;
+        }
+
+        else if(mnemonic.equals("RESW"))
+        {
+            int decimal = Integer.parseInt(operand);
+            decimal *= 3;
+
+            return this.address + decimal;
+        }
+
+        else if(mnemonic.equals("BYTE"))
+        {
+            
+            int intLenghtOfOperand = operand.length() - 3;
+
+            //Case I : Character
+            if(operand.charAt(0) == 'C')
+                return this.address + intLenghtOfOperand;
+
+            //Case II : Hecadecimal
+            intLenghtOfOperand = (intLenghtOfOperand/2) + (intLenghtOfOperand % 2);
+            return this.address + intLenghtOfOperand;
+        }
+        else if(mnemonic.equals("WORD"))
+        {
+            int decimal = Integer.parseInt(operand);
+            if(decimal < -8388608 || decimal > 8388607)
+                throw new Exception("Out of range");
+        }
+        return this.address + 3;
+
+
+
+
     }
 
     @Override
