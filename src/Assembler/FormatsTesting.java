@@ -31,8 +31,12 @@ public class FormatsTesting {
                     }
                 }
                 ArrayList<AssemblyLine> instructions = new ArrayList<>();
+                int address = 0;
                 for (String line : lines){
-                    instructions.add(AssemblyLine.getAssemblyLineInstance(0, line + spacesPadding));
+                    AssemblyLine al = AssemblyLine.getAssemblyLineInstance(address, line + spacesPadding);
+                    instructions.add(al);
+                    System.out.println(al.toString());
+                    address = al.getNextAddress();
                 }
                 System.out.println("done");
             } catch (IOException e) {
