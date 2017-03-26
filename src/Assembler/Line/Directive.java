@@ -63,7 +63,7 @@ public class Directive extends AssemblyLine {
                 return this.address + intLenghtOfOperand;
 
             //Case II : Hecadecimal
-            intLenghtOfOperand = intLenghtOfOperand/2 + intLenghtOfOperand % 2;
+            intLenghtOfOperand = (intLenghtOfOperand/2) + (intLenghtOfOperand % 2);
             return this.address + intLenghtOfOperand;
         }
         else if(mnemonic.equals("WORD"))
