@@ -82,7 +82,7 @@ public class Directive extends AssemblyLine {
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append(Integer.toHexString(this.address));
+        sb.append(Integer.toHexString(this.address).toUpperCase());
         for (int i = sb.toString().length(); i <= 6; i++){
             sb.append(" ");
         }
