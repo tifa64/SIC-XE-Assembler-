@@ -18,15 +18,26 @@ public abstract class Format extends AssemblyLine{
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append(Integer.toHexString(this.address));
-        sb.append("\t\t");
+        for (int i = sb.toString().length(); i <= 6; i++){
+            sb.append(" ");
+        }
+        sb.append("\t");
         sb.append(this.label);
-        sb.append("\t\t");
+        for (int i = sb.toString().length(); i <= 15; i++){
+            sb.append(" ");
+        }
+        sb.append("\t");
         sb.append(this.mnemonic);
-        sb.append("\t\t");
+        for (int i = sb.toString().length(); i <= 22; i++){
+            sb.append(" ");
+        }
+        sb.append("\t");
         sb.append(this.operand);
-        sb.append("\t\t");
+        for (int i = sb.toString().length(); i <= 41; i++){
+            sb.append(" ");
+        }
+        sb.append("\t");
         sb.append(this.comment);
-        sb.append("\n");
         return sb.toString();
     }
 

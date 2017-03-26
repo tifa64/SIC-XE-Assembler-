@@ -24,9 +24,11 @@ public class Comment extends AssemblyLine {
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append(Integer.toHexString(this.address));
-        sb.append("\t\t");
+        for (int i = sb.toString().length(); i <= 6; i++){
+            sb.append(" ");
+        }
+        sb.append("\t");
         sb.append(this.line);
-        sb.append("\n");
         return sb.toString();
     }
 
