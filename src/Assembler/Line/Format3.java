@@ -1,9 +1,6 @@
 
 package Assembler.Line;
 import Assembler.InstructionSetLoader;
-import Assembler.Pass1;
-
-import java.util.BitSet;
 
 import static Assembler.Pass1.SYMTAB;
 import static Assembler.Pass2.baseValue;
@@ -114,13 +111,21 @@ public class Format3 extends Format {
             displacement = TA;
 
 
-
-        binInstOpCode =  binInstOpCode.replace(binInstOpCode.charAt(6), n);
-        binInstOpCode = binInstOpCode.replace(binInstOpCode.charAt(7),i);
+        binInstOpCode = binInstOpCode.substring(0,6);
+        binInstOpCode += n;
+        binInstOpCode += i;
 
         /*From Binary to hex*/
         int decimalRep = Integer.parseInt(binInstOpCode, 2);
         String tempHex1 = Integer.toHexString(decimalRep);
+
+        if(tempHex1.length() == 1)
+        {
+            StringBuilder sb3 = new StringBuilder();
+            sb3.append("0");
+            sb3.append(tempHex1);
+            tempHex1 = sb3.toString();
+        }
 
 
         StringBuilder sb = new StringBuilder();
