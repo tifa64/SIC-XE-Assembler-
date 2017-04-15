@@ -156,6 +156,8 @@ public class Format3 extends Format {
             sb2.append(tempHex3);
             tempHex3 = sb2.toString();
         }
+        else if(tempHex3.length() > 3)
+            tempHex3 = tempHex3.substring(5, 8);
 
 
         return tempHex1 + tempHex2 + tempHex3;
