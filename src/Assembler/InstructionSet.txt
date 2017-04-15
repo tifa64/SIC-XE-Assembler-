@@ -63,3 +63,4 @@ RESW:-1:
 RESB:-1:
 BYTE:-1:
 WORD:-1:
+BASE:-1:
