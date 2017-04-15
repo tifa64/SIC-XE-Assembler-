@@ -1,9 +1,16 @@
 package Assembler.Line;
 
+import Assembler.InstructionSetLoader;
+import Assembler.Pass1;
+
+import java.util.BitSet;
+
 /**
  * Created by louay on 3/25/2017.
  */
 public class Format4 extends Format {
+
+    private static final int n = 0, i = 1, x = 2, b = 3, p = 4, e = 5;
 
     private final String mnemonicProper;
 
@@ -24,6 +31,58 @@ public class Format4 extends Format {
 
     @Override
     public String getObjectCode() {
-        return null;
+        String opcodeBin = Integer.toBinaryString(Integer.parseInt( InstructionSetLoader.getLoader().getInstOpCode(mnemonicProper),16));
+        if (opcodeBin.length() < 8){
+            StringBuilder sb = new StringBuilder();
+            for (int i = opcodeBin.length(); i < 8; i++){
+                sb.append("0");
+            }
+            sb.append(opcodeBin);
+            opcodeBin = sb.toString();
+        }
+
+        String addressHexa;
+        BitSet nixbpe = new BitSet(6);
+        nixbpe.set(e);
+        if(operand.charAt(0) == '@') {
+            nixbpe.set(n);
+            addressHexa = Integer.toHexString(Pass1.SYMTAB.get(operand.substring(1)));
+        }
+        else if(operand.charAt(0) == '#') {
+            nixbpe.set(i);
+            String value = operand.substring(1);
+            if (value.charAt(0) <= '9' && value.charAt(0) >= '0'){
+                addressHexa = Integer.toHexString(Integer.parseInt(operand.substring(1)));
+            } else {
+                addressHexa = Integer.toHexString(Pass1.SYMTAB.get(operand.substring(1)));
+            }
+        } else {
+            addressHexa = Integer.toHexString(Pass1.SYMTAB.get(operand));
+            nixbpe.set(n);
+            nixbpe.set(i);
+        }
+
+        if (addressHexa.length() < 5){
+            StringBuilder sb = new StringBuilder();
+            for (int i = addressHexa.length(); i < 5; i++){
+                sb.append("0");
+            }
+            sb.append(addressHexa);
+            addressHexa = sb.toString();
+        }
+
+        if(operand.endsWith(",X"))
+            nixbpe.set(x);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(opcodeBin.substring(0,6));
+        sb.append(nixbpe.get(n)? "1" : "0");
+        sb.append(nixbpe.get(i)? "1" : "0");
+        sb.append(nixbpe.get(x)? "1" : "0");
+        sb.append(nixbpe.get(b)? "1" : "0");
+        sb.append(nixbpe.get(p)? "1" : "0");
+        sb.append(nixbpe.get(e)? "1" : "0");
+
+        return (Integer.toHexString(Integer.parseInt(sb.toString(), 2)) + addressHexa).toUpperCase();
     }
 }
