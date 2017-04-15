@@ -110,14 +110,16 @@ public class Format3 extends Format {
                 b = '1';
             }
         }
+        else
+            displacement = TA;
 
 
 
-        binInstOpCode.replace(binInstOpCode.charAt(6), n);
-        binInstOpCode.replace(binInstOpCode.charAt(7),i);
+        binInstOpCode =  binInstOpCode.replace(binInstOpCode.charAt(6), n);
+        binInstOpCode = binInstOpCode.replace(binInstOpCode.charAt(7),i);
 
         /*From Binary to hex*/
-        int decimalRep = Integer.parseInt(instOpCode, 2);
+        int decimalRep = Integer.parseInt(binInstOpCode, 2);
         String tempHex1 = Integer.toHexString(decimalRep);
 
 
@@ -132,9 +134,23 @@ public class Format3 extends Format {
 
         decimalRep = Integer.parseInt(middle, 2);
         String tempHex2 = Integer.toHexString(decimalRep);
+        if(tempHex2.length() == 1)
+        {
+            StringBuilder sb1 = new StringBuilder();
+            sb1.append("0");
+            sb1.append(tempHex2);
+            tempHex2 = sb1.toString();
+        }
 
 
         String tempHex3 = Integer.toHexString(displacement);
+        if(tempHex3.length() < 3)
+        {
+            StringBuilder sb2 = new StringBuilder();
+            sb2.append("0");
+            sb2.append(tempHex3);
+            tempHex3 = sb2.toString();
+        }
 
 
         return tempHex1 + tempHex2 + tempHex3;
