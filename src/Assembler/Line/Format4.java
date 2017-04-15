@@ -44,20 +44,27 @@ public class Format4 extends Format {
         String addressHexa;
         BitSet nixbpe = new BitSet(6);
         nixbpe.set(e);
+        String value = operand;
+        if(operand.endsWith(",X")){
+            nixbpe.set(x);
+            value = operand.substring(0, operand.length() - 2);
+        }
+
         if(operand.charAt(0) == '@') {
             nixbpe.set(n);
-            addressHexa = Integer.toHexString(Pass1.SYMTAB.get(operand.substring(1)));
+            value = value.substring(1);
+            addressHexa = Integer.toHexString(Pass1.SYMTAB.get(value));
         }
         else if(operand.charAt(0) == '#') {
             nixbpe.set(i);
-            String value = operand.substring(1);
+            value = value.substring(1);
             if (value.charAt(0) <= '9' && value.charAt(0) >= '0'){
-                addressHexa = Integer.toHexString(Integer.parseInt(operand.substring(1)));
+                addressHexa = Integer.toHexString(Integer.parseInt(value));
             } else {
-                addressHexa = Integer.toHexString(Pass1.SYMTAB.get(operand.substring(1)));
+                addressHexa = Integer.toHexString(Pass1.SYMTAB.get(value));
             }
         } else {
-            addressHexa = Integer.toHexString(Pass1.SYMTAB.get(operand));
+            addressHexa = Integer.toHexString(Pass1.SYMTAB.get(value));
             nixbpe.set(n);
             nixbpe.set(i);
         }
@@ -71,8 +78,7 @@ public class Format4 extends Format {
             addressHexa = sb.toString();
         }
 
-        if(operand.endsWith(",X"))
-            nixbpe.set(x);
+
 
         StringBuilder sb = new StringBuilder();
         sb.append(opcodeBin.substring(0,6));
