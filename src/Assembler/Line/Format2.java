@@ -24,17 +24,17 @@ public class Format2 extends Format {
 
     @Override
     public String getObjectCode() {
-        InstructionSetLoader temp = InstructionSetLoader.getLoader();
-        String instOpCode = temp.getInstOpCode(mnemonic);
+        InstructionSetLoader isl = InstructionSetLoader.getLoader();
+        String instOpCode = isl.getInstOpCode(mnemonic);
 
         String r1 = operand.split(",")[0];
         String r2;
-        int r11 = temp.getRegOpCode(r1);
+        int r11 = isl.getRegOpCode(r1);
         int r22 = 0;
         if(r1.length() != operand.length())
         {
             r2 = operand.split(",")[1];
-            r22 = temp.getRegOpCode(r2);
+            r22 = isl.getRegOpCode(r2);
         }
         return instOpCode + Integer.toHexString(r11) + Integer.toHexString(r22);
     }

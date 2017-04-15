@@ -20,7 +20,7 @@ public class Pass1 {
     private final static String spacesPadding = "                                                                      ";
 
     protected final static ArrayList<AssemblyLine> instructions = new ArrayList<>();
-    protected final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
+    public final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
 
     public static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
     public static int programLength;
