@@ -1,6 +1,7 @@
 package Assembler.Line;
 
 import Assembler.InstructionSetLoader;
+import Assembler.Pass2;
 
 import static Assembler.Pass1.SYMTAB;
 import static Assembler.Pass2.baseValue;
@@ -15,18 +16,6 @@ public class Format3 extends Format {
         super(address, line);
     }
 
-    public static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        } catch (NullPointerException e) {
-            return false;
-        }
-        // only got here if we didn't return false
-        return true;
-    }
-
     @Override
     public int getType() {
         return 3;
@@ -38,7 +27,7 @@ public class Format3 extends Format {
     }
 
     @Override
-    public String getObjectCode() {
+    public String getObjectCode() throws Exception {
 
         String modifiedOperand = operand;
         InstructionSetLoader isl = InstructionSetLoader.getLoader();
@@ -89,6 +78,9 @@ public class Format3 extends Format {
             if (displacement >= -2048 && displacement <= 2047)
                 p = '1';
             else {
+                if (Pass2.baseValue == -1){
+                    throw new Exception("NO BASE");
+                }
                 displacement = TA - baseValue;
                 b = '1';
             }
@@ -136,7 +128,7 @@ public class Format3 extends Format {
             tempHex3 = tempHex3.substring(5, 8);
 
 
-        return tempHex1 + tempHex2 + tempHex3;
+        return (tempHex1 + tempHex2 + tempHex3).toUpperCase();
 
     }
 }

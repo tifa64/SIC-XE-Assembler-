@@ -1,6 +1,7 @@
 package Assembler.Line;
 
 import Assembler.Pass1;
+import Assembler.Pass2;
 
 /**
  * Created by louay on 3/26/2017.
@@ -113,12 +114,13 @@ public class Directive extends AssemblyLine {
     public String getObjectCode() throws Exception {
         switch (mnemonic) {
             case "START":
-                return this.label + " " + this.operand + " " + Integer.toHexString(Pass1.programLength);
+                return (this.label + " " + this.operand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
             case "END":
-                return Integer.toHexString(Pass1.programStart);
+                return Integer.toHexString(Pass1.programStart).toUpperCase();
             case "RESB":
             case "RESW": {
-                throw new Exception("Reserve directive, breaking T record");
+                //throw new Exception("Reserve directive, breaking T record");
+                return "";
             }
             case "BYTE": {
                 StringBuilder sb = new StringBuilder();
@@ -132,7 +134,7 @@ public class Directive extends AssemblyLine {
                     //Case II : Hexadecimal
                     sb.append(value);
                 }
-                return sb.toString();
+                return sb.toString().toUpperCase();
             }
             case "WORD": {
                 int decimal = Integer.parseInt(operand);
@@ -146,10 +148,16 @@ public class Directive extends AssemblyLine {
                     }
                 }
                 sb.append(hexa);
-                return sb.toString();
+                return sb.toString().toUpperCase();
             }
-            case "BASE":
+            case "BASE": {
+                if (AssemblyLine.isInteger(operand)){
+                    Pass2.baseValue = Integer.parseInt(operand);
+                } else {
+                    Pass2.baseValue = Pass1.SYMTAB.get(operand);
+                }
                 return "";
+            }
             default:
                 throw new Exception("Unknown Directive");
         }
