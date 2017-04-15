@@ -31,7 +31,7 @@ public class Format4 extends Format {
 
     @Override
     public String getObjectCode() {
-        String opcodeBin = Integer.toBinaryString(Integer.parseInt( InstructionSetLoader.getLoader().getInstOpCode(mnemonicProper),2));
+        String opcodeBin = Integer.toBinaryString(Integer.parseInt( InstructionSetLoader.getLoader().getInstOpCode(mnemonicProper),16));
         if (opcodeBin.length() < 8){
             StringBuilder sb = new StringBuilder();
             for (int i = opcodeBin.length(); i < 8; i++){
@@ -50,16 +50,21 @@ public class Format4 extends Format {
         }
         else if(operand.charAt(0) == '#') {
             nixbpe.set(i);
-            addressHexa = Integer.toHexString(Integer.parseInt(operand.substring(1)));
+            String value = operand.substring(1);
+            if (value.charAt(0) <= '9' && value.charAt(0) >= '0'){
+                addressHexa = Integer.toHexString(Integer.parseInt(operand.substring(1)));
+            } else {
+                addressHexa = Integer.toHexString(Pass1.SYMTAB.get(operand.substring(1)));
+            }
         } else {
             addressHexa = Integer.toHexString(Pass1.SYMTAB.get(operand));
             nixbpe.set(n);
             nixbpe.set(i);
         }
 
-        if (addressHexa.length() < 20){
+        if (addressHexa.length() < 5){
             StringBuilder sb = new StringBuilder();
-            for (int i = addressHexa.length(); i < 20; i++){
+            for (int i = addressHexa.length(); i < 5; i++){
                 sb.append("0");
             }
             sb.append(addressHexa);
@@ -71,13 +76,13 @@ public class Format4 extends Format {
 
         StringBuilder sb = new StringBuilder();
         sb.append(opcodeBin.substring(0,6));
-        sb.append(nixbpe.get(n));
-        sb.append(nixbpe.get(i));
-        sb.append(nixbpe.get(x));
-        sb.append(nixbpe.get(b));
-        sb.append(nixbpe.get(p));
-        sb.append(nixbpe.get(e));
+        sb.append(nixbpe.get(n)? "1" : "0");
+        sb.append(nixbpe.get(i)? "1" : "0");
+        sb.append(nixbpe.get(x)? "1" : "0");
+        sb.append(nixbpe.get(b)? "1" : "0");
+        sb.append(nixbpe.get(p)? "1" : "0");
+        sb.append(nixbpe.get(e)? "1" : "0");
 
-        return Integer.toHexString(Integer.parseInt(sb.toString(), 2)) + addressHexa;
+        return (Integer.toHexString(Integer.parseInt(sb.toString(), 2)) + addressHexa).toUpperCase();
     }
 }
