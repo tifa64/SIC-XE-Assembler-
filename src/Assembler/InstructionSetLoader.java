@@ -11,6 +11,8 @@ public class InstructionSetLoader {
 
     private static InstructionSetLoader loader = null;
     private final Hashtable<String, Instruction> instructionSet;
+    private final  Hashtable<String ,Integer> Regs = new Hashtable<>();
+
 
     private InstructionSetLoader() {
         BufferedReader fileReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("InstructionSet.txt")));
@@ -18,8 +20,12 @@ public class InstructionSetLoader {
         for (Object obj : fileReader.lines().toArray()) {
             String str = (String) obj;
             Instruction inst = new Instruction(str.split(":")[0], str.split(":")[1], str.split(":")[2]);
-
             this.instructionSet.put(str.split(":")[0], inst);
+        }
+        BufferedReader fileReader2 = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("Registers.txt")));
+        for (Object obj : fileReader.lines().toArray()) {
+            String str = (String) obj;
+            Regs.put(str.split(":")[0], Integer.parseInt(str.split(":")[1]));
         }
     }
 
@@ -47,5 +53,13 @@ public class InstructionSetLoader {
         } else {
             throw new Exception("Unknown instruction");
         }
+    }
+    public String getInstOpCode(String instruction)
+    {
+        return instructionSet.get(instruction).opcode;
+    }
+    public int getRegOpCode(String register)
+    {
+        return Regs.get(register);
     }
 }
