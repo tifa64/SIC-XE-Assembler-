@@ -18,6 +18,17 @@ public class Format3 extends Format {
     protected Format3(int address, String line) {
         super(address, line);
     }
+    public static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
+    }
     @Override
     public int getType() {
         return 3;
@@ -54,7 +65,6 @@ public class Format3 extends Format {
             i = '1';
         }
 
-
         else
         {
             n = '1';
@@ -62,12 +72,17 @@ public class Format3 extends Format {
         }
         if(operand.endsWith(",X"))
         {
-            modifiedOperand = operand.substring(0,operand.length()-1);
+            modifiedOperand = operand.substring(0,operand.length()-2);
             x = '1';
         }
 
         int PC = getNextAddress();
-        int TA = SYMTAB.get(modifiedOperand);
+        int TA;
+
+        if(isInteger(modifiedOperand))
+            TA = Integer.parseInt(modifiedOperand);
+        else
+            TA = SYMTAB.get(modifiedOperand);
 
         int displacement = TA - PC;
 

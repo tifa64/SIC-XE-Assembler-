@@ -1,5 +1,11 @@
+TEST     START   1000
 TOP      LDA     ZERO
          LDX     #INDEX
          ADDR    r1,r2
          +ADD    m
          FIX
+         J	     @RETADR
+         LDA	 #LENGTH
+         LDA	 #3
+         LDA     THREE
+
