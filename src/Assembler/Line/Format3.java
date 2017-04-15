@@ -19,4 +19,9 @@ public class Format3 extends Format {
     public int getNextAddress() {
         return this.address + 3;
     }
+
+    @Override
+    public String getObjectCode() {
+        return null;
+    }
 }

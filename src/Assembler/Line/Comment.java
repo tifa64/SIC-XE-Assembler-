@@ -36,4 +36,9 @@ public class Comment extends AssemblyLine {
     public String getLabel() {
         return null;
     }
+
+    @Override
+    public String getObjectCode() {
+        return null;
+    }
 }

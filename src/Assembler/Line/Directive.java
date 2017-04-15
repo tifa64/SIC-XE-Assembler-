@@ -105,6 +105,11 @@ public class Directive extends AssemblyLine {
     }
 
     @Override
+    public String getObjectCode() {
+        return null;
+    }
+
+    @Override
     public int getAddress() {
         return address;
     }
