@@ -39,6 +39,6 @@ public class Comment extends AssemblyLine {
 
     @Override
     public String getObjectCode() {
-        return null;
+        return "";
     }
 }

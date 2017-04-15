@@ -1,5 +1,8 @@
 package Assembler.Line;
 
+import Assembler.Instruction;
+import Assembler.InstructionSetLoader;
+
 /**
  * Created by louay on 3/25/2017.
  */
@@ -22,6 +25,9 @@ public class Format1 extends Format {
 
     @Override
     public String getObjectCode() {
-        return null;
+
+        InstructionSetLoader temp = InstructionSetLoader.getLoader();
+        String instOpCode = temp.getInstOpCode(mnemonic);
+        return instOpCode;
     }
 }
