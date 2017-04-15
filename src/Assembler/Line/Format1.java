@@ -26,8 +26,8 @@ public class Format1 extends Format {
     @Override
     public String getObjectCode() {
 
-        InstructionSetLoader temp = InstructionSetLoader.getLoader();
-        String instOpCode = temp.getInstOpCode(mnemonic);
+        InstructionSetLoader isl = InstructionSetLoader.getLoader();
+        String instOpCode = isl.getInstOpCode(mnemonic);
         return instOpCode;
     }
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
  */
 public class Pass2 {
 
+    public static int baseValue = -1;
     public static void generateObjectCodes(){
         try {
             ArrayList<String> fileLines = new ArrayList<>();
