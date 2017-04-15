@@ -47,6 +47,7 @@ public class Format3 extends Format {
         String instOpCode = isl.getInstOpCode(mnemonic);
         int intInstOpCode = Integer.parseInt(instOpCode, 16);
         String binInstOpCode = Integer.toBinaryString(intInstOpCode);
+        boolean flag = false;
 
         if(binInstOpCode.length() < 8)
         {
@@ -58,7 +59,7 @@ public class Format3 extends Format {
             binInstOpCode = sb.toString();
         }
 
-        char n = 0, i = 0, x = 0, b = 0, p = 0, e = 0;
+        char n = '0', i = '0', x = '0', b = '0', p = '0', e = '0';
 
 
         if(operand.charAt(0) == '@')
@@ -89,19 +90,27 @@ public class Format3 extends Format {
         int TA;
 
         if(isInteger(modifiedOperand))
+        {
             TA = Integer.parseInt(modifiedOperand);
+            flag = true;
+        }
+
         else
             TA = SYMTAB.get(modifiedOperand);
 
         int displacement = TA - PC;
 
-        if(displacement >= -2048 && displacement <= 2047)
-            p = '1';
-        else
+        if(!flag)
         {
-            displacement = TA - baseValue;
-            b = '1';
+            if(displacement >= -2048 && displacement <= 2047)
+                p = '1';
+            else
+            {
+                displacement = TA - baseValue;
+                b = '1';
+            }
         }
+
 
 
         binInstOpCode.replace(binInstOpCode.charAt(6), n);
@@ -126,7 +135,7 @@ public class Format3 extends Format {
 
 
         String tempHex3 = Integer.toHexString(displacement);
-        
+
 
         return tempHex1 + tempHex2 + tempHex3;
 
