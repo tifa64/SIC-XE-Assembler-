@@ -17,12 +17,10 @@ import java.util.List;
  */
 public class Pass1 {
 
-    private final static String spacesPadding = "                                                                      ";
-
-    protected final static ArrayList<AssemblyLine> instructions = new ArrayList<>();
     public final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
-
     public static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
+    protected final static ArrayList<AssemblyLine> instructions = new ArrayList<>();
+    private final static String spacesPadding = "                                                                      ";
     public static int programLength;
     public static int programStart;
 

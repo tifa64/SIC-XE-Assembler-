@@ -29,7 +29,7 @@ public class Directive extends AssemblyLine {
 
     @Override
     public int getNextAddress() throws Exception {
-        switch (mnemonic){
+        switch (mnemonic) {
             case "START": {
                 Pass1.programStart = this.address;
                 return this.address;
@@ -74,7 +74,7 @@ public class Directive extends AssemblyLine {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (mnemonic.equals("BASE")){
+        if (mnemonic.equals("BASE")) {
             sb.append("");
         } else {
             sb.append(Integer.toHexString(this.address).toUpperCase());

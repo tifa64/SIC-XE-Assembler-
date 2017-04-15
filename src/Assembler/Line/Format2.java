@@ -31,8 +31,7 @@ public class Format2 extends Format {
         String r2;
         int r11 = isl.getRegOpCode(r1);
         int r22 = 0;
-        if(r1.length() != operand.length())
-        {
+        if (r1.length() != operand.length()) {
             r2 = operand.split(",")[1];
             r22 = isl.getRegOpCode(r2);
         }

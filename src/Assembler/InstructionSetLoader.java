@@ -11,7 +11,7 @@ public class InstructionSetLoader {
 
     private static InstructionSetLoader loader = null;
     private final Hashtable<String, Instruction> instructionSet;
-    private final  Hashtable<String ,Integer> Regs = new Hashtable<>();
+    private final Hashtable<String, Integer> Regs = new Hashtable<>();
 
 
     private InstructionSetLoader() {
@@ -54,12 +54,12 @@ public class InstructionSetLoader {
             throw new Exception("Unknown instruction");
         }
     }
-    public String getInstOpCode(String instruction)
-    {
+
+    public String getInstOpCode(String instruction) {
         return instructionSet.get(instruction).opcode;
     }
-    public int getRegOpCode(String register)
-    {
+
+    public int getRegOpCode(String register) {
         return Regs.get(register);
     }
 }

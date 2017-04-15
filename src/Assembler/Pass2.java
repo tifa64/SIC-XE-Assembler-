@@ -15,10 +15,11 @@ import java.util.ArrayList;
 public class Pass2 {
 
     public static int baseValue = -1;
-    public static void generateObjectCodes(){
+
+    public static void generateObjectCodes() {
         try {
             ArrayList<String> fileLines = new ArrayList<>();
-            for (AssemblyLine al : Pass1.assemblyLines){
+            for (AssemblyLine al : Pass1.assemblyLines) {
                 fileLines.add(al.getObjectCode());
             }
             Path listingFile = Paths.get("HTME.txt");

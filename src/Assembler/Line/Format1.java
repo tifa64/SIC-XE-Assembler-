@@ -1,6 +1,5 @@
 package Assembler.Line;
 
-import Assembler.Instruction;
 import Assembler.InstructionSetLoader;
 
 /**
