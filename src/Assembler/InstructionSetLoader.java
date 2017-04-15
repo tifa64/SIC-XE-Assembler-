@@ -23,7 +23,7 @@ public class InstructionSetLoader {
             this.instructionSet.put(str.split(":")[0], inst);
         }
         BufferedReader fileReader2 = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("Registers.txt")));
-        for (Object obj : fileReader.lines().toArray()) {
+        for (Object obj : fileReader2.lines().toArray()) {
             String str = (String) obj;
             Regs.put(str.split(":")[0], Integer.parseInt(str.split(":")[1]));
         }

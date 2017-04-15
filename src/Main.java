@@ -1,4 +1,5 @@
 import Assembler.Pass1;
+import Assembler.Pass2;
 
 import javax.swing.*;
 
@@ -10,6 +11,7 @@ public class Main {
         JFileChooser fileChooser = new JFileChooser();
         if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             Pass1.generatePass1Files(fileChooser.getSelectedFile());
+            Pass2.generateObjectCodes();
         }
     }
 }

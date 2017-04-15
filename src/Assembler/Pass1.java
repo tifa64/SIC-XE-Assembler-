@@ -97,7 +97,7 @@ public class Pass1 {
                     sb.append("\t");
                     sb.append(comment);
                     listingFileLines.add(sb.toString());
-                    listingFileLines.add("****** ERROR :: Unkown Instruction: " + mnemonic + " ******");
+                    listingFileLines.add("****** ERROR :: Unknown Instruction: " + mnemonic + " ******");
                 }
                 assemblyLines.add(al);
             }
