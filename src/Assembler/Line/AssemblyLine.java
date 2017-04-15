@@ -45,6 +45,6 @@ public abstract class AssemblyLine {
 
     public abstract String getLabel();
 
-    public abstract String getObjectCode();
+    public abstract String getObjectCode() throws Exception;
 
 }

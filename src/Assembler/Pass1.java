@@ -17,15 +17,20 @@ import java.util.List;
  */
 public class Pass1 {
 
+    private final static String spacesPadding = "                                                                      ";
+
     protected final static ArrayList<AssemblyLine> instructions = new ArrayList<>();
     protected final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
-    private final static String spacesPadding = "                                                                      ";
+
+    public static int programLength;
+    public static int programStart;
 
     private Pass1() {
     }
 
     public static void generatePass1Files(File file) {
         List<String> lines = null;
+        ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
         try {
             lines = Files.readAllLines(Paths.get(file.getPath()));
             for (int i = 0; i < lines.size(); i++) {
@@ -94,6 +99,7 @@ public class Pass1 {
                     listingFileLines.add(sb.toString());
                     listingFileLines.add("****** ERROR :: Unkown Instruction: " + mnemonic + " ******");
                 }
+                assemblyLines.add(al);
             }
 
             Path listingFile = Paths.get("ListingFile.txt");
@@ -105,6 +111,8 @@ public class Pass1 {
             System.out.println("done");
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

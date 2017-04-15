@@ -1,5 +1,7 @@
 package Assembler.Line;
 
+import Assembler.Pass1;
+
 /**
  * Created by louay on 3/26/2017.
  */
@@ -27,42 +29,45 @@ public class Directive extends AssemblyLine {
 
     @Override
     public int getNextAddress() throws Exception {
+        switch (mnemonic){
+            case "START": {
+                Pass1.programStart = this.address;
+                return this.address;
+            }
+            case "END": {
+                Pass1.programLength = this.address - Pass1.programStart;
+                throw new Exception("End Of File");
+            }
+            case "RESB": {
+                int decimal = Integer.parseInt(operand);
+                return this.address + decimal;
+            }
+            case "RESW": {
+                int decimal = Integer.parseInt(operand);
+                decimal *= 3;
+                return this.address + decimal;
+            }
+            case "BYTE": {
+                int intLenghtOfOperand = operand.length() - 3;
 
-        if (mnemonic.equals("START")) {
-            return this.address;
-        } else if (mnemonic.equals("END")) {
-            throw new Exception("End Of File");
-        } else if (mnemonic.equals("RESB")) {
-            int decimal = Integer.parseInt(operand);
+                //Case I : Character
+                if (operand.charAt(0) == 'C')
+                    return this.address + intLenghtOfOperand;
 
-            return this.address + decimal;
-        } else if (mnemonic.equals("RESW")) {
-            int decimal = Integer.parseInt(operand);
-            decimal *= 3;
-
-            return this.address + decimal;
-        } else if (mnemonic.equals("BYTE")) {
-
-            int intLenghtOfOperand = operand.length() - 3;
-
-            //Case I : Character
-            if (operand.charAt(0) == 'C')
+                //Case II : Hexadecimal
+                intLenghtOfOperand = (intLenghtOfOperand / 2) + (intLenghtOfOperand % 2);
                 return this.address + intLenghtOfOperand;
-
-            //Case II : Hexadecimal
-            intLenghtOfOperand = (intLenghtOfOperand / 2) + (intLenghtOfOperand % 2);
-            return this.address + intLenghtOfOperand;
-        } else if (mnemonic.equals("WORD")) {
-            int decimal = Integer.parseInt(operand);
-            if (decimal < -8388608 || decimal > 8388607)
-                throw new Exception("Out of range");
-            return this.address + 3;
-        }
-        else if (mnemonic.equals("BASE")){
-            return this.address;
-        }
-        else {
-            throw new Exception("Unknown Directive");
+            }
+            case "WORD": {
+                int decimal = Integer.parseInt(operand);
+                if (decimal < -8388608 || decimal > 8388607)
+                    throw new Exception("Out of range");
+                return this.address + 3;
+            }
+            case "BASE":
+                return this.address;
+            default:
+                throw new Exception("Unknown Directive");
         }
     }
 
@@ -105,8 +110,49 @@ public class Directive extends AssemblyLine {
     }
 
     @Override
-    public String getObjectCode() {
-        return null;
+    public String getObjectCode() throws Exception {
+        switch (mnemonic) {
+            case "START":
+                return this.label + " " + this.operand + " " + Integer.toHexString(Pass1.programLength);
+            case "END":
+                return Integer.toHexString(Pass1.programStart);
+            case "RESB":
+            case "RESW": {
+                throw new Exception("Reserve directive, breaking T record");
+            }
+            case "BYTE": {
+                StringBuilder sb = new StringBuilder();
+                String value = this.operand.substring(2, this.operand.length() - 1);
+                //Case I : Character
+                if (operand.charAt(0) == 'C') {
+                    for (char c : value.toCharArray()) {
+                        sb.append(Integer.toHexString(c));
+                    }
+                } else {
+                    //Case II : Hexadecimal
+                    sb.append(value);
+                }
+                return sb.toString();
+            }
+            case "WORD": {
+                int decimal = Integer.parseInt(operand);
+                if (decimal < -8388608 || decimal > 8388607)
+                    throw new Exception("Out of range");
+                String hexa = Integer.toHexString(decimal);
+                StringBuilder sb = new StringBuilder();
+                if (hexa.length() < 6) {
+                    for (int i = hexa.length(); i <= 6; i++) {
+                        sb.append("0");
+                    }
+                }
+                sb.append(hexa);
+                return sb.toString();
+            }
+            case "BASE":
+                return "";
+            default:
+                throw new Exception("Unknown Directive");
+        }
     }
 
     @Override
