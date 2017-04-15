@@ -51,7 +51,6 @@ public class Format3 extends Format {
         char n = 0, i = 0, x = 0, b = 0, p = 0, e = 0;
 
 
-
         if(operand.charAt(0) == '@')
         {
             modifiedOperand = operand.substring(1,operand.length());

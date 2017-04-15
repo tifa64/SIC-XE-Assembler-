@@ -7,5 +7,6 @@ TOP      LDA     ZERO
          J	     @RETADR
          LDA	 #LENGTH
          LDA	 #3
-         LDA     THREE
+LENGTH   BYTE    3
+         END     TEST
 
