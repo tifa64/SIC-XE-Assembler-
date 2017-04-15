@@ -48,6 +48,16 @@ public class Format3 extends Format {
         int intInstOpCode = Integer.parseInt(instOpCode, 16);
         String binInstOpCode = Integer.toBinaryString(intInstOpCode);
 
+        if(binInstOpCode.length() < 8)
+        {
+            StringBuilder sb = new StringBuilder();
+            for(int i = binInstOpCode.length() ; i < 8 ; i++)
+                sb.append("0");
+
+            sb.append(binInstOpCode);
+            binInstOpCode = sb.toString();
+        }
+
         char n = 0, i = 0, x = 0, b = 0, p = 0, e = 0;
 
 
@@ -114,7 +124,9 @@ public class Format3 extends Format {
         decimalRep = Integer.parseInt(middle, 2);
         String tempHex2 = Integer.toHexString(decimalRep);
 
+
         String tempHex3 = Integer.toHexString(displacement);
+        
 
         return tempHex1 + tempHex2 + tempHex3;
 
