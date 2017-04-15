@@ -10,14 +10,16 @@ import java.util.Hashtable;
 public class InstructionSetLoader {
 
     private static InstructionSetLoader loader = null;
-    private final Hashtable<String, String> instructionSet;
+    private final Hashtable<String, Instruction> instructionSet;
 
     private InstructionSetLoader() {
         BufferedReader fileReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("InstructionSet.txt")));
         this.instructionSet = new Hashtable<>();
         for (Object obj : fileReader.lines().toArray()) {
             String str = (String) obj;
-            this.instructionSet.put(str.split(":")[0], str.split(":")[1]);
+            Instruction inst = new Instruction(str.split(":")[0], str.split(":")[1], str.split(":")[2]);
+
+            this.instructionSet.put(str.split(":")[0], inst);
         }
     }
 
@@ -38,7 +40,7 @@ public class InstructionSetLoader {
         if (mnemonic.charAt(0) == '+' && this.instructionSet.containsKey(mnemonic.substring(1)) && this.instructionSet.get(mnemonic.substring(1)).equals("3/4")) {
             return 4;
         } else if (this.instructionSet.containsKey(mnemonic)) {
-            String format = this.instructionSet.get(mnemonic);
+            String format = this.instructionSet.get(mnemonic).frmt;
             if (format.equals("3/4")) {
                 return 3;
             } else return Integer.parseInt(format);
