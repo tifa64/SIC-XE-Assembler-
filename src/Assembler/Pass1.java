@@ -22,6 +22,7 @@ public class Pass1 {
     protected final static ArrayList<AssemblyLine> instructions = new ArrayList<>();
     protected final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
 
+    public static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
     public static int programLength;
     public static int programStart;
 
@@ -30,7 +31,6 @@ public class Pass1 {
 
     public static void generatePass1Files(File file) {
         List<String> lines = null;
-        ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
         try {
             lines = Files.readAllLines(Paths.get(file.getPath()));
             for (int i = 0; i < lines.size(); i++) {
