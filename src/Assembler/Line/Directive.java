@@ -49,23 +49,31 @@ public class Directive extends AssemblyLine {
             if (operand.charAt(0) == 'C')
                 return this.address + intLenghtOfOperand;
 
-            //Case II : Hecadecimal
+            //Case II : Hexadecimal
             intLenghtOfOperand = (intLenghtOfOperand / 2) + (intLenghtOfOperand % 2);
             return this.address + intLenghtOfOperand;
         } else if (mnemonic.equals("WORD")) {
             int decimal = Integer.parseInt(operand);
             if (decimal < -8388608 || decimal > 8388607)
                 throw new Exception("Out of range");
+            return this.address + 3;
         }
-        return this.address + 3;
-
-
+        else if (mnemonic.equals("BASE")){
+            return this.address;
+        }
+        else {
+            throw new Exception("Unknown Directive");
+        }
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(Integer.toHexString(this.address).toUpperCase());
+        if (mnemonic.equals("BASE")){
+            sb.append("");
+        } else {
+            sb.append(Integer.toHexString(this.address).toUpperCase());
+        }
         for (int i = sb.toString().length(); i <= 6; i++) {
             sb.append(" ");
         }
