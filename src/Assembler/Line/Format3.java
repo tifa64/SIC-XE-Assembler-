@@ -139,13 +139,7 @@ public class Format3 extends Format {
 
         decimalRep = Integer.parseInt(middle, 2);
         String tempHex2 = Integer.toHexString(decimalRep);
-        if(tempHex2.length() == 1)
-        {
-            StringBuilder sb1 = new StringBuilder();
-            sb1.append("0");
-            sb1.append(tempHex2);
-            tempHex2 = sb1.toString();
-        }
+
 
 
         String tempHex3 = Integer.toHexString(displacement);
