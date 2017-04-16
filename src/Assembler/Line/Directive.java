@@ -10,6 +10,7 @@ public class Directive extends AssemblyLine {
     protected final String label, mnemonic, operand, comment;
     protected final int address;
 
+
     protected Directive(int address, String line) {
         super(address, line);
         this.label = line.substring(0, 8).replaceAll("\\s+", "");
@@ -113,21 +114,31 @@ public class Directive extends AssemblyLine {
     @Override
     public String getObjectCode() throws Exception {
         /**Fixed odd lengths in START**/
-        String tempOperand = this.operand;
-        if(tempOperand.length()%2 == 1)
+        String progStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+        String modifiedOperand = this.operand;
+
+        if(progStart.length()%2 == 1)
         {
             StringBuilder sb = new StringBuilder();
             sb.append("0");
-            sb.append(tempOperand);
-            tempOperand = sb.toString();
+            sb.append(progStart);
+            progStart = sb.toString();
+        }
+
+        if(modifiedOperand.length()%2 == 1)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append("0");
+            sb.append(modifiedOperand);
+            modifiedOperand = sb.toString();
         }
         switch (mnemonic) {
 
 
             case "START":
-                return ("H" + " " +this.label + " " + tempOperand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
+                return ("H" + " " +this.label + " " + modifiedOperand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
             case "END":
-                return ("E" + " " + Integer.toHexString(Pass1.programStart).toUpperCase());
+                return ("E" + " " + progStart);
             case "RESB":
             case "RESW": {
                 throw new Exception("Reserve directive, breaking T record");
