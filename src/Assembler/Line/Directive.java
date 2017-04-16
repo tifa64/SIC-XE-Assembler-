@@ -113,30 +113,13 @@ public class Directive extends AssemblyLine {
 
     @Override
     public String getObjectCode() throws Exception {
-        /**Fixed odd lengths in START**/
-        String progStart = Integer.toHexString(Pass1.programStart).toUpperCase();
-        String modifiedOperand = this.operand;
-
-        if (progStart.length() % 2 == 1) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("0");
-            sb.append(progStart);
-            progStart = sb.toString();
-        }
-
-        if (modifiedOperand.length() % 2 == 1) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("0");
-            sb.append(modifiedOperand);
-            modifiedOperand = sb.toString();
-        }
         switch (mnemonic) {
-
-
             case "START":
-                return ("H" + " " + this.label + " " + modifiedOperand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
+                return  "H" + " " + this.label +
+                        " " + Pass2.padStringWithZeroes(this.operand, 6) +
+                        " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength), 6);
             case "END":
-                return ("E" + " " + progStart);
+                return ("E" + " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programStart), 6));
             case "RESB":
             case "RESW": {
                 throw new Exception("Reserve directive, breaking T record");
@@ -168,23 +151,8 @@ public class Directive extends AssemblyLine {
                 int decimal = Integer.parseInt(operand);
                 if (decimal < -8388608 || decimal > 8388607)
                     throw new Exception("Out of range");
-                String hexa = Integer.toHexString(decimal);
-                StringBuilder sb = new StringBuilder();
-                if (hexa.length() < 6) {
-                    for (int i = hexa.length(); i <= 6; i++) {
-                        sb.append("0");
-                    }
-                }
-                sb.append(hexa);
-                /**Fixed odd lengths in WORD**/
-
-                String temp = sb.toString().toUpperCase();
-                if (temp.length() % 2 == 1) {
-                    sb = new StringBuilder();
-                    sb.append("0");
-                    sb.append(temp);
-                }
-                return sb.toString().toUpperCase();
+                String hexa = Pass2.padStringWithZeroes(Integer.toHexString(decimal), 6);
+                return hexa;
             }
             case "BASE": {
                 if (AssemblyLine.isInteger(operand)) {
