@@ -89,14 +89,9 @@ public class Pass2 {
 
                     else if(sz + tempObjectOcde.length() <= 60)
                     {
-                        if(!flag2)
-                        {
-                            flag2 = true;
-                            continue;
-                        }
+
                         sz += tempObjectOcde.length();
                         sb1.append(tempObjectOcde + " ");
-
 
                     }
                     else
