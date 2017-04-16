@@ -79,7 +79,7 @@ public class Directive extends AssemblyLine {
         if (mnemonic.equals("BASE")) {
             sb.append("");
         } else {
-            sb.append(Integer.toHexString(this.address).toUpperCase());
+            sb.append(Pass2.padStringWithZeroes(Integer.toHexString(this.address), 5));
         }
         for (int i = sb.toString().length(); i <= 6; i++) {
             sb.append(" ");
