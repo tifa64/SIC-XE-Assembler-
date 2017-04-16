@@ -22,8 +22,13 @@ public class Pass2 {
     private static StringBuilder sb1 = new StringBuilder();
 
     public static void generateObjectCodes() {
+
+        /**sb contains T and length of the record**/
+        /**sb1 contains the ObjectCode of the instruction**/
         try {
             ArrayList<String> fileLines = new ArrayList<>();
+
+            /**Case RESW or RESB**/
             for (AssemblyLine al : Pass1.assemblyLines) {
                 try {
                     temp = al.getObjectCode();
@@ -36,18 +41,22 @@ public class Pass2 {
                     sz = 0;
                 }
 
-
+                /**Case START**/
                 if(temp.startsWith("H"))
                 {
                     fileLines.add(temp);
-                    //continue;
                 }
+
+                /**Case END**/
+                /**It will add the last line of T before it then will the END line**/
                 else if(temp.startsWith("E"))
                 {
+                    sb.append(Integer.toHexString(sz/2).toUpperCase() + " ");
                     fileLines.add(sb.toString()+sb1.toString());
                     fileLines.add(temp);
                     break;
                 }
+                /**Other wise it will continue the T record till the sz is bigger than 30 bytes (60 characters)**/
                 else
                 {
 
@@ -55,6 +64,15 @@ public class Pass2 {
                     {
                         sb.append("T ");
                         sz += temp.length();
+                        /**Since it can't see the starting address so we retrive it from Pass1 and set flag to true so that we won't
+                         * repeat that
+                         */
+                        if(!flag)
+                        {
+                            sb1.append(Integer.toHexString(Pass1.programStart).toUpperCase() + " ");
+                            sz += Integer.toHexString(Pass1.programStart).length();
+                            flag = true;
+                        }
                         sb1.append(temp + " ");
                     }
                     else if(sz + temp.length() <= 60)
@@ -66,11 +84,6 @@ public class Pass2 {
                     {
 
                         sb.append(Integer.toHexString(sz/2).toUpperCase() + " ");
-                        if(!flag)
-                        {
-                            sb.append(Integer.toHexString(Pass1.programStart).toUpperCase());
-                            flag = true;
-                        }
 
                         fileLines.add(sb.toString()+sb1.toString());
                         sb = new StringBuilder();
