@@ -13,16 +13,15 @@ import java.util.ArrayList;
  */
 public class Pass2 {
 
-    public static int baseValue = -1;
     public static final ArrayList<String> MRecords = new ArrayList<>();
-
+    public static int baseValue = -1;
     private static int recordSize = 0;
     private static boolean startFlag = false;
     private static String currentObjCode = "";
     private static StringBuilder TRecordsSB = new StringBuilder();
     private static StringBuilder objCodeSB = new StringBuilder();
     private static String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
-    private static String currentTRecordStart = padStringWithZeroes(programStart,6);
+    private static String currentTRecordStart = padStringWithZeroes(programStart, 6);
 
     public static void generateObjectCodes() {
         try {
@@ -99,10 +98,10 @@ public class Pass2 {
         }
     }
 
-    public static String padStringWithZeroes(String str, int requiredLength){
-        if (str.length() < requiredLength){
+    public static String padStringWithZeroes(String str, int requiredLength) {
+        if (str.length() < requiredLength) {
             StringBuilder sb = new StringBuilder();
-            for (int i = str.length(); i < requiredLength; i++){
+            for (int i = str.length(); i < requiredLength; i++) {
                 sb.append("0");
             }
             str = sb.append(str).toString();
