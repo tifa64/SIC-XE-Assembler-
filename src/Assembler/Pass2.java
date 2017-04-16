@@ -22,7 +22,7 @@ public class Pass2 {
     private static StringBuilder TRecordsSB = new StringBuilder();
     private static StringBuilder objCodeSB = new StringBuilder();
     private static String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
-    private static String currentTRecordStart = programStart;
+    private static String currentTRecordStart = padStringWithZeroes(programStart,6);
 
     public static void generateObjectCodes() {
         try {
@@ -35,7 +35,7 @@ public class Pass2 {
                     /*Case RESW or RESB**/
                     TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
                     fileLines.add("T" + " " + currentTRecordStart + " " + TRecordsSB.toString() + objCodeSB.toString());
-                    currentTRecordStart = Integer.toHexString(al.getNextAddress()).toUpperCase();
+                    currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
                     TRecordsSB = new StringBuilder();
                     objCodeSB = new StringBuilder();
                     recordSize = 0;
@@ -50,7 +50,7 @@ public class Pass2 {
                 else if (currentObjCode.startsWith("E")) {
                     TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
                     fileLines.add("T" + " " + currentTRecordStart + " " + TRecordsSB.toString() + objCodeSB.toString());
-                    //insert M records here
+                    fileLines.addAll(MRecords);
                     fileLines.add(currentObjCode);
                     break;
                 }
@@ -85,7 +85,7 @@ public class Pass2 {
                     } else {
                         TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
                         fileLines.add("T" + " " + currentTRecordStart + " " + TRecordsSB.toString() + objCodeSB.toString());
-                        currentTRecordStart = Integer.toHexString(al.getAddress()).toUpperCase();
+                        currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getAddress()).toUpperCase(), 6);
                         TRecordsSB = new StringBuilder();
                         objCodeSB = new StringBuilder();
                         recordSize = 0;
@@ -97,5 +97,16 @@ public class Pass2 {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static String padStringWithZeroes(String str, int requiredLength){
+        if (str.length() < requiredLength){
+            StringBuilder sb = new StringBuilder();
+            for (int i = str.length(); i < requiredLength; i++){
+                sb.append("0");
+            }
+            str = sb.append(str).toString();
+        }
+        return str;
     }
 }

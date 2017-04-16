@@ -2,6 +2,7 @@ package Assembler.Line;
 
 import Assembler.InstructionSetLoader;
 import Assembler.Pass1;
+import Assembler.Pass2;
 
 import java.util.BitSet;
 
@@ -87,7 +88,13 @@ public class Format4 extends Format {
         sb.append(nixbpe.get(p) ? "1" : "0");
         sb.append(nixbpe.get(e) ? "1" : "0");
 
-
+        //inserting M record
+        StringBuilder mRecordSB = new StringBuilder();
+        mRecordSB.append("M ");
+        String addressHex = Pass2.padStringWithZeroes(Integer.toHexString(this.address + 1).toUpperCase(), 6);
+        mRecordSB.append(addressHex);
+        mRecordSB.append(" 05");
+        Pass2.MRecords.add(mRecordSB.toString());
 
         return (Integer.toHexString(Integer.parseInt(sb.toString(), 2)) + addressHexa).toUpperCase();
     }
