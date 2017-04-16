@@ -16,7 +16,7 @@ public class Pass2 {
 
     public static int baseValue = -1;
     private static int sz = 0;
-    private static boolean flag = false;
+    private static boolean flag1 = false , flag2 = false;
     private static String temp = new String();
     private static StringBuilder sb = new StringBuilder();
     private static StringBuilder sb1 = new StringBuilder();
@@ -35,10 +35,11 @@ public class Pass2 {
                 }catch (Exception m)
                 {
                     sb.append(Integer.toHexString(sz/2).toUpperCase() + " ");
-                    fileLines.add(sb.toString()+sb1.toString());
+                    fileLines.add("T" + " " + sb.toString()+sb1.toString());
                     sb = new StringBuilder();
                     sb1 = new StringBuilder();
                     sz = 0;
+                    flag2 = false;
                 }
 
                 /**Case START**/
@@ -52,7 +53,7 @@ public class Pass2 {
                 else if(temp.startsWith("E"))
                 {
                     sb.append(Integer.toHexString(sz/2).toUpperCase() + " ");
-                    fileLines.add(sb.toString()+sb1.toString());
+                    fileLines.add("T" + " " +sb.toString()+sb1.toString());
                     fileLines.add(temp);
                     break;
                 }
@@ -60,35 +61,36 @@ public class Pass2 {
                 else
                 {
 
-                    if(sz == 0)
+                    if(!flag1)
                     {
-                        sb.append("T ");
-                        sz += temp.length();
-                        /**Since it can't see the starting address so we retrive it from Pass1 and set flag to true so that we won't
-                         * repeat that
-                         */
-                        if(!flag)
-                        {
-                            sb1.append(Integer.toHexString(Pass1.programStart).toUpperCase() + " ");
-                            sz += Integer.toHexString(Pass1.programStart).length();
-                            flag = true;
-                        }
-                        sb1.append(temp + " ");
+                        sb1.append(Integer.toHexString(Pass1.programStart).toUpperCase() + " ");
+                        sz += Integer.toHexString(Pass1.programStart).length();
+                        flag1 = true;
+                        flag2 = false;
                     }
+
                     else if(sz + temp.length() <= 60)
                     {
+                        if(!flag2)
+                        {
+                            flag2 = true;
+                            continue;
+                        }
                         sz += temp.length();
                         sb1.append(temp + " ");
+
+
                     }
                     else
                     {
 
                         sb.append(Integer.toHexString(sz/2).toUpperCase() + " ");
 
-                        fileLines.add(sb.toString()+sb1.toString());
+                        fileLines.add("T" + " " +sb.toString()+sb1.toString());
                         sb = new StringBuilder();
                         sb1 = new StringBuilder();
                         sz = 0;
+                        flag2 = false;
                     }
                 }
 
