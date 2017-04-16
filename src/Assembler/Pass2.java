@@ -98,7 +98,6 @@ public class Pass2 {
 
                         if(sz == 1)
                             sz --;
-                        System.out.println(tempObjectOcde + " " + sz);
                         sz += tempObjectOcde.length();
                         sb1.append(tempObjectOcde + " ");
                     }
