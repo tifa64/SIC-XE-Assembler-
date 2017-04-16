@@ -10,6 +10,7 @@ public class Directive extends AssemblyLine {
     protected final String label, mnemonic, operand, comment;
     protected final int address;
 
+
     protected Directive(int address, String line) {
         super(address, line);
         this.label = line.substring(0, 8).replaceAll("\\s+", "");
@@ -112,15 +113,36 @@ public class Directive extends AssemblyLine {
 
     @Override
     public String getObjectCode() throws Exception {
+        /**Fixed odd lengths in START**/
+        String progStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+        String modifiedOperand = this.operand;
+
+        if(progStart.length()%2 == 1)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append("0");
+            sb.append(progStart);
+            progStart = sb.toString();
+        }
+
+        if(modifiedOperand.length()%2 == 1)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append("0");
+            sb.append(modifiedOperand);
+            modifiedOperand = sb.toString();
+        }
         switch (mnemonic) {
+
+
             case "START":
-                return (this.label + " " + this.operand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
+                return ("H" + " " +this.label + " " + modifiedOperand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
             case "END":
-                return Integer.toHexString(Pass1.programStart).toUpperCase();
+                return ("E" + " " + progStart);
             case "RESB":
             case "RESW": {
-                //throw new Exception("Reserve directive, breaking T record");
-                return "";
+                throw new Exception("Reserve directive, breaking T record");
+                //return "";
             }
             case "BYTE": {
                 StringBuilder sb = new StringBuilder();
@@ -134,6 +156,15 @@ public class Directive extends AssemblyLine {
                     //Case II : Hexadecimal
                     sb.append(value);
                 }
+                /**Fixed odd lengths in BYTE**/
+                String temp = sb.toString().toUpperCase();
+                if(temp.length()%2 == 1)
+                {
+                    sb = new StringBuilder();
+                    sb.append("0");
+                    sb.append(temp);
+                }
+
                 return sb.toString().toUpperCase();
             }
             case "WORD": {
@@ -148,6 +179,15 @@ public class Directive extends AssemblyLine {
                     }
                 }
                 sb.append(hexa);
+                /**Fixed odd lengths in WORD**/
+
+                String temp = sb.toString().toUpperCase();
+                if(temp.length()%2 == 1)
+                {
+                    sb = new StringBuilder();
+                    sb.append("0");
+                    sb.append(temp);
+                }
                 return sb.toString().toUpperCase();
             }
             case "BASE": {

@@ -121,7 +121,11 @@ public class Format3 extends Format {
         String tempHex3 = Integer.toHexString(displacement);
         if (tempHex3.length() < 3) {
             StringBuilder sb2 = new StringBuilder();
-            sb2.append("0");
+
+            for (int j = tempHex3.length() ; j < 3 ; j++)
+            {
+                sb2.append("0");
+            }
             sb2.append(tempHex3);
             tempHex3 = sb2.toString();
         } else if (tempHex3.length() > 3)
