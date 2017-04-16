@@ -53,7 +53,7 @@ public abstract class AssemblyLine {
     public abstract int getNextAddress() throws Exception;
 
     public int getAddress() {
-        return address;
+        return this.address;
     }
 
     public abstract String getLabel();

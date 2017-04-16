@@ -1,6 +1,7 @@
 package Assembler.Line;
 
 import Assembler.InstructionSetLoader;
+import Assembler.Pass2;
 
 /**
  * Created by louay on 3/25/2017.
@@ -26,7 +27,7 @@ public class Format1 extends Format {
     public String getObjectCode() {
 
         InstructionSetLoader isl = InstructionSetLoader.getLoader();
-        String instOpCode = isl.getInstOpCode(mnemonic);
+        String instOpCode = Pass2.padStringWithZeroes(isl.getInstOpCode(mnemonic), 2);
         return instOpCode;
     }
 }
