@@ -16,10 +16,8 @@ public class Pass2 {
 
     public static int baseValue = -1;
     private static int sz = 0;
-    private static boolean flag1 = false , flag2 = false;
-    /**flag 1 is for when it is the first time to start the HTME record and flag2 is for when new T record is begun it ingores the
-     * last address of the previous T record
-     */
+    private static boolean flag1 = false;
+    /**flag 1 is for when it is the first time to start the HTME record **/
     private static String tempObjectOcde = new String();
     /** tempObjectOcde to hold the current Onject Code*/
     private static StringBuilder sb = new StringBuilder();
@@ -47,7 +45,6 @@ public class Pass2 {
                     sb = new StringBuilder();
                     sb1 = new StringBuilder();
                     sz = 0;
-                    flag2 = false;
                 }
 
                 /**Case START**/
@@ -65,8 +62,11 @@ public class Pass2 {
                     fileLines.add(tempObjectOcde);
                     break;
                 }
+
+                /**Case Comment**/
                 else if(tempObjectOcde.length() == 0)
                     continue;
+
                 /**Other wise it will continue the T record till the sz is bigger than 30 bytes (60 characters)**/
                 else
                 {
@@ -76,23 +76,31 @@ public class Pass2 {
 
                         if(progStart.length()%2 == 1)
                         {
-                            StringBuilder sb = new StringBuilder();
-                            sb.append("0");
-                            sb.append(progStart);
-                            progStart = sb.toString();
+                            StringBuilder sbTemp = new StringBuilder();
+                            sbTemp.append("0");
+                            sbTemp.append(progStart);
+                            progStart = sbTemp.toString();
                         }
+
                         sb1.append(progStart + " ");
-                        sz += Integer.toHexString(Pass1.programStart).length();
+                        sz += progStart.length();
                         flag1 = true;
-                        flag2 = false;
                     }
 
                     else if(sz + tempObjectOcde.length() <= 60)
                     {
+                        /**Because  when new T record is begun it ingores the last Object Code of the previous T record**/
+                        if(sz == 0)
+                        {
+                            sz += 1;
+                            continue;
+                        }
 
+                        if(sz == 1)
+                            sz --;
+                        System.out.println(tempObjectOcde + " " + sz);
                         sz += tempObjectOcde.length();
                         sb1.append(tempObjectOcde + " ");
-
                     }
                     else
                     {
@@ -103,7 +111,6 @@ public class Pass2 {
                         sb = new StringBuilder();
                         sb1 = new StringBuilder();
                         sz = 0;
-                        flag2 = false;
                     }
                 }
 
