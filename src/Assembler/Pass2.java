@@ -22,6 +22,7 @@ public class Pass2 {
     private static StringBuilder TRecordsSB = new StringBuilder();
     private static StringBuilder objCodeSB = new StringBuilder();
     private static String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+    private static String currentTRecordStart = programStart;
 
     public static void generateObjectCodes() {
         try {
@@ -33,7 +34,8 @@ public class Pass2 {
                 } catch (Exception m) {
                     /*Case RESW or RESB**/
                     TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
-                    fileLines.add("T" + " " + TRecordsSB.toString() + objCodeSB.toString());
+                    fileLines.add("T" + " " + currentTRecordStart + " " + TRecordsSB.toString() + objCodeSB.toString());
+                    currentTRecordStart = Integer.toHexString(al.getNextAddress()).toUpperCase();
                     TRecordsSB = new StringBuilder();
                     objCodeSB = new StringBuilder();
                     recordSize = 0;
@@ -47,7 +49,7 @@ public class Pass2 {
                 /*It will add the last line of T before it then will the END line**/
                 else if (currentObjCode.startsWith("E")) {
                     TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
-                    fileLines.add("T" + " " + TRecordsSB.toString() + objCodeSB.toString());
+                    fileLines.add("T" + " " + currentTRecordStart + " " + TRecordsSB.toString() + objCodeSB.toString());
                     //insert M records here
                     fileLines.add(currentObjCode);
                     break;
@@ -82,7 +84,8 @@ public class Pass2 {
                         objCodeSB.append(currentObjCode).append(" ");
                     } else {
                         TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
-                        fileLines.add("T" + " " + TRecordsSB.toString() + objCodeSB.toString());
+                        fileLines.add("T" + " " + currentTRecordStart + " " + TRecordsSB.toString() + objCodeSB.toString());
+                        currentTRecordStart = Integer.toHexString(al.getAddress()).toUpperCase();
                         TRecordsSB = new StringBuilder();
                         objCodeSB = new StringBuilder();
                         recordSize = 0;
