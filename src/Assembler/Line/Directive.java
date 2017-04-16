@@ -117,16 +117,14 @@ public class Directive extends AssemblyLine {
         String progStart = Integer.toHexString(Pass1.programStart).toUpperCase();
         String modifiedOperand = this.operand;
 
-        if(progStart.length()%2 == 1)
-        {
+        if (progStart.length() % 2 == 1) {
             StringBuilder sb = new StringBuilder();
             sb.append("0");
             sb.append(progStart);
             progStart = sb.toString();
         }
 
-        if(modifiedOperand.length()%2 == 1)
-        {
+        if (modifiedOperand.length() % 2 == 1) {
             StringBuilder sb = new StringBuilder();
             sb.append("0");
             sb.append(modifiedOperand);
@@ -136,7 +134,7 @@ public class Directive extends AssemblyLine {
 
 
             case "START":
-                return ("H" + " " +this.label + " " + modifiedOperand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
+                return ("H" + " " + this.label + " " + modifiedOperand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
             case "END":
                 return ("E" + " " + progStart);
             case "RESB":
@@ -158,8 +156,7 @@ public class Directive extends AssemblyLine {
                 }
                 /**Fixed odd lengths in BYTE**/
                 String temp = sb.toString().toUpperCase();
-                if(temp.length()%2 == 1)
-                {
+                if (temp.length() % 2 == 1) {
                     sb = new StringBuilder();
                     sb.append("0");
                     sb.append(temp);
@@ -182,8 +179,7 @@ public class Directive extends AssemblyLine {
                 /**Fixed odd lengths in WORD**/
 
                 String temp = sb.toString().toUpperCase();
-                if(temp.length()%2 == 1)
-                {
+                if (temp.length() % 2 == 1) {
                     sb = new StringBuilder();
                     sb.append("0");
                     sb.append(temp);
@@ -191,7 +187,7 @@ public class Directive extends AssemblyLine {
                 return sb.toString().toUpperCase();
             }
             case "BASE": {
-                if (AssemblyLine.isInteger(operand)){
+                if (AssemblyLine.isInteger(operand)) {
                     Pass2.baseValue = Integer.parseInt(operand);
                 } else {
                     Pass2.baseValue = Pass1.SYMTAB.get(operand);

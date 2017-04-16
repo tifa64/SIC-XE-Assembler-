@@ -78,7 +78,7 @@ public class Format3 extends Format {
             if (displacement >= -2048 && displacement <= 2047)
                 p = '1';
             else {
-                if (Pass2.baseValue == -1){
+                if (Pass2.baseValue == -1) {
                     throw new Exception("NO BASE");
                 }
                 displacement = TA - baseValue;
@@ -122,8 +122,7 @@ public class Format3 extends Format {
         if (tempHex3.length() < 3) {
             StringBuilder sb2 = new StringBuilder();
 
-            for (int j = tempHex3.length() ; j < 3 ; j++)
-            {
+            for (int j = tempHex3.length(); j < 3; j++) {
                 sb2.append("0");
             }
             sb2.append(tempHex3);
