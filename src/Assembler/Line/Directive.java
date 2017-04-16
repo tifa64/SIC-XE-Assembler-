@@ -1,6 +1,7 @@
 package Assembler.Line;
 
 import Assembler.Pass1;
+import Assembler.Pass2;
 
 /**
  * Created by louay on 3/26/2017.
@@ -8,6 +9,7 @@ import Assembler.Pass1;
 public class Directive extends AssemblyLine {
     protected final String label, mnemonic, operand, comment;
     protected final int address;
+
 
     protected Directive(int address, String line) {
         super(address, line);
@@ -113,12 +115,15 @@ public class Directive extends AssemblyLine {
     public String getObjectCode() throws Exception {
         switch (mnemonic) {
             case "START":
-                return this.label + " " + this.operand + " " + Integer.toHexString(Pass1.programLength);
+                return "H" + " " + this.label +
+                        " " + Pass2.padStringWithZeroes(this.operand, 6) +
+                        " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength), 6);
             case "END":
-                return Integer.toHexString(Pass1.programStart);
+                return ("E" + " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programStart), 6));
             case "RESB":
             case "RESW": {
                 throw new Exception("Reserve directive, breaking T record");
+                //return "";
             }
             case "BYTE": {
                 StringBuilder sb = new StringBuilder();
@@ -132,24 +137,31 @@ public class Directive extends AssemblyLine {
                     //Case II : Hexadecimal
                     sb.append(value);
                 }
-                return sb.toString();
+                /**Fixed odd lengths in BYTE**/
+                String temp = sb.toString().toUpperCase();
+                if (temp.length() % 2 == 1) {
+                    sb = new StringBuilder();
+                    sb.append("0");
+                    sb.append(temp);
+                }
+
+                return sb.toString().toUpperCase();
             }
             case "WORD": {
                 int decimal = Integer.parseInt(operand);
                 if (decimal < -8388608 || decimal > 8388607)
                     throw new Exception("Out of range");
-                String hexa = Integer.toHexString(decimal);
-                StringBuilder sb = new StringBuilder();
-                if (hexa.length() < 6) {
-                    for (int i = hexa.length(); i <= 6; i++) {
-                        sb.append("0");
-                    }
-                }
-                sb.append(hexa);
-                return sb.toString();
+                String hexa = Pass2.padStringWithZeroes(Integer.toHexString(decimal), 6);
+                return hexa;
             }
-            case "BASE":
+            case "BASE": {
+                if (AssemblyLine.isInteger(operand)) {
+                    Pass2.baseValue = Integer.parseInt(operand);
+                } else {
+                    Pass2.baseValue = Pass1.SYMTAB.get(operand);
+                }
                 return "";
+            }
             default:
                 throw new Exception("Unknown Directive");
         }

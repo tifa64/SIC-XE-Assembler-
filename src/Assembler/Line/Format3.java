@@ -1,6 +1,7 @@
 package Assembler.Line;
 
 import Assembler.InstructionSetLoader;
+import Assembler.Pass2;
 
 import static Assembler.Pass1.SYMTAB;
 import static Assembler.Pass2.baseValue;
@@ -15,18 +16,6 @@ public class Format3 extends Format {
         super(address, line);
     }
 
-    public static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        } catch (NullPointerException e) {
-            return false;
-        }
-        // only got here if we didn't return false
-        return true;
-    }
-
     @Override
     public int getType() {
         return 3;
@@ -38,23 +27,14 @@ public class Format3 extends Format {
     }
 
     @Override
-    public String getObjectCode() {
+    public String getObjectCode() throws Exception {
 
         String modifiedOperand = operand;
         InstructionSetLoader isl = InstructionSetLoader.getLoader();
         String instOpCode = isl.getInstOpCode(mnemonic);
         int intInstOpCode = Integer.parseInt(instOpCode, 16);
-        String binInstOpCode = Integer.toBinaryString(intInstOpCode);
+        String binInstOpCode = Pass2.padStringWithZeroes(Integer.toBinaryString(intInstOpCode), 8);
         boolean flag = false;
-
-        if (binInstOpCode.length() < 8) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = binInstOpCode.length(); i < 8; i++)
-                sb.append("0");
-
-            sb.append(binInstOpCode);
-            binInstOpCode = sb.toString();
-        }
 
         char n = '0', i = '0', x = '0', b = '0', p = '0', e = '0';
 
@@ -89,6 +69,9 @@ public class Format3 extends Format {
             if (displacement >= -2048 && displacement <= 2047)
                 p = '1';
             else {
+                if (Pass2.baseValue == -1) {
+                    throw new Exception("NO BASE");
+                }
                 displacement = TA - baseValue;
                 b = '1';
             }
@@ -103,15 +86,7 @@ public class Format3 extends Format {
 
         /*From Binary to hex*/
         int decimalRep = Integer.parseInt(binInstOpCode, 2);
-        String tempHex1 = Integer.toHexString(decimalRep);
-
-        if (tempHex1.length() == 1) {
-            StringBuilder sb3 = new StringBuilder();
-            sb3.append("0");
-            sb3.append(tempHex1);
-            tempHex1 = sb3.toString();
-        }
-
+        String tempHex1 = Pass2.padStringWithZeroes(Integer.toHexString(decimalRep), 2);
 
         StringBuilder sb = new StringBuilder();
         sb.append(x);
@@ -126,17 +101,11 @@ public class Format3 extends Format {
         String tempHex2 = Integer.toHexString(decimalRep);
 
 
-        String tempHex3 = Integer.toHexString(displacement);
-        if (tempHex3.length() < 3) {
-            StringBuilder sb2 = new StringBuilder();
-            sb2.append("0");
-            sb2.append(tempHex3);
-            tempHex3 = sb2.toString();
-        } else if (tempHex3.length() > 3)
+        String tempHex3 = Pass2.padStringWithZeroes(Integer.toHexString(displacement), 3);
+        if (tempHex3.length() > 3)
             tempHex3 = tempHex3.substring(5, 8);
 
 
-        return tempHex1 + tempHex2 + tempHex3;
-
+        return (tempHex1 + tempHex2 + tempHex3).toUpperCase();
     }
 }

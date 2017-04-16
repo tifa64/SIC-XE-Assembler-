@@ -1,12 +1,15 @@
-TEST     START   1000
-TOP      LDA     ZERO
-         LDX     #INDEX
-         ADDR    r1,r2
-         +ADD    m
+TEST     START   3E8
          FIX
-         J	     @RETADR
-         LDA	 #LENGTH
-         LDA	 #3
-LENGTH   BYTE    3
+LL       BYTE    X'1AB'
+         SHIFTR  A,B
+         LDA     #3
+LENGTH   RESW    1
+         LDB     LL
+         LDB     @LL
+         LDB     #LL
+         RESW    99999
+         BASE    LENGTH
+         ADD     LL     
+         LDB     LL,X
+         CLEAR   X
          END     TEST
-

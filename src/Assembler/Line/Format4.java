@@ -2,6 +2,7 @@ package Assembler.Line;
 
 import Assembler.InstructionSetLoader;
 import Assembler.Pass1;
+import Assembler.Pass2;
 
 import java.util.BitSet;
 
@@ -32,16 +33,9 @@ public class Format4 extends Format {
     @Override
     public String getObjectCode() {
         String opcodeBin = Integer.toBinaryString(Integer.parseInt(InstructionSetLoader.getLoader().getInstOpCode(mnemonicProper), 16));
-        if (opcodeBin.length() < 8) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = opcodeBin.length(); i < 8; i++) {
-                sb.append("0");
-            }
-            sb.append(opcodeBin);
-            opcodeBin = sb.toString();
-        }
+        opcodeBin = Pass2.padStringWithZeroes(opcodeBin, 8);
 
-        String addressHexa;
+        String addressHex;
         BitSet nixbpe = new BitSet(6);
         nixbpe.set(e);
         String value = operand;
@@ -53,29 +47,22 @@ public class Format4 extends Format {
         if (operand.charAt(0) == '@') {
             nixbpe.set(n);
             value = value.substring(1);
-            addressHexa = Integer.toHexString(Pass1.SYMTAB.get(value));
+            addressHex = Integer.toHexString(Pass1.SYMTAB.get(value));
         } else if (operand.charAt(0) == '#') {
             nixbpe.set(i);
             value = value.substring(1);
             if (value.charAt(0) <= '9' && value.charAt(0) >= '0') {
-                addressHexa = Integer.toHexString(Integer.parseInt(value));
+                addressHex = Integer.toHexString(Integer.parseInt(value));
             } else {
-                addressHexa = Integer.toHexString(Pass1.SYMTAB.get(value));
+                addressHex = Integer.toHexString(Pass1.SYMTAB.get(value));
             }
         } else {
-            addressHexa = Integer.toHexString(Pass1.SYMTAB.get(value));
+            addressHex = Integer.toHexString(Pass1.SYMTAB.get(value));
             nixbpe.set(n);
             nixbpe.set(i);
         }
 
-        if (addressHexa.length() < 5) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = addressHexa.length(); i < 5; i++) {
-                sb.append("0");
-            }
-            sb.append(addressHexa);
-            addressHexa = sb.toString();
-        }
+        addressHex = Pass2.padStringWithZeroes(addressHex, 5);
 
 
         StringBuilder sb = new StringBuilder();
@@ -87,6 +74,14 @@ public class Format4 extends Format {
         sb.append(nixbpe.get(p) ? "1" : "0");
         sb.append(nixbpe.get(e) ? "1" : "0");
 
-        return (Integer.toHexString(Integer.parseInt(sb.toString(), 2)) + addressHexa).toUpperCase();
+        //inserting M record
+        StringBuilder mRecordSB = new StringBuilder();
+        mRecordSB.append("M ");
+        String mAddressHex = Pass2.padStringWithZeroes(Integer.toHexString(this.address + 1).toUpperCase(), 6);
+        mRecordSB.append(mAddressHex);
+        mRecordSB.append(" 05");
+        Pass2.MRecords.add(mRecordSB.toString());
+
+        return (Integer.toHexString(Integer.parseInt(sb.toString(), 2)) + addressHex).toUpperCase();
     }
 }
