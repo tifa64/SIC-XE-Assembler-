@@ -65,6 +65,8 @@ public class Pass2 {
                     fileLines.add(tempObjectOcde);
                     break;
                 }
+                else if(tempObjectOcde.length() == 0)
+                    continue;
                 /**Other wise it will continue the T record till the sz is bigger than 30 bytes (60 characters)**/
                 else
                 {
