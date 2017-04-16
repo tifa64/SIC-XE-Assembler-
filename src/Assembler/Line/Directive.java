@@ -114,13 +114,13 @@ public class Directive extends AssemblyLine {
     public String getObjectCode() throws Exception {
         switch (mnemonic) {
             case "START":
-                return (this.label + " " + this.operand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
+                return ("H" + " " +this.label + " " + this.operand + " " + Integer.toHexString(Pass1.programLength)).toUpperCase();
             case "END":
-                return Integer.toHexString(Pass1.programStart).toUpperCase();
+                return ("E" + " " + Integer.toHexString(Pass1.programStart).toUpperCase());
             case "RESB":
             case "RESW": {
-                //throw new Exception("Reserve directive, breaking T record");
-                return "";
+                throw new Exception("Reserve directive, breaking T record");
+                //return "";
             }
             case "BYTE": {
                 StringBuilder sb = new StringBuilder();
