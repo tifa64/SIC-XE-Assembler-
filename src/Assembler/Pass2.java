@@ -26,11 +26,12 @@ public class Pass2 {
     public static void generateObjectCodes() {
         try {
             ArrayList<String> fileLines = new ArrayList<>();
-            /*Case RESW or RESB**/
+
             for (AssemblyLine al : Pass1.assemblyLines) {
                 try {
                     currentObjCode = al.getObjectCode();
                 } catch (Exception m) {
+                    /*Case RESW or RESB**/
                     TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
                     fileLines.add("T" + " " + TRecordsSB.toString() + objCodeSB.toString());
                     TRecordsSB = new StringBuilder();
@@ -64,8 +65,9 @@ public class Pass2 {
                             sbTemp.append(programStart);
                             programStart = sbTemp.toString();
                         }
-                        objCodeSB.append(programStart).append(" ");
-                        recordSize += programStart.length();
+                        //objCodeSB.append(programStart).append(" ");
+                        objCodeSB.append(currentObjCode).append(" ");
+                        recordSize += currentObjCode.length();
                         startFlag = true;
                     } else if (recordSize + currentObjCode.length() <= 60) {
                         /*Because  when new T record is begun it ignores the last Object Code of the previous T record**/
