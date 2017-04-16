@@ -2,7 +2,6 @@ package Assembler;
 
 import Assembler.Line.AssemblyLine;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,110 +14,86 @@ import java.util.ArrayList;
 public class Pass2 {
 
     public static int baseValue = -1;
-    private static int sz = 0;
-    private static boolean flag1 = false;
-    /**flag 1 is for when it is the first time to start the HTME record **/
-    private static String tempObjectOcde = new String();
-    /** tempObjectOcde to hold the current Onject Code*/
-    private static StringBuilder sb = new StringBuilder();
-    private static StringBuilder sb1 = new StringBuilder();
-    /**sb contains T and length of the record**/
-    /**sb1 contains the ObjectCode of the instruction**/
-    private static String progStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+    public static final ArrayList<String> MRecords = new ArrayList<>();
 
+    private static int recordSize = 0;
+    private static boolean startFlag = false;
+    private static String currentObjCode = "";
+    private static StringBuilder TRecordsSB = new StringBuilder();
+    private static StringBuilder objCodeSB = new StringBuilder();
+    private static String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+    private static String currentTRecordStart = programStart;
 
     public static void generateObjectCodes() {
-
-
-
         try {
             ArrayList<String> fileLines = new ArrayList<>();
 
-            /**Case RESW or RESB**/
             for (AssemblyLine al : Pass1.assemblyLines) {
                 try {
-                    tempObjectOcde = al.getObjectCode();
-                }catch (Exception m)
-                {
-                    sb.append(Integer.toHexString(sz/2).toUpperCase() + " ");
-                    fileLines.add("T" + " " + sb.toString()+sb1.toString());
-                    sb = new StringBuilder();
-                    sb1 = new StringBuilder();
-                    sz = 0;
+                    currentObjCode = al.getObjectCode();
+                } catch (Exception m) {
+                    /*Case RESW or RESB**/
+                    TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
+                    fileLines.add("T" + " " + currentTRecordStart + " " + TRecordsSB.toString() + objCodeSB.toString());
+                    currentTRecordStart = Integer.toHexString(al.getNextAddress()).toUpperCase();
+                    TRecordsSB = new StringBuilder();
+                    objCodeSB = new StringBuilder();
+                    recordSize = 0;
                 }
 
-                /**Case START**/
-                if(tempObjectOcde.startsWith("H"))
-                {
-                    fileLines.add(tempObjectOcde);
+                /*Case START**/
+                if (currentObjCode.startsWith("H")) {
+                    fileLines.add(currentObjCode);
                 }
-
-                /**Case END**/
-                /**It will add the last line of T before it then will the END line**/
-                else if(tempObjectOcde.startsWith("E"))
-                {
-                    sb.append(Integer.toHexString(sz/2).toUpperCase() + " ");
-                    fileLines.add("T" + " " +sb.toString()+sb1.toString());
-                    fileLines.add(tempObjectOcde);
+                /*Case END**/
+                /*It will add the last line of T before it then will the END line**/
+                else if (currentObjCode.startsWith("E")) {
+                    TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
+                    fileLines.add("T" + " " + currentTRecordStart + " " + TRecordsSB.toString() + objCodeSB.toString());
+                    //insert M records here
+                    fileLines.add(currentObjCode);
                     break;
                 }
-
-                /**Case Comment**/
-                else if(tempObjectOcde.length() == 0)
+                /*Case Comment**/
+                else if (currentObjCode.length() == 0) {
                     continue;
-
-                /**Other wise it will continue the T record till the sz is bigger than 30 bytes (60 characters)**/
-                else
-                {
-
-                    if(!flag1)
-                    {
-
-                        if(progStart.length()%2 == 1)
-                        {
+                }
+                /*Other wise it will continue the T record till the sz is bigger than 30 bytes (60 characters)**/
+                else {
+                    if (!startFlag) {
+                        if (programStart.length() % 2 == 1) {
                             StringBuilder sbTemp = new StringBuilder();
                             sbTemp.append("0");
-                            sbTemp.append(progStart);
-                            progStart = sbTemp.toString();
+                            sbTemp.append(programStart);
+                            programStart = sbTemp.toString();
                         }
-
-                        sb1.append(progStart + " ");
-                        sz += progStart.length();
-                        flag1 = true;
-                    }
-
-                    else if(sz + tempObjectOcde.length() <= 60)
-                    {
-                        /**Because  when new T record is begun it ingores the last Object Code of the previous T record**/
-                        if(sz == 0)
-                        {
-                            sz += 1;
+                        //objCodeSB.append(programStart).append(" ");
+                        objCodeSB.append(currentObjCode).append(" ");
+                        recordSize += currentObjCode.length();
+                        startFlag = true;
+                    } else if (recordSize + currentObjCode.length() <= 60) {
+                        /*Because  when new T record is begun it ignores the last Object Code of the previous T record**/
+                        if (recordSize == 0) {
+                            recordSize += 1;
                             continue;
                         }
-
-                        if(sz == 1)
-                            sz --;
-                        sz += tempObjectOcde.length();
-                        sb1.append(tempObjectOcde + " ");
-                    }
-                    else
-                    {
-
-                        sb.append(Integer.toHexString(sz/2).toUpperCase() + " ");
-
-                        fileLines.add("T" + " " +sb.toString()+sb1.toString());
-                        sb = new StringBuilder();
-                        sb1 = new StringBuilder();
-                        sz = 0;
+                        if (recordSize == 1) {
+                            recordSize--;
+                        }
+                        recordSize += currentObjCode.length();
+                        objCodeSB.append(currentObjCode).append(" ");
+                    } else {
+                        TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
+                        fileLines.add("T" + " " + currentTRecordStart + " " + TRecordsSB.toString() + objCodeSB.toString());
+                        currentTRecordStart = Integer.toHexString(al.getAddress()).toUpperCase();
+                        TRecordsSB = new StringBuilder();
+                        objCodeSB = new StringBuilder();
+                        recordSize = 0;
                     }
                 }
-
-
             }
-            Path listingFile = Paths.get("HTME.txt");
-            Files.write(listingFile, fileLines, Charset.forName("UTF-8"));
-        } catch (IOException e) {
-            e.printStackTrace();
+            Path htmeRecordsFile = Paths.get("HTME.txt");
+            Files.write(htmeRecordsFile, fileLines, Charset.forName("UTF-8"));
         } catch (Exception e) {
             e.printStackTrace();
         }

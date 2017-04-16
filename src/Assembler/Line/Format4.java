@@ -87,6 +87,8 @@ public class Format4 extends Format {
         sb.append(nixbpe.get(p) ? "1" : "0");
         sb.append(nixbpe.get(e) ? "1" : "0");
 
+
+
         return (Integer.toHexString(Integer.parseInt(sb.toString(), 2)) + addressHexa).toUpperCase();
     }
 }
