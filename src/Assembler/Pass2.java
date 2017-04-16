@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Pass2 {
 
     public static int baseValue = -1;
+    public static final ArrayList<String> MRecords = new ArrayList<>();
 
     private static int recordSize = 0;
     private static boolean startFlag = false;
@@ -46,6 +47,7 @@ public class Pass2 {
                 else if (currentObjCode.startsWith("E")) {
                     TRecordsSB.append(Integer.toHexString(recordSize / 2).toUpperCase()).append(" ");
                     fileLines.add("T" + " " + TRecordsSB.toString() + objCodeSB.toString());
+                    //insert M records here
                     fileLines.add(currentObjCode);
                     break;
                 }
@@ -85,8 +87,8 @@ public class Pass2 {
                     }
                 }
             }
-            Path listingFile = Paths.get("HTME.txt");
-            Files.write(listingFile, fileLines, Charset.forName("UTF-8"));
+            Path htmeRecordsFile = Paths.get("HTME.txt");
+            Files.write(htmeRecordsFile, fileLines, Charset.forName("UTF-8"));
         } catch (Exception e) {
             e.printStackTrace();
         }
