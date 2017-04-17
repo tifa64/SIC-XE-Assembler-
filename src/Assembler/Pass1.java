@@ -65,6 +65,7 @@ public class Pass1 {
                         }
 
                     }
+                    assemblyLines.add(al);
                 } catch (Exception e) {
                     //printing unknown command to listing file.
                     String lineWithPadding = line + spacesPadding;
@@ -73,7 +74,7 @@ public class Pass1 {
                     String operand = lineWithPadding.substring(17, 35).replaceAll("\\s+", "");
                     String comment = lineWithPadding.substring(35, 66).replaceAll("\\s+", "");
                     StringBuilder sb = new StringBuilder();
-                    sb.append(Integer.toHexString(address));
+                    sb.append(Pass2.padStringWithZeroes(Integer.toHexString(address), 5));
                     for (int i = sb.toString().length(); i <= 6; i++) {
                         sb.append(" ");
                     }
@@ -97,7 +98,6 @@ public class Pass1 {
                     listingFileLines.add(sb.toString());
                     listingFileLines.add("****** ERROR :: Unknown Instruction: " + mnemonic + " ******");
                 }
-                assemblyLines.add(al);
             }
 
             Path listingFile = Paths.get("ListingFile.txt");
