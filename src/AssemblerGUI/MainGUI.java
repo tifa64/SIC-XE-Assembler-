@@ -74,6 +74,7 @@ public class MainGUI extends JDialog{
                     startPass2Button.setEnabled(true);
                 } else {
                     startPass2Button.setEnabled(false);
+                    htmeRecordsArea.setText("Error in Pass 1. Please fix your code.");
                     JOptionPane.showMessageDialog(null, "There was an error in your file. You'll not be able to run pass 2. Check the errors in the listing file", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -83,10 +84,7 @@ public class MainGUI extends JDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
                 Pass2.generateObjectCodes();
-                startPass1Button.setEnabled(false);
-                startPass2Button.setEnabled(false);
-                textField1.setEnabled(false);
-                textField1.setText("No file selected");
+                htmeRecordsArea.setText(Pass2.getHTMELines());
             }
         });
     }

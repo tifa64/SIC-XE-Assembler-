@@ -16,8 +16,13 @@ public class Pass2 {
     public static final ArrayList<String> MRecords = new ArrayList<>();
     public static int baseValue = -1;
 
+    private static final ArrayList<String> fileLines = new ArrayList<>();
 
     public static void generateObjectCodes() {
+        MRecords.clear();
+        baseValue = -1;
+        fileLines.clear();
+
         int recordSize = 0;
         boolean startFlag = false;
         String currentObjCode = "";
@@ -26,8 +31,6 @@ public class Pass2 {
         String currentTRecordStart = padStringWithZeroes(programStart, 6);
         boolean successFlag = true;
         try {
-            ArrayList<String> fileLines = new ArrayList<>();
-
             for (AssemblyLine al : Pass1.assemblyLines) {
                 try {
                     currentObjCode = al.getObjectCode();
@@ -98,13 +101,11 @@ public class Pass2 {
                 }
             }
             Path htmeRecordsFile = Paths.get("HTME.txt");
-            if (successFlag){
-                Files.write(htmeRecordsFile, fileLines, Charset.forName("UTF-8"));
-            } else {
-                ArrayList<CharSequence> error = new ArrayList<>();
-                error.add("Error");
-                Files.write(htmeRecordsFile, error, Charset.forName("UTF-8"));
+            if (!successFlag){
+                fileLines.clear();
+                fileLines.add("Error. Base relative needed but no base was specified.");
             }
+            Files.write(htmeRecordsFile, fileLines, Charset.forName("UTF-8"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,5 +120,13 @@ public class Pass2 {
             str = sb.append(str).toString();
         }
         return str.toUpperCase();
+    }
+
+    public static String getHTMELines(){
+        StringBuilder sb = new StringBuilder();
+        for (String str : fileLines){
+            sb.append(str).append("\n");
+        }
+        return sb.toString();
     }
 }
