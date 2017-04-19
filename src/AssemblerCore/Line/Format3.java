@@ -34,7 +34,7 @@ public class Format3 extends Format {
         String instOpCode = isl.getInstOpCode(mnemonic);
         int intInstOpCode = Integer.parseInt(instOpCode, 16);
         String binInstOpCode = Pass2.padStringWithZeroes(Integer.toBinaryString(intInstOpCode), 8);
-        boolean flag = false;
+        boolean isOperandNumber = false;
 
         char n = '0', i = '0', x = '0', b = '0', p = '0', e = '0';
 
@@ -59,13 +59,14 @@ public class Format3 extends Format {
 
         if (isInteger(modifiedOperand)) {
             TA = Integer.parseInt(modifiedOperand);
-            flag = true;
-        } else
+            isOperandNumber = true;
+        } else {
             TA = Pass1.getSymbolValue(modifiedOperand);
+        }
 
         int displacement = TA - PC;
 
-        if (!flag) {
+        if (!isOperandNumber) {
             if (displacement >= -2048 && displacement <= 2047)
                 p = '1';
             else {
