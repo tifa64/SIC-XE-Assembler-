@@ -25,12 +25,17 @@ public class Pass1 {
 
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
-    private static boolean success = true;
-    private final static String spacesPadding = "                                                                      ";
+    private static final String spacesPadding = "                                                                      ";
+    private static boolean success;
 
     private Pass1() { }
 
     public static void generatePass1Files(File file) {
+        SYMTAB.clear();
+        assemblyLines.clear();
+        listingFileLines.clear();
+        SYMTAB_Lines.clear();
+        success = true;
         List<String> lines = null;
         try {
             lines = Files.readAllLines(Paths.get(file.getPath()));

@@ -72,6 +72,9 @@ public class MainGUI extends JDialog{
                 symbolTableArea.setText(Pass1.getSymTableLines());
                 if (Pass1.isSuccess()){
                     startPass2Button.setEnabled(true);
+                } else {
+                    startPass2Button.setEnabled(false);
+                    JOptionPane.showMessageDialog(null, "There was an error in your file. You'll not be able to run pass 2. Check the errors in the listing file", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
