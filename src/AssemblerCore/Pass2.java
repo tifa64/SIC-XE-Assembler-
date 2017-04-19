@@ -30,23 +30,28 @@ public class Pass2 {
         String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
         String currentTRecordStart = padStringWithZeroes(programStart, 6);
         boolean successFlag = true;
+        String errorMsg = "";
         try {
             for (AssemblyLine al : Pass1.assemblyLines) {
                 try {
                     currentObjCode = al.getObjectCode();
                 } catch (Exception m) {
-                    if (m.getMessage().equals("NO BASE")){
+                    if (m.getMessage().equals("NO BASE")) {
                         /*Case NOBASE but base relative mode is needed*/
-                        System.out.println("No base specified");
                         successFlag = false;
+                        errorMsg = "Error. Base relative needed but no base was specified.";
                         break;
-                    } else {
+                    } else if(m.getMessage().substring(0,7).equals("Reserve")){
                         /*Case RESW or RESB**/
                         String tRecSize = Pass2.padStringWithZeroes(Integer.toHexString(recordSize / 2), 2);
                         fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
                         currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
                         objCodeSB = new StringBuilder();
                         recordSize = 0;
+                    } else {
+                        successFlag = false;
+                        errorMsg = m.getMessage();
+                        break;
                     }
                 }
 
@@ -103,7 +108,7 @@ public class Pass2 {
             Path htmeRecordsFile = Paths.get("HTME.txt");
             if (!successFlag){
                 fileLines.clear();
-                fileLines.add("Error. Base relative needed but no base was specified.");
+                fileLines.add(errorMsg);
             }
             Files.write(htmeRecordsFile, fileLines, Charset.forName("UTF-8"));
         } catch (Exception e) {

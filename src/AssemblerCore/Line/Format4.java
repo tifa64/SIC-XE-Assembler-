@@ -31,7 +31,7 @@ public class Format4 extends Format {
     }
 
     @Override
-    public String getObjectCode() {
+    public String getObjectCode() throws Exception {
         String opcodeBin = Integer.toBinaryString(Integer.parseInt(InstructionSetLoader.getLoader().getInstOpCode(mnemonicProper), 16));
         opcodeBin = Pass2.padStringWithZeroes(opcodeBin, 8);
 
@@ -47,17 +47,17 @@ public class Format4 extends Format {
         if (operand.charAt(0) == '@') {
             nixbpe.set(n);
             value = value.substring(1);
-            addressHex = Integer.toHexString(Pass1.SYMTAB.get(value));
+            addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
         } else if (operand.charAt(0) == '#') {
             nixbpe.set(i);
             value = value.substring(1);
             if (value.charAt(0) <= '9' && value.charAt(0) >= '0') {
                 addressHex = Integer.toHexString(Integer.parseInt(value));
             } else {
-                addressHex = Integer.toHexString(Pass1.SYMTAB.get(value));
+                addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
             }
         } else {
-            addressHex = Integer.toHexString(Pass1.SYMTAB.get(value));
+            addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
             nixbpe.set(n);
             nixbpe.set(i);
         }

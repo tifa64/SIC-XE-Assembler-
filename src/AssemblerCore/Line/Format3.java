@@ -1,9 +1,9 @@
 package AssemblerCore.Line;
 
 import AssemblerCore.InstructionSetLoader;
+import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 
-import static AssemblerCore.Pass1.SYMTAB;
 import static AssemblerCore.Pass2.baseValue;
 
 /**
@@ -61,7 +61,7 @@ public class Format3 extends Format {
             TA = Integer.parseInt(modifiedOperand);
             flag = true;
         } else
-            TA = SYMTAB.get(modifiedOperand);
+            TA = Pass1.getSymbolValue(modifiedOperand);
 
         int displacement = TA - PC;
 

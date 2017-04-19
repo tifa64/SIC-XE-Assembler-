@@ -17,12 +17,12 @@ import java.util.List;
  */
 public class Pass1 {
 
-    public final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
     public static int programLength;
     public static int programStart;
 
     protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
 
+    private final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
@@ -138,6 +138,14 @@ public class Pass1 {
             sb.append(str).append("\n");
         }
         return sb.toString();
+    }
+
+    public static int getSymbolValue(String symbol) throws Exception {
+        if (SYMTAB.containsKey(symbol)){
+            return SYMTAB.get(symbol);
+        } else {
+            throw new Exception("Symbol " + symbol + " is not found.");
+        }
     }
 
 }

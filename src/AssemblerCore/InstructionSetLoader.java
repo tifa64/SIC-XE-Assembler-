@@ -59,7 +59,11 @@ public class InstructionSetLoader {
         return instructionSet.get(instruction).opcode;
     }
 
-    public int getRegOpCode(String register) {
-        return Regs.get(register);
+    public int getRegOpCode(String register) throws Exception {
+        if (Regs.containsKey(register)){
+            return Regs.get(register);
+        } else {
+            throw new Exception("Register " + register + " is unknown.");
+        }
     }
 }
