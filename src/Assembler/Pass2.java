@@ -15,14 +15,16 @@ public class Pass2 {
 
     public static final ArrayList<String> MRecords = new ArrayList<>();
     public static int baseValue = -1;
-    private static int recordSize = 0;
-    private static boolean startFlag = false;
-    private static String currentObjCode = "";
-    private static StringBuilder objCodeSB = new StringBuilder();
-    private static String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
-    private static String currentTRecordStart = padStringWithZeroes(programStart, 6);
+
 
     public static void generateObjectCodes() {
+        int recordSize = 0;
+        boolean startFlag = false;
+        String currentObjCode = "";
+        StringBuilder objCodeSB = new StringBuilder();
+        String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+        String currentTRecordStart = padStringWithZeroes(programStart, 6);
+        boolean successFlag = true;
         try {
             ArrayList<String> fileLines = new ArrayList<>();
 
@@ -30,12 +32,19 @@ public class Pass2 {
                 try {
                     currentObjCode = al.getObjectCode();
                 } catch (Exception m) {
-                    /*Case RESW or RESB**/
-                    String tRecSize = Pass2.padStringWithZeroes(Integer.toHexString(recordSize / 2), 2);
-                    fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
-                    currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
-                    objCodeSB = new StringBuilder();
-                    recordSize = 0;
+                    if (m.getMessage().equals("NO BASE")){
+                        /*Case NOBASE but base relative mode is needed*/
+                        System.out.println("No base specified");
+                        successFlag = false;
+                        break;
+                    } else {
+                        /*Case RESW or RESB**/
+                        String tRecSize = Pass2.padStringWithZeroes(Integer.toHexString(recordSize / 2), 2);
+                        fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
+                        currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
+                        objCodeSB = new StringBuilder();
+                        recordSize = 0;
+                    }
                 }
 
                 /*Case START**/
@@ -89,7 +98,13 @@ public class Pass2 {
                 }
             }
             Path htmeRecordsFile = Paths.get("HTME.txt");
-            Files.write(htmeRecordsFile, fileLines, Charset.forName("UTF-8"));
+            if (successFlag){
+                Files.write(htmeRecordsFile, fileLines, Charset.forName("UTF-8"));
+            } else {
+                ArrayList<CharSequence> error = new ArrayList<>();
+                error.add("Error");
+                Files.write(htmeRecordsFile, error, Charset.forName("UTF-8"));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

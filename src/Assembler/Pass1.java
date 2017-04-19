@@ -18,14 +18,14 @@ import java.util.List;
 public class Pass1 {
 
     public final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
-    public static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
-    protected final static ArrayList<AssemblyLine> instructions = new ArrayList<>();
-    private final static String spacesPadding = "                                                                      ";
     public static int programLength;
     public static int programStart;
 
-    private Pass1() {
-    }
+    protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
+
+    private final static String spacesPadding = "                                                                      ";
+
+    private Pass1() { }
 
     public static void generatePass1Files(File file) {
         List<String> lines = null;
@@ -47,8 +47,6 @@ public class Pass1 {
                 try {
                     al = AssemblyLine.getAssemblyLineInstance(address, line.toUpperCase() + spacesPadding);
                     listingFileLines.add(al.toString());
-                    instructions.add(al);
-
                     try {
                         address = al.getNextAddress();
                     } catch (Exception e) {
