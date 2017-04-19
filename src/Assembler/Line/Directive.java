@@ -67,6 +67,7 @@ public class Directive extends AssemblyLine {
                 return this.address + 3;
             }
             case "BASE":
+            case "NOBASE":
                 return this.address;
             default:
                 throw new Exception("Unknown Directive");
@@ -76,7 +77,7 @@ public class Directive extends AssemblyLine {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (mnemonic.equals("BASE")) {
+        if (mnemonic.equals("BASE") || mnemonic.equals("NOBASE")) {
             sb.append("");
         } else {
             sb.append(Pass2.padStringWithZeroes(Integer.toHexString(this.address), 5));
@@ -160,6 +161,10 @@ public class Directive extends AssemblyLine {
                 } else {
                     Pass2.baseValue = Pass1.SYMTAB.get(operand);
                 }
+                return "";
+            }
+            case "NOBASE": {
+                Pass2.baseValue = -1;
                 return "";
             }
             default:

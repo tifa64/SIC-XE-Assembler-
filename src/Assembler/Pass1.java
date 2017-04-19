@@ -24,8 +24,7 @@ public class Pass1 {
     public static int programLength;
     public static int programStart;
 
-    private Pass1() {
-    }
+    private Pass1() { }
 
     public static void generatePass1Files(File file) {
         List<String> lines = null;
