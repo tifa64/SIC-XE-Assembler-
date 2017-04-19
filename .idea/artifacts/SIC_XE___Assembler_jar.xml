@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="SIC XE - Assembler:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SIC_XE___Assembler_jar</output-path>
+    <root id="archive" name="SIC XE - Assembler.jar">
+      <element id="module-output" name="SIC XE - Assembler" />
+    </root>
+  </artifact>
+</component>
