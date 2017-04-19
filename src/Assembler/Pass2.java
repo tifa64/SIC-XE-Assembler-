@@ -15,14 +15,15 @@ public class Pass2 {
 
     public static final ArrayList<String> MRecords = new ArrayList<>();
     public static int baseValue = -1;
-    private static int recordSize = 0;
-    private static boolean startFlag = false;
-    private static String currentObjCode = "";
-    private static StringBuilder objCodeSB = new StringBuilder();
-    private static String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
-    private static String currentTRecordStart = padStringWithZeroes(programStart, 6);
+
 
     public static void generateObjectCodes() {
+        int recordSize = 0;
+        boolean startFlag = false;
+        String currentObjCode = "";
+        StringBuilder objCodeSB = new StringBuilder();
+        String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+        String currentTRecordStart = padStringWithZeroes(programStart, 6);
         boolean successFlag = true;
         try {
             ArrayList<String> fileLines = new ArrayList<>();
