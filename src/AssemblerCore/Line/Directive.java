@@ -1,7 +1,7 @@
-package Assembler.Line;
+package AssemblerCore.Line;
 
-import Assembler.Pass1;
-import Assembler.Pass2;
+import AssemblerCore.Pass1;
+import AssemblerCore.Pass2;
 
 /**
  * Created by louay on 3/26/2017.

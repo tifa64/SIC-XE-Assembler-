@@ -1,8 +1,8 @@
-package Assembler.Line;
+package AssemblerCore.Line;
 
-import Assembler.InstructionSetLoader;
-import Assembler.Pass1;
-import Assembler.Pass2;
+import AssemblerCore.InstructionSetLoader;
+import AssemblerCore.Pass1;
+import AssemblerCore.Pass2;
 
 import java.util.BitSet;
 

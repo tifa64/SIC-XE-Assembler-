@@ -1,6 +1,6 @@
-package Assembler.Line;
+package AssemblerCore.Line;
 
-import Assembler.InstructionSetLoader;
+import AssemblerCore.InstructionSetLoader;
 
 /**
  * Created by louay on 3/25/2017.

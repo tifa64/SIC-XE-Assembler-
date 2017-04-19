@@ -1,6 +1,6 @@
-package Assembler;
+package AssemblerCore;
 
-import Assembler.Line.AssemblyLine;
+import AssemblerCore.Line.AssemblyLine;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;

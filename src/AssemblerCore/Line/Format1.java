@@ -1,7 +1,7 @@
-package Assembler.Line;
+package AssemblerCore.Line;
 
-import Assembler.InstructionSetLoader;
-import Assembler.Pass2;
+import AssemblerCore.InstructionSetLoader;
+import AssemblerCore.Pass2;
 
 /**
  * Created by louay on 3/25/2017.

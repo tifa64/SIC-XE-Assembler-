@@ -1,6 +1,6 @@
-package Assembler;
+package AssemblerCore;
 
-import Assembler.Line.AssemblyLine;
+import AssemblerCore.Line.AssemblyLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +23,7 @@ public class Pass1 {
 
     protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
 
+    private static boolean success = true;
     private final static String spacesPadding = "                                                                      ";
 
     private Pass1() { }
@@ -54,9 +55,10 @@ public class Pass1 {
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {
-                        if (SYMTAB.containsKey(tempLabel))
+                        if (SYMTAB.containsKey(tempLabel)) {
                             listingFileLines.add("****** ERROR :: Symbol " + tempLabel + " is already defined ******");
-
+                            success = false;
+                        }
                         else {
                             SYMTAB.put(tempLabel, al.getAddress());
                             SYMTAB_Lines.add(Integer.toHexString(al.getAddress()) + "\t\t\t" + tempLabel);
@@ -65,6 +67,7 @@ public class Pass1 {
                     }
                     assemblyLines.add(al);
                 } catch (Exception e) {
+                    success = false;
                     //printing unknown command to listing file.
                     String lineWithPadding = line + spacesPadding;
                     String label = lineWithPadding.substring(0, 8).replaceAll("\\s+", "");
@@ -111,6 +114,10 @@ public class Pass1 {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean isSuccess(){
+        return success;
     }
 
 }
