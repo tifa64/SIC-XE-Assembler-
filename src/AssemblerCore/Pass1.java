@@ -23,6 +23,8 @@ public class Pass1 {
 
     protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
 
+    private static final ArrayList<String> listingFileLines = new ArrayList<>();
+    private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static boolean success = true;
     private final static String spacesPadding = "                                                                      ";
 
@@ -39,9 +41,6 @@ public class Pass1 {
                 }
             }
             int address = 0;
-
-            ArrayList<String> listingFileLines = new ArrayList<>();
-            ArrayList<String> SYMTAB_Lines = new ArrayList<>();
 
             for (String line : lines) {
                 AssemblyLine al = null;
@@ -118,6 +117,22 @@ public class Pass1 {
 
     public static boolean isSuccess(){
         return success;
+    }
+
+    public static String getListingFileLines(){
+        StringBuilder sb = new StringBuilder();
+        for (String str : listingFileLines){
+            sb.append(str).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static String getSymTableLines(){
+        StringBuilder sb = new StringBuilder();
+        for (String str : SYMTAB_Lines){
+            sb.append(str).append("\n");
+        }
+        return sb.toString();
     }
 
 }
