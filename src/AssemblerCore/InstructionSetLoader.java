@@ -1,4 +1,4 @@
-package Assembler;
+package AssemblerCore;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

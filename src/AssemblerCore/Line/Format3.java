@@ -1,10 +1,10 @@
-package Assembler.Line;
+package AssemblerCore.Line;
 
-import Assembler.InstructionSetLoader;
-import Assembler.Pass2;
+import AssemblerCore.InstructionSetLoader;
+import AssemblerCore.Pass2;
 
-import static Assembler.Pass1.SYMTAB;
-import static Assembler.Pass2.baseValue;
+import static AssemblerCore.Pass1.SYMTAB;
+import static AssemblerCore.Pass2.baseValue;
 
 /**
  * Created by louay on 3/25/2017.
