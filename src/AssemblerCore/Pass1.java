@@ -65,7 +65,7 @@ public class Pass1 {
                         }
                         else {
                             SYMTAB.put(tempLabel, al.getAddress());
-                            SYMTAB_Lines.add(Integer.toHexString(al.getAddress()) + "\t\t\t" + tempLabel);
+                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t\t" + tempLabel);
                         }
 
                     }
