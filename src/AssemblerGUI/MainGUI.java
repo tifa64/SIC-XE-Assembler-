@@ -17,7 +17,7 @@ public class MainGUI extends JDialog{
 
     public static void main(String[] args) {
         setUIFlavour();
-        JFrame frame = new JFrame("SIC/XE Assembler by Louay and Mostafa");
+        JFrame frame = new JFrame("SIC/XE Assembler");
         frame.setContentPane(new MainGUI().mainPanel);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack();
