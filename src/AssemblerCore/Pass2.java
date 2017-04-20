@@ -46,8 +46,8 @@ public class Pass2 {
                         String tRecSize = Pass2.padStringWithZeroes(Integer.toHexString(recordSize / 2), 2);
                         fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
                         currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
-                        objCodeSB = new StringBuilder();
-                        recordSize = 0;
+                        objCodeSB = new StringBuilder().append(currentObjCode).append(" ");
+                        recordSize = currentObjCode.length();
                     } else {
                         successFlag = false;
                         errorMsg = m.getMessage();
@@ -74,34 +74,15 @@ public class Pass2 {
                 }
                 /*Other wise it will continue the T record till the sz is bigger than 30 bytes (60 characters)**/
                 else {
-                    if (!startFlag) {
-                        if (programStart.length() % 2 == 1) {
-                            StringBuilder sbTemp = new StringBuilder();
-                            sbTemp.append("0");
-                            sbTemp.append(programStart);
-                            programStart = sbTemp.toString();
-                        }
-                        //objCodeSB.append(programStart).append(" ");
-                        objCodeSB.append(currentObjCode).append(" ");
-                        recordSize += currentObjCode.length();
-                        startFlag = true;
-                    } else if (recordSize + currentObjCode.length() <= 60) {
-                        /*Because  when new T record is begun it ignores the last Object Code of the previous T record**/
-                        if (recordSize == 0) {
-                            recordSize += 1;
-                            continue;
-                        }
-                        if (recordSize == 1) {
-                            recordSize--;
-                        }
+                    if (recordSize + currentObjCode.length() <= 60) {
                         recordSize += currentObjCode.length();
                         objCodeSB.append(currentObjCode).append(" ");
                     } else {
                         String tRecSize = Pass2.padStringWithZeroes(Integer.toHexString(recordSize / 2), 2);
                         fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
                         currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getAddress()).toUpperCase(), 6);
-                        objCodeSB = new StringBuilder();
-                        recordSize = 0;
+                        objCodeSB = new StringBuilder().append(currentObjCode).append(" ");
+                        recordSize = currentObjCode.length();
                     }
                 }
             }
