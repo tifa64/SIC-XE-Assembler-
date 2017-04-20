@@ -29,9 +29,6 @@ public class MainGUI extends JDialog{
         startPass1Button.setEnabled(false);
         startPass2Button.setEnabled(false);
         textField1.setEnabled(false);
-        //listingFileArea.setEnabled(false);
-        //symbolTableArea.setEnabled(false);
-        //htmeRecordsArea.setEnabled(false);
         textField1.setText("No file selected");
         listingFileArea.setText("Listing file will be visible here");
         symbolTableArea.setText("Symbol table will be visible here");
