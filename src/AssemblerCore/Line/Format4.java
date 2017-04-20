@@ -1,8 +1,8 @@
-package Assembler.Line;
+package AssemblerCore.Line;
 
-import Assembler.InstructionSetLoader;
-import Assembler.Pass1;
-import Assembler.Pass2;
+import AssemblerCore.InstructionSetLoader;
+import AssemblerCore.Pass1;
+import AssemblerCore.Pass2;
 
 import java.util.BitSet;
 
@@ -31,7 +31,7 @@ public class Format4 extends Format {
     }
 
     @Override
-    public String getObjectCode() {
+    public String getObjectCode() throws Exception {
         String opcodeBin = Integer.toBinaryString(Integer.parseInt(InstructionSetLoader.getLoader().getInstOpCode(mnemonicProper), 16));
         opcodeBin = Pass2.padStringWithZeroes(opcodeBin, 8);
 
@@ -47,17 +47,17 @@ public class Format4 extends Format {
         if (operand.charAt(0) == '@') {
             nixbpe.set(n);
             value = value.substring(1);
-            addressHex = Integer.toHexString(Pass1.SYMTAB.get(value));
+            addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
         } else if (operand.charAt(0) == '#') {
             nixbpe.set(i);
             value = value.substring(1);
             if (value.charAt(0) <= '9' && value.charAt(0) >= '0') {
                 addressHex = Integer.toHexString(Integer.parseInt(value));
             } else {
-                addressHex = Integer.toHexString(Pass1.SYMTAB.get(value));
+                addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
             }
         } else {
-            addressHex = Integer.toHexString(Pass1.SYMTAB.get(value));
+            addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
             nixbpe.set(n);
             nixbpe.set(i);
         }
@@ -74,13 +74,15 @@ public class Format4 extends Format {
         sb.append(nixbpe.get(p) ? "1" : "0");
         sb.append(nixbpe.get(e) ? "1" : "0");
 
-        //inserting M record
-        StringBuilder mRecordSB = new StringBuilder();
-        mRecordSB.append("M ");
-        String mAddressHex = Pass2.padStringWithZeroes(Integer.toHexString(this.address + 1).toUpperCase(), 6);
-        mRecordSB.append(mAddressHex);
-        mRecordSB.append(" 05");
-        Pass2.MRecords.add(mRecordSB.toString());
+        if (!isInteger(value)) {
+            //inserting M record
+            StringBuilder mRecordSB = new StringBuilder();
+            mRecordSB.append("M ");
+            String mAddressHex = Pass2.padStringWithZeroes(Integer.toHexString(this.address + 1).toUpperCase(), 6);
+            mRecordSB.append(mAddressHex);
+            mRecordSB.append(" 05");
+            Pass2.MRecords.add(mRecordSB.toString());
+        }
 
         return (Integer.toHexString(Integer.parseInt(sb.toString(), 2)) + addressHex).toUpperCase();
     }

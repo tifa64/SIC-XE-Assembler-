@@ -1,6 +1,6 @@
-package Assembler;
+package AssemblerCore;
 
-import Assembler.Line.AssemblyLine;
+import AssemblerCore.Line.AssemblyLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,17 +17,25 @@ import java.util.List;
  */
 public class Pass1 {
 
-    public final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
-    public static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
-    protected final static ArrayList<AssemblyLine> instructions = new ArrayList<>();
-    private final static String spacesPadding = "                                                                      ";
     public static int programLength;
     public static int programStart;
 
-    private Pass1() {
-    }
+    protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
+
+    private final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
+    private static final ArrayList<String> listingFileLines = new ArrayList<>();
+    private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
+    private static final String spacesPadding = "                                                                      ";
+    private static boolean success;
+
+    private Pass1() { }
 
     public static void generatePass1Files(File file) {
+        SYMTAB.clear();
+        assemblyLines.clear();
+        listingFileLines.clear();
+        SYMTAB_Lines.clear();
+        success = true;
         List<String> lines = null;
         try {
             lines = Files.readAllLines(Paths.get(file.getPath()));
@@ -39,16 +47,11 @@ public class Pass1 {
             }
             int address = 0;
 
-            ArrayList<String> listingFileLines = new ArrayList<>();
-            ArrayList<String> SYMTAB_Lines = new ArrayList<>();
-
             for (String line : lines) {
                 AssemblyLine al = null;
                 try {
                     al = AssemblyLine.getAssemblyLineInstance(address, line.toUpperCase() + spacesPadding);
                     listingFileLines.add(al.toString());
-                    instructions.add(al);
-
                     try {
                         address = al.getNextAddress();
                     } catch (Exception e) {
@@ -56,9 +59,10 @@ public class Pass1 {
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {
-                        if (SYMTAB.containsKey(tempLabel))
+                        if (SYMTAB.containsKey(tempLabel)) {
                             listingFileLines.add("****** ERROR :: Symbol " + tempLabel + " is already defined ******");
-
+                            success = false;
+                        }
                         else {
                             SYMTAB.put(tempLabel, al.getAddress());
                             SYMTAB_Lines.add(Integer.toHexString(al.getAddress()) + "\t\t\t" + tempLabel);
@@ -67,6 +71,7 @@ public class Pass1 {
                     }
                     assemblyLines.add(al);
                 } catch (Exception e) {
+                    success = false;
                     //printing unknown command to listing file.
                     String lineWithPadding = line + spacesPadding;
                     String label = lineWithPadding.substring(0, 8).replaceAll("\\s+", "");
@@ -112,6 +117,34 @@ public class Pass1 {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static boolean isSuccess(){
+        return success;
+    }
+
+    public static String getListingFileLines(){
+        StringBuilder sb = new StringBuilder();
+        for (String str : listingFileLines){
+            sb.append(str).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static String getSymTableLines(){
+        StringBuilder sb = new StringBuilder();
+        for (String str : SYMTAB_Lines){
+            sb.append(str).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static int getSymbolValue(String symbol) throws Exception {
+        if (SYMTAB.containsKey(symbol)){
+            return SYMTAB.get(symbol);
+        } else {
+            throw new Exception("Symbol " + symbol + " is not found.");
         }
     }
 

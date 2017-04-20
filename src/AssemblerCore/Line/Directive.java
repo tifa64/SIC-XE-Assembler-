@@ -1,7 +1,7 @@
-package Assembler.Line;
+package AssemblerCore.Line;
 
-import Assembler.Pass1;
-import Assembler.Pass2;
+import AssemblerCore.Pass1;
+import AssemblerCore.Pass2;
 
 /**
  * Created by louay on 3/26/2017.
@@ -67,6 +67,7 @@ public class Directive extends AssemblyLine {
                 return this.address + 3;
             }
             case "BASE":
+            case "NOBASE":
                 return this.address;
             default:
                 throw new Exception("Unknown Directive");
@@ -76,7 +77,7 @@ public class Directive extends AssemblyLine {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (mnemonic.equals("BASE")) {
+        if (mnemonic.equals("BASE") || mnemonic.equals("NOBASE")) {
             sb.append("");
         } else {
             sb.append(Pass2.padStringWithZeroes(Integer.toHexString(this.address), 5));
@@ -158,8 +159,12 @@ public class Directive extends AssemblyLine {
                 if (AssemblyLine.isInteger(operand)) {
                     Pass2.baseValue = Integer.parseInt(operand);
                 } else {
-                    Pass2.baseValue = Pass1.SYMTAB.get(operand);
+                    Pass2.baseValue = Pass1.getSymbolValue(operand);
                 }
+                return "";
+            }
+            case "NOBASE": {
+                Pass2.baseValue = -1;
                 return "";
             }
             default:

@@ -1,6 +1,6 @@
-package Assembler.Line;
+package AssemblerCore.Line;
 
-import Assembler.InstructionSetLoader;
+import AssemblerCore.InstructionSetLoader;
 
 /**
  * Created by louay on 3/25/2017.
@@ -23,7 +23,7 @@ public class Format2 extends Format {
     }
 
     @Override
-    public String getObjectCode() {
+    public String getObjectCode() throws Exception {
         InstructionSetLoader isl = InstructionSetLoader.getLoader();
         String instOpCode = isl.getInstOpCode(mnemonic);
 

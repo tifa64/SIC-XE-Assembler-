@@ -1,4 +1,4 @@
-package Assembler;
+package AssemblerCore;
 
 /**
  * Created by Krietallo on 4/15/2017.
