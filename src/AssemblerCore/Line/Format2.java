@@ -23,7 +23,7 @@ public class Format2 extends Format {
     }
 
     @Override
-    public String getObjectCode() {
+    public String getObjectCode() throws Exception {
         InstructionSetLoader isl = InstructionSetLoader.getLoader();
         String instOpCode = isl.getInstOpCode(mnemonic);
 

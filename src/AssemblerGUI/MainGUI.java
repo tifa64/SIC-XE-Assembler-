@@ -29,9 +29,6 @@ public class MainGUI extends JDialog{
         startPass1Button.setEnabled(false);
         startPass2Button.setEnabled(false);
         textField1.setEnabled(false);
-        //listingFileArea.setEnabled(false);
-        //symbolTableArea.setEnabled(false);
-        //htmeRecordsArea.setEnabled(false);
         textField1.setText("No file selected");
         listingFileArea.setText("Listing file will be visible here");
         symbolTableArea.setText("Symbol table will be visible here");
@@ -72,6 +69,7 @@ public class MainGUI extends JDialog{
                 symbolTableArea.setText(Pass1.getSymTableLines());
                 if (Pass1.isSuccess()){
                     startPass2Button.setEnabled(true);
+                    htmeRecordsArea.setText("HTME records will be visible here");
                 } else {
                     startPass2Button.setEnabled(false);
                     htmeRecordsArea.setText("Error in Pass 1. Please fix your code.");
@@ -85,6 +83,7 @@ public class MainGUI extends JDialog{
             public void actionPerformed(ActionEvent e) {
                 Pass2.generateObjectCodes();
                 htmeRecordsArea.setText(Pass2.getHTMELines());
+                startPass2Button.setEnabled(false);
             }
         });
     }

@@ -159,7 +159,7 @@ public class Directive extends AssemblyLine {
                 if (AssemblyLine.isInteger(operand)) {
                     Pass2.baseValue = Integer.parseInt(operand);
                 } else {
-                    Pass2.baseValue = Pass1.SYMTAB.get(operand);
+                    Pass2.baseValue = Pass1.getSymbolValue(operand);
                 }
                 return "";
             }
