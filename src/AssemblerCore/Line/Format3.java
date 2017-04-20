@@ -38,48 +38,50 @@ public class Format3 extends Format {
 
         char n = '0', i = '0', x = '0', b = '0', p = '0', e = '0';
 
-
-        if (operand.charAt(0) == '@') {
-            modifiedOperand = operand.substring(1, operand.length());
-            n = '1';
-        } else if (operand.charAt(0) == '#') {
-            modifiedOperand = operand.substring(1, operand.length());
-            i = '1';
-        } else {
-            n = '1';
-            i = '1';
-        }
-        if (operand.endsWith(",X")) {
-            modifiedOperand = operand.substring(0, operand.length() - 2);
-            x = '1';
-        }
-
         int PC = getNextAddress();
-        int TA;
+        int TA = 0;
+        int displacement = 0;
 
-        if (isInteger(modifiedOperand)) {
-            TA = Integer.parseInt(modifiedOperand);
-            isOperandNumber = true;
-        } else {
-            TA = Pass1.getSymbolValue(modifiedOperand);
-        }
+        if (operand.length() > 0){
+            if (operand.charAt(0) == '@') {
+                modifiedOperand = operand.substring(1, operand.length());
+                n = '1';
+            } else if (operand.charAt(0) == '#') {
+                modifiedOperand = operand.substring(1, operand.length());
+                i = '1';
+            } else {
+                n = '1';
+                i = '1';
+            }
+            if (operand.endsWith(",X")) {
+                modifiedOperand = operand.substring(0, operand.length() - 2);
+                x = '1';
+            }
 
-        int displacement = TA - PC;
-
-        if (!isOperandNumber) {
-            if (displacement >= -2048 && displacement <= 2047)
-                p = '1';
-            else {
-                if (Pass2.baseValue == -1) {
-                    throw new Exception("NO BASE");
+            if (isInteger(modifiedOperand)) {
+                TA = Integer.parseInt(modifiedOperand);
+                isOperandNumber = true;
+            } else {
+                TA = Pass1.getSymbolValue(modifiedOperand);
+            }
+            displacement = TA - PC;
+            if (!isOperandNumber) {
+                if (displacement >= -2048 && displacement <= 2047)
+                    p = '1';
+                else {
+                    if (Pass2.baseValue == -1) {
+                        throw new Exception("NO BASE");
+                    }
+                    displacement = TA - baseValue;
+                    b = '1';
                 }
-                displacement = TA - baseValue;
-                b = '1';
+            } else {
+                displacement = TA;
             }
         } else {
-            displacement = TA;
+            n = '1';
+            i = '1';
         }
-
 
         binInstOpCode = binInstOpCode.substring(0, 6);
         binInstOpCode += n;
