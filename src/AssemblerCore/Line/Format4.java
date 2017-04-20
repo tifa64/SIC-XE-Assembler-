@@ -74,13 +74,15 @@ public class Format4 extends Format {
         sb.append(nixbpe.get(p) ? "1" : "0");
         sb.append(nixbpe.get(e) ? "1" : "0");
 
-        //inserting M record
-        StringBuilder mRecordSB = new StringBuilder();
-        mRecordSB.append("M ");
-        String mAddressHex = Pass2.padStringWithZeroes(Integer.toHexString(this.address + 1).toUpperCase(), 6);
-        mRecordSB.append(mAddressHex);
-        mRecordSB.append(" 05");
-        Pass2.MRecords.add(mRecordSB.toString());
+        if (!isInteger(value)) {
+            //inserting M record
+            StringBuilder mRecordSB = new StringBuilder();
+            mRecordSB.append("M ");
+            String mAddressHex = Pass2.padStringWithZeroes(Integer.toHexString(this.address + 1).toUpperCase(), 6);
+            mRecordSB.append(mAddressHex);
+            mRecordSB.append(" 05");
+            Pass2.MRecords.add(mRecordSB.toString());
+        }
 
         return (Integer.toHexString(Integer.parseInt(sb.toString(), 2)) + addressHex).toUpperCase();
     }

@@ -23,7 +23,6 @@ public class Pass2 {
         fileLines.clear();
 
         int recordSize = 0;
-        boolean startFlag = false;
         String currentObjCode = "";
         StringBuilder objCodeSB = new StringBuilder();
         String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
