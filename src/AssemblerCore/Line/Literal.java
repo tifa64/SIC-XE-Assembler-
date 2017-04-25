@@ -7,8 +7,9 @@ import AssemblerCore.Pass2;
  */
 public class Literal extends AssemblyLine{
 
-    protected final String mnemonic;
-    protected Literal(int address, String mnemonic) {
+    private final String mnemonic;
+
+    public Literal(int address, String mnemonic) {
         super(address, mnemonic);
         this.mnemonic = mnemonic;
     }
@@ -19,7 +20,7 @@ public class Literal extends AssemblyLine{
     }
 
     @Override
-    public int getNextAddress() throws Exception {
+    public int getNextAddress(){
         int intLenghtOfMnemonic = mnemonic.length() - 4;
 
         //Case I : Character
