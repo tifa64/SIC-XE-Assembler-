@@ -21,13 +21,13 @@ public class Pass1 {
 
     public static int programLength;
     public static int programStart;
+    public static final HashSet<String>  literals = new HashSet<>();
 
-    protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
+    static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
 
-    private final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
+    private static final Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
-    public static final HashSet<String>  literals = new HashSet<>();
     private static final String spacesPadding = "                                                                      ";
     private static boolean success;
 
@@ -63,7 +63,7 @@ public class Pass1 {
                         } else if (e.getMessage().equals("LTORG")){
                             listingFileLines.add(al.toString());
                         }
-                        insertLiterals(address);
+                        address = insertLiterals(address);
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {
@@ -156,7 +156,7 @@ public class Pass1 {
         }
     }
 
-    private static void insertLiterals(int address){
+    private static int insertLiterals(int address){
         if (!literals.isEmpty()){
             for (String lit : literals){
                 Literal literal = new Literal(address, lit);
@@ -166,6 +166,7 @@ public class Pass1 {
                 address = literal.getNextAddress();
             }
         }
+        return address;
     }
 
 }
