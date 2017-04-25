@@ -66,9 +66,14 @@ public class Directive extends AssemblyLine {
                     throw new Exception("Out of range");
                 return this.address + 3;
             }
-            case "BASE":
+            case "BASE":{
+                if(operand.charAt(0) == '=')
+                    Pass1.literals.add(operand);
+            }
             case "NOBASE":
                 return this.address;
+            case "LTORG":
+                throw new Exception("LTORG");
             default:
                 throw new Exception("Unknown Directive");
         }
@@ -77,7 +82,7 @@ public class Directive extends AssemblyLine {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (mnemonic.equals("BASE") || mnemonic.equals("NOBASE")) {
+        if (mnemonic.equals("BASE") || mnemonic.equals("NOBASE") || mnemonic.equals("LTORG")) {
             sb.append("");
         } else {
             sb.append(Pass2.padStringWithZeroes(Integer.toHexString(this.address), 5));
@@ -165,6 +170,9 @@ public class Directive extends AssemblyLine {
             }
             case "NOBASE": {
                 Pass2.baseValue = -1;
+                return "";
+            }
+            case "LTORG": {
                 return "";
             }
             default:

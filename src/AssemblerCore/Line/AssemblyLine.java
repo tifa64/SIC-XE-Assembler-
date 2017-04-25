@@ -11,12 +11,12 @@ public abstract class AssemblyLine {
     protected final String line;
     protected final int address;
 
-    protected AssemblyLine(int address, String line) {
+    AssemblyLine(int address, String line) {
         this.address = address;
         this.line = line;
     }
 
-    public static boolean isInteger(String s) {
+    static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException e) {
