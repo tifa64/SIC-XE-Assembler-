@@ -5,28 +5,38 @@ package AssemblerCore.Line;
  */
 public class Literal extends AssemblyLine{
 
-
-    protected Literal(int address, String line) {
-        super(address, line);
+    protected final String mnemonic;
+    protected Literal(int address, String mnemonic) {
+        super(address, mnemonic);
+        this.mnemonic = line.substring(9, 15).replaceAll("\\s+", "");
     }
 
     @Override
     public int getType() {
-        return 0;
+        return -2;
     }
 
     @Override
     public int getNextAddress() throws Exception {
-        return 0;
+        int intLenghtOfMnemonic = mnemonic.length() - 4;
+
+        //Case I : Character
+        if (mnemonic.charAt(1) == 'C')
+            return this.address + intLenghtOfMnemonic;
+
+        //Case II : Hexadecimal
+        intLenghtOfMnemonic = (intLenghtOfMnemonic / 2) + (intLenghtOfMnemonic % 2);
+        return this.address + intLenghtOfMnemonic;
     }
 
     @Override
     public String getLabel() {
-        return null;
+        return "*";
     }
 
     @Override
     public String getObjectCode() throws Exception {
-        return null;
+
+        return mnemonic.substring(2,mnemonic.length()-1);
     }
 }
