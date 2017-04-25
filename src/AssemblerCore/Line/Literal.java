@@ -8,7 +8,7 @@ public class Literal extends AssemblyLine{
     protected final String mnemonic;
     protected Literal(int address, String mnemonic) {
         super(address, mnemonic);
-        this.mnemonic = line.substring(9, 15).replaceAll("\\s+", "");
+        this.mnemonic = mnemonic;
     }
 
     @Override

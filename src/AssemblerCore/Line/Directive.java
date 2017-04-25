@@ -66,7 +66,10 @@ public class Directive extends AssemblyLine {
                     throw new Exception("Out of range");
                 return this.address + 3;
             }
-            case "BASE":
+            case "BASE":{
+                if(operand.charAt(0) == '=')
+                    Pass1.literals.add(operand);
+            }
             case "NOBASE":
                 return this.address;
             default:

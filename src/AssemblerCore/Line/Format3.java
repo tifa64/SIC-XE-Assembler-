@@ -23,6 +23,9 @@ public class Format3 extends Format {
 
     @Override
     public int getNextAddress() {
+
+        if(operand.charAt(0) == '=')
+            Pass1.literals.add(operand);
         return this.address + 3;
     }
 

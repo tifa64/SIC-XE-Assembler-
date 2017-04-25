@@ -26,7 +26,7 @@ public class Pass1 {
     private final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
-    private static final HashSet<String>  literals = new HashSet<>();
+    public static final HashSet<String>  literals = new HashSet<>();
     private static final String spacesPadding = "                                                                      ";
     private static boolean success;
 
