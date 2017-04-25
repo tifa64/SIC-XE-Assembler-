@@ -60,8 +60,6 @@ public class Pass1 {
                     } catch (Exception e) {
                         if (e.getMessage().equals("End Of File")){
                             listingFileLines.add("---- END OF FILE ----");
-                        } else if (e.getMessage().equals("LTORG")){
-                            listingFileLines.add(al.toString());
                         }
                         address = insertLiterals(address);
                     }
@@ -161,10 +159,12 @@ public class Pass1 {
             for (String lit : literals){
                 Literal literal = new Literal(address, lit);
                 listingFileLines.add(literal.toString());
+                assemblyLines.add(literal);
                 SYMTAB.put(lit, address);
                 SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t\t" + lit);
                 address = literal.getNextAddress();
             }
+            literals.clear();
         }
         return address;
     }

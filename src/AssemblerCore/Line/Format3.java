@@ -24,7 +24,7 @@ public class Format3 extends Format {
     @Override
     public int getNextAddress() {
 
-        if(operand.charAt(0) == '=')
+        if(operand.length() > 0 && operand.charAt(0) == '=')
             Pass1.literals.add(operand);
         return this.address + 3;
     }
@@ -109,7 +109,7 @@ public class Format3 extends Format {
 
         String tempHex3 = Pass2.padStringWithZeroes(Integer.toHexString(displacement), 3);
         if (tempHex3.length() > 3)
-            tempHex3 = tempHex3.substring(5, 8);
+            tempHex3 = tempHex3.substring(tempHex3.length() - 3, tempHex3.length());
 
 
         return (tempHex1 + tempHex2 + tempHex3).toUpperCase();

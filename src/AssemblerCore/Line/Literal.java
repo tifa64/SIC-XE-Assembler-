@@ -5,7 +5,7 @@ import AssemblerCore.Pass2;
 /**
  * Created by Krietallo on 4/25/2017.
  */
-public class Literal extends AssemblyLine{
+public class Literal extends AssemblyLine {
 
     private final String mnemonic;
 
@@ -20,7 +20,7 @@ public class Literal extends AssemblyLine{
     }
 
     @Override
-    public int getNextAddress(){
+    public int getNextAddress() {
         int intLenghtOfMnemonic = mnemonic.length() - 4;
 
         //Case I : Character
@@ -39,9 +39,28 @@ public class Literal extends AssemblyLine{
 
     @Override
     public String getObjectCode() throws Exception {
+        StringBuilder sb = new StringBuilder();
+        String value = this.mnemonic.substring(3, this.mnemonic.length() - 1);
+        //Case I : Character
+        if (mnemonic.charAt(1) == 'C') {
+            for (char c : value.toCharArray()) {
+                sb.append(Integer.toHexString(c));
+            }
+        } else {
+            //Case II : Hexadecimal
+            sb.append(value);
+        }
+        /**Fixed odd lengths in BYTE**/
+        String temp = sb.toString().toUpperCase();
+        if (temp.length() % 2 == 1) {
+            sb = new StringBuilder();
+            sb.append("0");
+            sb.append(temp);
+        }
 
-        return mnemonic.substring(2,mnemonic.length()-1);
+        return sb.toString().toUpperCase();
     }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
