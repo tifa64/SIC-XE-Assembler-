@@ -1,5 +1,7 @@
 package AssemblerCore.Line;
 
+import AssemblerCore.Pass2;
+
 /**
  * Created by Krietallo on 4/25/2017.
  */
@@ -38,5 +40,24 @@ public class Literal extends AssemblyLine{
     public String getObjectCode() throws Exception {
 
         return mnemonic.substring(2,mnemonic.length()-1);
+    }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(Pass2.padStringWithZeroes(Integer.toHexString(this.address), 5));
+        for (int i = sb.toString().length(); i <= 6; i++) {
+            sb.append(" ");
+        }
+        sb.append("\t");
+        sb.append("*");
+        for (int i = sb.toString().length(); i <= 15; i++) {
+            sb.append(" ");
+        }
+        sb.append("\t");
+        sb.append(this.mnemonic);
+        for (int i = sb.toString().length(); i <= 22; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 }
