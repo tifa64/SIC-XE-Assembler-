@@ -1,6 +1,7 @@
 package AssemblerCore;
 
 import AssemblerCore.Line.AssemblyLine;
+import AssemblerCore.Line.Literal;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -19,10 +21,11 @@ public class Pass1 {
 
     public static int programLength;
     public static int programStart;
+    public static final HashSet<String>  literals = new HashSet<>();
 
-    protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
+    static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
 
-    private final static Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
+    private static final Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
@@ -55,7 +58,10 @@ public class Pass1 {
                     try {
                         address = al.getNextAddress();
                     } catch (Exception e) {
-                        listingFileLines.add("---- END OF FILE ----");
+                        if (e.getMessage().equals("End Of File")){
+                            listingFileLines.add("---- END OF FILE ----");
+                        }
+                        address = insertLiterals(address);
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {
@@ -146,6 +152,21 @@ public class Pass1 {
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
         }
+    }
+
+    private static int insertLiterals(int address){
+        if (!literals.isEmpty()){
+            for (String lit : literals){
+                Literal literal = new Literal(address, lit);
+                listingFileLines.add(literal.toString());
+                assemblyLines.add(literal);
+                SYMTAB.put(lit, address);
+                SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t\t" + lit);
+                address = literal.getNextAddress();
+            }
+            literals.clear();
+        }
+        return address;
     }
 
 }
