@@ -1,6 +1,7 @@
 package AssemblerCore;
 
 import AssemblerCore.Line.AssemblyLine;
+import AssemblerCore.Line.Literal;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +58,12 @@ public class Pass1 {
                     try {
                         address = al.getNextAddress();
                     } catch (Exception e) {
-                        listingFileLines.add("---- END OF FILE ----");
+                        if (e.getMessage().equals("End Of File")){
+                            listingFileLines.add("---- END OF FILE ----");
+                        } else if (e.getMessage().equals("LTORG")){
+                            listingFileLines.add(al.toString());
+                        }
+                        insertLiterals(address);
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {
@@ -147,6 +153,18 @@ public class Pass1 {
             return SYMTAB.get(symbol);
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
+        }
+    }
+
+    private static void insertLiterals(int address){
+        if (!literals.isEmpty()){
+            for (String lit : literals){
+                Literal literal = new Literal(address, lit);
+                listingFileLines.add(literal.toString());
+                SYMTAB.put(lit, address);
+                SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t\t" + lit);
+                address = literal.getNextAddress();
+            }
         }
     }
 
