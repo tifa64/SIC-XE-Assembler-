@@ -63,10 +63,10 @@ public class Pass1 {
                             listingFileLines.add("****** ERROR :: No Operand specified ******");
                             success = false;
                         } else if (e.getMessage().equals("LTORG") || e.getMessage().equals("End Of File")) {
+                            address = insertLiterals(address);
                             if (e.getMessage().equals("End Of File")){
                                 listingFileLines.add("---- END OF FILE ----");
                             }
-                            address = insertLiterals(address);
                         } else {
                             listingFileLines.add("****** ERROR :: " + e.getMessage() + " ******");
                             success = false;
