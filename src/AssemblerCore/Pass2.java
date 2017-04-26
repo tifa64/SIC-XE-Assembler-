@@ -71,7 +71,7 @@ public class Pass2 {
                     if (m.getMessage().equals("NO BASE")) {
                         /*Case NOBASE but base relative mode is needed*/
                         successFlag = false;
-                        errorMsg = "Error. Base relative needed but no base was specified.";
+                        errorMsg = "Error. Base relative needed but no base was specified at " + Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 5);
                         break;
                     } else if (m.getMessage().substring(0, 7).equals("Reserve")) {
                         /*Case RESW or RESB**/

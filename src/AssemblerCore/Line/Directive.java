@@ -41,10 +41,16 @@ public class Directive extends AssemblyLine {
                 throw new Exception("End Of File");
             }
             case "RESB": {
+                if (!AssemblyLine.isInteger(operand)) {
+                    throw new Exception("Operand not integer");
+                }
                 int decimal = Integer.parseInt(operand);
                 return this.address + decimal;
             }
             case "RESW": {
+                if (!AssemblyLine.isInteger(operand)) {
+                    throw new Exception("Operand not integer");
+                }
                 int decimal = Integer.parseInt(operand);
                 decimal *= 3;
                 return this.address + decimal;
@@ -182,7 +188,7 @@ public class Directive extends AssemblyLine {
 
     @Override
     public void checkOperand() throws Exception {
-        if (!this.mnemonic.equals("LTORG") && this.operand.length() == 0){
+        if ((!this.mnemonic.equals("LTORG") && (!this.mnemonic.equals("NOBASE"))) && this.operand.length() == 0){
             throw new Exception("No Operand");
         }
     }

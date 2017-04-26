@@ -60,7 +60,9 @@ public class Pass1 {
                         al.checkOperand();
                     } catch (Exception e) {
                         if (e.getMessage().equals("No Operand")){
-                            listingFileLines.add("*********No Operand specified************");
+                            listingFileLines.add("****** ERROR :: No Operand specified ******");
+                        } else if (e.getMessage().equals("Operand not integer")) {
+                            listingFileLines.add("****** ERROR :: " + e.getMessage() + " ******");
                         } else {
                             if (e.getMessage().equals("End Of File")){
                                 listingFileLines.add("---- END OF FILE ----");
