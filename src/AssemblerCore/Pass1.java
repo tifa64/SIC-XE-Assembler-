@@ -57,11 +57,20 @@ public class Pass1 {
                     listingFileLines.add(al.toString());
                     try {
                         address = al.getNextAddress();
+                        al.checkOperand();
                     } catch (Exception e) {
-                        if (e.getMessage().equals("End Of File")){
-                            listingFileLines.add("---- END OF FILE ----");
+                        if (e.getMessage().equals("No Operand")){
+                            listingFileLines.add("****** ERROR :: No Operand specified ******");
+                            success = false;
+                        } else if (e.getMessage().equals("LTORG") || e.getMessage().equals("End Of File")) {
+                            address = insertLiterals(address);
+                            if (e.getMessage().equals("End Of File")){
+                                listingFileLines.add("---- END OF FILE ----");
+                            }
+                        } else {
+                            listingFileLines.add("****** ERROR :: " + e.getMessage() + " ******");
+                            success = false;
                         }
-                        address = insertLiterals(address);
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {

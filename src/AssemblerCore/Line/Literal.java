@@ -62,6 +62,11 @@ public class Literal extends AssemblyLine {
     }
 
     @Override
+    public void checkOperand() throws Exception {
+
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(Pass2.padStringWithZeroes(Integer.toHexString(this.address), 5));

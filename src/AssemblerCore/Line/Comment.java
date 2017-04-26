@@ -43,4 +43,9 @@ public class Comment extends AssemblyLine {
     public String getObjectCode() {
         return "";
     }
+
+    @Override
+    public void checkOperand() throws Exception {
+
+    }
 }

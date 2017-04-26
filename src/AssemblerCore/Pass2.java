@@ -41,8 +41,10 @@ public class Pass2 {
                     /*Case END**/
                     /*It will add the last line of T before it then will the END line**/
                     else if (currentObjCode.startsWith("E ")) {
-                        String tRecSize = Pass2.padStringWithZeroes(Integer.toHexString(recordSize / 2), 2);
-                        fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
+                        if (recordSize > 0) {
+                            String tRecSize = Pass2.padStringWithZeroes(Integer.toHexString(recordSize / 2), 2);
+                            fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
+                        }
                         fileLines.addAll(MRecords);
                         fileLines.add(currentObjCode);
                         break;
@@ -69,7 +71,7 @@ public class Pass2 {
                     if (m.getMessage().equals("NO BASE")) {
                         /*Case NOBASE but base relative mode is needed*/
                         successFlag = false;
-                        errorMsg = "Error. Base relative needed but no base was specified.";
+                        errorMsg = "Error. Base relative needed but no base was specified at " + Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 5);
                         break;
                     } else if (m.getMessage().substring(0, 7).equals("Reserve")) {
                         /*Case RESW or RESB**/
