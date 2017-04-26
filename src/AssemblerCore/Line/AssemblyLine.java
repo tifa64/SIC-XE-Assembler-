@@ -60,4 +60,6 @@ public abstract class AssemblyLine {
 
     public abstract String getObjectCode() throws Exception;
 
+    public abstract void checkOperand() throws Exception;
+
 }

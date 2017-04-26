@@ -181,6 +181,13 @@ public class Directive extends AssemblyLine {
     }
 
     @Override
+    public void checkOperand() throws Exception {
+        if (!this.mnemonic.equals("LTORG") && this.operand.length() == 0){
+            throw new Exception("No Operand");
+        }
+    }
+
+    @Override
     public int getAddress() {
         return address;
     }

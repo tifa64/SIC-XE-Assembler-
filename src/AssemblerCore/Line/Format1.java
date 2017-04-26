@@ -30,4 +30,9 @@ public class Format1 extends Format {
         String instOpCode = Pass2.padStringWithZeroes(isl.getInstOpCode(mnemonic), 2);
         return instOpCode;
     }
+
+    @Override
+    public void checkOperand() throws Exception {
+
+    }
 }

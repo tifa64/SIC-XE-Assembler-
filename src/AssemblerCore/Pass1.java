@@ -57,11 +57,16 @@ public class Pass1 {
                     listingFileLines.add(al.toString());
                     try {
                         address = al.getNextAddress();
+                        al.checkOperand();
                     } catch (Exception e) {
-                        if (e.getMessage().equals("End Of File")){
-                            listingFileLines.add("---- END OF FILE ----");
+                        if (e.getMessage().equals("No Operand")){
+                            listingFileLines.add("*********No Operand specified************");
+                        } else {
+                            if (e.getMessage().equals("End Of File")){
+                                listingFileLines.add("---- END OF FILE ----");
+                            }
+                            address = insertLiterals(address);
                         }
-                        address = insertLiterals(address);
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {

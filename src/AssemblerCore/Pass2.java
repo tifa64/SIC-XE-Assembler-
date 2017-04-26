@@ -41,8 +41,10 @@ public class Pass2 {
                     /*Case END**/
                     /*It will add the last line of T before it then will the END line**/
                     else if (currentObjCode.startsWith("E ")) {
-                        String tRecSize = Pass2.padStringWithZeroes(Integer.toHexString(recordSize / 2), 2);
-                        fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
+                        if (recordSize > 0) {
+                            String tRecSize = Pass2.padStringWithZeroes(Integer.toHexString(recordSize / 2), 2);
+                            fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
+                        }
                         fileLines.addAll(MRecords);
                         fileLines.add(currentObjCode);
                         break;
