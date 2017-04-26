@@ -61,13 +61,15 @@ public class Pass1 {
                     } catch (Exception e) {
                         if (e.getMessage().equals("No Operand")){
                             listingFileLines.add("****** ERROR :: No Operand specified ******");
-                        } else if (e.getMessage().equals("Operand not integer")) {
-                            listingFileLines.add("****** ERROR :: " + e.getMessage() + " ******");
-                        } else {
+                            success = false;
+                        } else if (e.getMessage().equals("LTORG") || e.getMessage().equals("End Of File")) {
                             if (e.getMessage().equals("End Of File")){
                                 listingFileLines.add("---- END OF FILE ----");
                             }
                             address = insertLiterals(address);
+                        } else {
+                            listingFileLines.add("****** ERROR :: " + e.getMessage() + " ******");
+                            success = false;
                         }
                     }
                     String tempLabel = al.getLabel();

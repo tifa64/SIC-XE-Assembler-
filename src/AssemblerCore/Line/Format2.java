@@ -37,4 +37,24 @@ public class Format2 extends Format {
         }
         return instOpCode + Integer.toHexString(r11) + Integer.toHexString(r22);
     }
+
+    @Override
+    public void checkOperand() throws Exception {
+        if (this.operand.length() == 0){
+            throw new Exception("No Operand");
+        }
+        String[] operands = this.operand.split(",");
+        if (operands.length < 2 && !this.mnemonic.equals("CLEAR") && !this.mnemonic.equals("TIXR")){
+            throw new Exception("No enough operands");
+        }
+        if (operands.length < 1){
+            throw new Exception("No enough operands");
+        }
+        String op1 = operands[0];
+        InstructionSetLoader.getLoader().getRegOpCode(op1);
+        if (operands.length != 1){
+            String op2 = operands[1];
+            InstructionSetLoader.getLoader().getRegOpCode(op2);
+        }
+    }
 }
