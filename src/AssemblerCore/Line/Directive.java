@@ -2,6 +2,7 @@ package AssemblerCore.Line;
 
 import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
+import AssemblerCore.Symbol;
 
 /**
  * Created by louay on 3/26/2017.
@@ -201,14 +202,26 @@ public class Directive extends AssemblyLine {
     }
 
     @Override
-    public int getAddress() throws Exception{
+    public Symbol getSymbol() throws Exception {
+        int value;
         if (mnemonic.equals("EQU")) {
             if (operand.equals("*")) {
-                return this.address;
+                value = this.address;
             } else {
-                return Pass1.calculateOperandValue(operand);
+                value = Pass1.calculateOperandValue(operand);
             }
+        } else {
+            value = this.address;
         }
-        else return address;
+
+        char type = Pass1.getExpressionType(operand);
+
+        return new Symbol(label, value, type);
+
+    }
+
+    @Override
+    public int getAddress(){
+        return address;
     }
 }
