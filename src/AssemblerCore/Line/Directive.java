@@ -84,7 +84,11 @@ public class Directive extends AssemblyLine {
                 return Pass1.calculateOperandValue(operand);
 
             case "EQU":
-                Pass1.putSymbol(this.label, Pass1.calculateOperandValue(operand));
+                if (operand.equals("*")) {
+                    Pass1.putSymbol(this.label, this.address);
+                } else {
+                    Pass1.putSymbol(this.label, Pass1.calculateOperandValue(operand));
+                }
                 return this.address;
 
             default:
