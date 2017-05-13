@@ -204,18 +204,17 @@ public class Directive extends AssemblyLine {
     @Override
     public Symbol getSymbol() throws Exception {
         int value;
+        char type = 'R';
         if (mnemonic.equals("EQU")) {
             if (operand.equals("*")) {
                 value = this.address;
             } else {
                 value = Pass1.calculateOperandValue(operand);
             }
+            type = Pass1.getExpressionType(operand);
         } else {
             value = this.address;
         }
-
-        char type = Pass1.getExpressionType(operand);
-
         return new Symbol(label, value, type);
 
     }
