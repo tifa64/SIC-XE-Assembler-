@@ -16,7 +16,7 @@ public abstract class AssemblyLine {
         this.line = line;
     }
 
-    static boolean isInteger(String s) {
+    public static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException e) {

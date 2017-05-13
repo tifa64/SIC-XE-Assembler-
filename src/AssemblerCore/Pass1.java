@@ -187,20 +187,55 @@ public class Pass1 {
                 }
             }
         }
+        result = calculateInfix(tokens);
 
-        Stack<Integer> infix = new Stack<>();
+        return result;
+    }
+
+    public static int calculateInfix (ArrayList<String> tokens) {
+        Stack<Integer> operands = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+
         for (String token : tokens) {
-            switch (token) {
-                case "+":
-
-                case "-":
-
-                case ")":
-
-                default:
+            if (AssemblyLine.isInteger(token)) {
+                operands.push(Integer.parseInt(token));
+            } else {
+                if (token.equals(")")) {
+                    while (operators.peek() != '(') {
+                        int b = operands.pop();
+                        int a = operands.pop();
+                        char op = operators.pop();
+                        switch (op) {
+                            case '+':
+                                operands.push(a + b);
+                                break;
+                            case '-':
+                                operands.push(a - b);
+                                break;
+                        }
+                    }
+                    operators.pop();
+                } else {
+                    operators.push(token.charAt(0));
+                }
             }
         }
-        return result;
+
+        while (!operators.isEmpty()) {
+            int b = operands.pop();
+            int a = operands.pop();
+            char op = operators.pop();
+            switch (op) {
+                case '+':
+                    operands.push(a + b);
+                    break;
+                case '-':
+                    operands.push(a - b);
+                    break;
+            }
+        }
+
+        return operands.pop();
     }
 
     private static int insertLiterals(int address){
