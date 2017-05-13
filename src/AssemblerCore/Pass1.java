@@ -2,6 +2,7 @@ package AssemblerCore;
 
 import AssemblerCore.Line.AssemblyLine;
 import AssemblerCore.Line.Literal;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class Pass1 {
 
     static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
 
-    private static final Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
+    private static final Hashtable<String, Symbol> SYMTAB = new Hashtable<String, Symbol>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
@@ -162,6 +163,102 @@ public class Pass1 {
 
     public static int calculateOperandValue(String str) throws Exception {
         int result = 0;
+        ArrayList <String> tokens = getTokens(str);
+        if (validateExpression(tokens)) {
+            result = calculateInfix(tokens);
+        } else {
+            throw new Exception("Invalid Expression");
+        }
+
+
+        return result;
+    }
+
+    public static void putSymbol(String symbol, int value){
+        SYMTAB.put(symbol, value);
+    }
+
+    public static char getExpressionType(String str) throws Exception {
+        ArrayList <String> tokens = getTokens(str);
+
+        Stack<Pair<String, Character>> operands = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+
+        for (String token : tokens) {
+            if (AssemblyLine.isInteger(token)) {
+                operands.push(new Pair<>(token, 'A'));
+            } else if (token.equals("(") || token.equals(")") || token.equals("+") || token.equals("-")) {
+                if (token.equals(")")) {
+                    while (operators.peek() != '(') {
+                        Pair b = operands.pop();
+                        Pair a = operands.pop();
+                        char op = operators.pop();
+                        switch (op) {
+                            case '+':
+                                if (a.getValue().equals('R') && b.getValue().equals('R')) {
+                                    throw new Exception("Relative + Relative");
+                                } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                                    operands.push(new Pair<>("ay 7aga",'R'));
+                                } else if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                                    operands.push(new Pair<>("ay 7aga",'R'));
+                                } else {
+                                    operands.push(new Pair<>("ay 7aga",'A'));
+                                }
+                                break;
+                            case '-': {
+                                if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                                    throw new Exception("Absolute - Relative");
+                                } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                                    operands.push(new Pair<>("ay 7aga",'R'));
+                                } else {
+                                    operands.push(new Pair<>("ay 7aga",'A'));
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    operators.pop();
+                } else {
+                    operators.push(token.charAt(0));
+                }
+            } else {
+                operands.push(new Pair<>(token, 'R'));
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            Pair b = operands.pop();
+            Pair a = operands.pop();
+            char op = operators.pop();
+            switch (op) {
+                case '+':
+                    if (a.getValue().equals('R') && b.getValue().equals('R')) {
+                        throw new Exception("Relative + Relative");
+                    } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                        operands.push(new Pair<>("ay 7aga",'R'));
+                    } else if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                        operands.push(new Pair<>("ay 7aga",'R'));
+                    } else {
+                        operands.push(new Pair<>("ay 7aga",'A'));
+                    }
+                    break;
+                case '-': {
+                    if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                        throw new Exception("Absolute - Relative");
+                    } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                        operands.push(new Pair<>("ay 7aga",'R'));
+                    } else {
+                        operands.push(new Pair<>("ay 7aga",'A'));
+                    }
+                    break;
+                }
+            }
+        }
+
+        return operands.pop().getValue();
+    }
+
+    private static ArrayList<String> getTokens(String str) throws Exception{
         int n = str.length();
         ArrayList<String> tokens = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -187,13 +284,7 @@ public class Pass1 {
                 }
             }
         }
-        result = calculateInfix(tokens);
-
-        return result;
-    }
-
-    public static void putSymbol(String symbol, int value){
-        SYMTAB.put(symbol, value);
+        return tokens
     }
 
     private static int calculateInfix (ArrayList<String> tokens) {
@@ -255,6 +346,11 @@ public class Pass1 {
             literals.clear();
         }
         return address;
+    }
+
+    private static boolean validateExpression(ArrayList<String> tokens) {
+
+        return true;
     }
 
 }
