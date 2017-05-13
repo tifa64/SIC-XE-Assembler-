@@ -1,6 +1,7 @@
 package AssemblerCore.Line;
 
 import AssemblerCore.Pass2;
+import AssemblerCore.Symbol;
 
 /**
  * Created by louay on 3/26/2017.
@@ -55,5 +56,10 @@ public abstract class Format extends AssemblyLine {
         if (!this.mnemonic.equals("RSUB") && this.operand.length() == 0){
             throw new Exception("No Operand");
         }
+    }
+
+    @Override
+    public Symbol getSymbol() throws Exception {
+        return new Symbol(label, address, 'R');
     }
 }
