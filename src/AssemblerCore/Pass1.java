@@ -9,10 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by louay on 3/25/2017.
@@ -161,6 +158,49 @@ public class Pass1 {
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
         }
+    }
+
+    public static int calculateOperandValue(String str) throws Exception {
+        int result = 0;
+        int n = str.length();
+        ArrayList<String> tokens = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            StringBuilder sb = new StringBuilder();
+            boolean flag = false;
+            while (i < n && Character.isLetterOrDigit(str.charAt(i))) {
+                sb.append(str.charAt(i));
+                i++;
+                flag = true;
+            }
+            if (flag) {
+                if (SYMTAB.containsKey(sb.toString())) {
+                    tokens.add(Integer.toString(SYMTAB.get(sb.toString())));
+                } else {
+                    throw new Exception("Forward reference");
+                }
+            }
+            if (i < n) {
+                if (str.charAt(i) == '*' || str.charAt(i) == '/' ) {
+                    throw new Exception("Invalid Expression");
+                } else {
+                    tokens.add(str.charAt(i) + "");
+                }
+            }
+        }
+
+        Stack<Integer> infix = new Stack<>();
+        for (String token : tokens) {
+            switch (token) {
+                case "+":
+
+                case "-":
+
+                case ")":
+
+                default:
+            }
+        }
+        return result;
     }
 
     private static int insertLiterals(int address){
