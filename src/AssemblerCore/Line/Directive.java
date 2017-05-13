@@ -84,11 +84,7 @@ public class Directive extends AssemblyLine {
                 return Pass1.calculateOperandValue(operand);
 
             case "EQU":
-                if (operand.equals("*")) {
-                    Pass1.putSymbol(this.label, this.address);
-                } else {
-                    Pass1.putSymbol(this.label, Pass1.calculateOperandValue(operand));
-                }
+
                 return this.address;
 
             default:
@@ -205,7 +201,14 @@ public class Directive extends AssemblyLine {
     }
 
     @Override
-    public int getAddress() {
-        return address;
+    public int getAddress() throws Exception{
+        if (mnemonic.equals("EQU")) {
+            if (operand.equals("*")) {
+                return this.address;
+            } else {
+                return Pass1.calculateOperandValue(operand);
+            }
+        }
+        else return address;
     }
 }

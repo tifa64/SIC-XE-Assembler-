@@ -52,7 +52,7 @@ public abstract class AssemblyLine {
 
     public abstract int getNextAddress() throws Exception;
 
-    public int getAddress() {
+    public int getAddress() throws Exception {
         return this.address;
     }
 
