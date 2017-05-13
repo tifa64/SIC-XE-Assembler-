@@ -1,6 +1,7 @@
 package AssemblerCore.Line;
 
 import AssemblerCore.InstructionSetLoader;
+import AssemblerCore.Symbol;
 
 
 /**
@@ -16,7 +17,7 @@ public abstract class AssemblyLine {
         this.line = line;
     }
 
-    static boolean isInteger(String s) {
+    public static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
         } catch (NumberFormatException e) {
@@ -52,7 +53,7 @@ public abstract class AssemblyLine {
 
     public abstract int getNextAddress() throws Exception;
 
-    public int getAddress() {
+    public int getAddress(){
         return this.address;
     }
 
@@ -61,5 +62,7 @@ public abstract class AssemblyLine {
     public abstract String getObjectCode() throws Exception;
 
     public abstract void checkOperand() throws Exception;
+
+    public abstract Symbol getSymbol() throws Exception;
 
 }

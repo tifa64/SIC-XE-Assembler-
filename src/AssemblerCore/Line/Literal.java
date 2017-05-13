@@ -1,6 +1,7 @@
 package AssemblerCore.Line;
 
 import AssemblerCore.Pass2;
+import AssemblerCore.Symbol;
 
 /**
  * Created by Krietallo on 4/25/2017.
@@ -64,6 +65,11 @@ public class Literal extends AssemblyLine {
     @Override
     public void checkOperand() throws Exception {
 
+    }
+
+    @Override
+    public Symbol getSymbol() throws Exception {
+        return new Symbol(mnemonic, address, 'R');
     }
 
     @Override

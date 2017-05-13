@@ -2,6 +2,7 @@ package AssemblerCore;
 
 import AssemblerCore.Line.AssemblyLine;
 import AssemblerCore.Line.Literal;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,10 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by louay on 3/25/2017.
@@ -25,7 +23,7 @@ public class Pass1 {
 
     static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
 
-    private static final Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
+    private static final Hashtable<String, Symbol> SYMTAB = new Hashtable<String, Symbol>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
@@ -79,8 +77,8 @@ public class Pass1 {
                             success = false;
                         }
                         else {
-                            SYMTAB.put(tempLabel, al.getAddress());
-                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t\t" + tempLabel);
+                            SYMTAB.put(tempLabel, al.getSymbol());
+                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType());
                         }
 
                     }
@@ -157,25 +155,196 @@ public class Pass1 {
 
     public static int getSymbolValue(String symbol) throws Exception {
         if (SYMTAB.containsKey(symbol)){
-            return SYMTAB.get(symbol);
+            return SYMTAB.get(symbol).getValue();
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
         }
     }
 
-    private static int insertLiterals(int address){
+    public static int calculateOperandValue(String str) throws Exception {
+        int result = 0;
+        ArrayList <String> tokens = getTokens(str);
+        if (validateExpression(tokens)) {
+            result = calculateInfix(tokens);
+        } else {
+            throw new Exception("Invalid Expression");
+        }
+
+
+        return result;
+    }
+
+    public static char getExpressionType(String str) throws Exception {
+        ArrayList <String> tokens = getTokens(str);
+
+        Stack<Pair<String, Character>> operands = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+
+        for (String token : tokens) {
+            if (AssemblyLine.isInteger(token)) {
+                operands.push(new Pair<>(token, 'A'));
+            } else if (token.equals("(") || token.equals(")") || token.equals("+") || token.equals("-")) {
+                if (token.equals(")")) {
+                    while (operators.peek() != '(') {
+                        Pair b = operands.pop();
+                        Pair a = operands.pop();
+                        char op = operators.pop();
+                        switch (op) {
+                            case '+':
+                                if (a.getValue().equals('R') && b.getValue().equals('R')) {
+                                    throw new Exception("Relative + Relative");
+                                } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                                    operands.push(new Pair<>("ay 7aga",'R'));
+                                } else if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                                    operands.push(new Pair<>("ay 7aga",'R'));
+                                } else {
+                                    operands.push(new Pair<>("ay 7aga",'A'));
+                                }
+                                break;
+                            case '-': {
+                                if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                                    throw new Exception("Absolute - Relative");
+                                } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                                    operands.push(new Pair<>("ay 7aga",'R'));
+                                } else {
+                                    operands.push(new Pair<>("ay 7aga",'A'));
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    operators.pop();
+                } else {
+                    operators.push(token.charAt(0));
+                }
+            } else {
+                operands.push(new Pair<>(token, 'R'));
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            Pair b = operands.pop();
+            Pair a = operands.pop();
+            char op = operators.pop();
+            switch (op) {
+                case '+':
+                    if (a.getValue().equals('R') && b.getValue().equals('R')) {
+                        throw new Exception("Relative + Relative");
+                    } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                        operands.push(new Pair<>("ay 7aga",'R'));
+                    } else if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                        operands.push(new Pair<>("ay 7aga",'R'));
+                    } else {
+                        operands.push(new Pair<>("ay 7aga",'A'));
+                    }
+                    break;
+                case '-': {
+                    if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                        throw new Exception("Absolute - Relative");
+                    } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                        operands.push(new Pair<>("ay 7aga",'R'));
+                    } else {
+                        operands.push(new Pair<>("ay 7aga",'A'));
+                    }
+                    break;
+                }
+            }
+        }
+
+        return operands.pop().getValue();
+    }
+
+    private static ArrayList<String> getTokens(String str) throws Exception{
+        int n = str.length();
+        ArrayList<String> tokens = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            StringBuilder sb = new StringBuilder();
+            boolean flag = false;
+            while (i < n && (Character.isLetterOrDigit(str.charAt(i)) || str.charAt(i) == '*')) {
+                sb.append(str.charAt(i));
+                i++;
+                flag = true;
+            }
+            if (flag) {
+                if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
+                    tokens.add(sb.toString());
+                } else if (SYMTAB.containsKey(sb.toString())) {
+                    tokens.add(Integer.toString(SYMTAB.get(sb.toString()).getValue()));
+                } else {
+                    throw new Exception("Forward reference");
+                }
+            }
+            if (i < n) {
+                tokens.add(str.charAt(i) + "");
+            }
+        }
+        return tokens;
+    }
+
+    private static int calculateInfix (ArrayList<String> tokens) {
+        Stack<Integer> operands = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+
+        for (String token : tokens) {
+            if (AssemblyLine.isInteger(token)) {
+                operands.push(Integer.parseInt(token));
+            } else {
+                if (token.equals(")")) {
+                    while (operators.peek() != '(') {
+                        int b = operands.pop();
+                        int a = operands.pop();
+                        char op = operators.pop();
+                        switch (op) {
+                            case '+':
+                                operands.push(a + b);
+                                break;
+                            case '-':
+                                operands.push(a - b);
+                                break;
+                        }
+                    }
+                    operators.pop();
+                } else {
+                    operators.push(token.charAt(0));
+                }
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            int b = operands.pop();
+            int a = operands.pop();
+            char op = operators.pop();
+            switch (op) {
+                case '+':
+                    operands.push(a + b);
+                    break;
+                case '-':
+                    operands.push(a - b);
+                    break;
+            }
+        }
+
+        return operands.pop();
+    }
+
+    private static int insertLiterals(int address) throws Exception{
         if (!literals.isEmpty()){
             for (String lit : literals){
                 Literal literal = new Literal(address, lit);
                 listingFileLines.add(literal.toString());
                 assemblyLines.add(literal);
-                SYMTAB.put(lit, address);
+                SYMTAB.put(lit, literal.getSymbol());
                 SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t\t" + lit);
                 address = literal.getNextAddress();
             }
             literals.clear();
         }
         return address;
+    }
+
+    private static boolean validateExpression(ArrayList<String> tokens) {
+
+        return true;
     }
 
 }
