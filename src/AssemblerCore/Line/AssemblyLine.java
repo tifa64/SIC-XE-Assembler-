@@ -1,6 +1,7 @@
 package AssemblerCore.Line;
 
 import AssemblerCore.InstructionSetLoader;
+import AssemblerCore.Symbol;
 
 
 /**
@@ -52,7 +53,7 @@ public abstract class AssemblyLine {
 
     public abstract int getNextAddress() throws Exception;
 
-    public int getAddress() throws Exception {
+    public int getAddress(){
         return this.address;
     }
 
@@ -61,5 +62,7 @@ public abstract class AssemblyLine {
     public abstract String getObjectCode() throws Exception;
 
     public abstract void checkOperand() throws Exception;
+
+    public abstract Symbol getSymbol() throws Exception;
 
 }
