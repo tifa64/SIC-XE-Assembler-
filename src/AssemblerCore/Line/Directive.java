@@ -83,6 +83,10 @@ public class Directive extends AssemblyLine {
             case "ORG":
                 return Pass1.calculateOperandValue(operand);
 
+            case "EQU":
+                Pass1.putSymbol(this.label, Pass1.calculateOperandValue(operand));
+                return this.address;
+
             default:
                 throw new Exception("Unknown Directive");
         }

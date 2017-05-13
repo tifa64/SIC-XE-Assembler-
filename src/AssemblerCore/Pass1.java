@@ -192,7 +192,11 @@ public class Pass1 {
         return result;
     }
 
-    public static int calculateInfix (ArrayList<String> tokens) {
+    public static void putSymbol(String symbol, int value){
+        SYMTAB.put(symbol, value);
+    }
+
+    private static int calculateInfix (ArrayList<String> tokens) {
         Stack<Integer> operands = new Stack<>();
         Stack<Character> operators = new Stack<>();
 
