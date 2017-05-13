@@ -80,6 +80,9 @@ public class Directive extends AssemblyLine {
                 return this.address;
             case "LTORG":
                 throw new Exception("LTORG");
+            case "ORG":
+                return Pass1.calculateOperandValue(operand);
+
             default:
                 throw new Exception("Unknown Directive");
         }
