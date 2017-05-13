@@ -77,8 +77,8 @@ public class Pass1 {
                             success = false;
                         }
                         else {
-                            SYMTAB.put(tempLabel, al.getAddress());
-                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t\t" + tempLabel);
+                            SYMTAB.put(tempLabel, al.getSymbol());
+                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType());
                         }
 
                     }
@@ -155,7 +155,7 @@ public class Pass1 {
 
     public static int getSymbolValue(String symbol) throws Exception {
         if (SYMTAB.containsKey(symbol)){
-            return SYMTAB.get(symbol);
+            return SYMTAB.get(symbol).getValue();
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
         }
@@ -172,10 +172,6 @@ public class Pass1 {
 
 
         return result;
-    }
-
-    public static void putSymbol(String symbol, int value){
-        SYMTAB.put(symbol, value);
     }
 
     public static char getExpressionType(String str) throws Exception {
@@ -264,27 +260,25 @@ public class Pass1 {
         for (int i = 0; i < n; i++) {
             StringBuilder sb = new StringBuilder();
             boolean flag = false;
-            while (i < n && Character.isLetterOrDigit(str.charAt(i))) {
+            while (i < n && (Character.isLetterOrDigit(str.charAt(i)) || str.charAt(i) == '*')) {
                 sb.append(str.charAt(i));
                 i++;
                 flag = true;
             }
             if (flag) {
-                if (SYMTAB.containsKey(sb.toString())) {
-                    tokens.add(Integer.toString(SYMTAB.get(sb.toString())));
+                if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
+                    tokens.add(sb.toString());
+                } else if (SYMTAB.containsKey(sb.toString())) {
+                    tokens.add(Integer.toString(SYMTAB.get(sb.toString()).getValue()));
                 } else {
                     throw new Exception("Forward reference");
                 }
             }
             if (i < n) {
-                if (str.charAt(i) == '*' || str.charAt(i) == '/' ) {
-                    throw new Exception("Invalid Expression");
-                } else {
-                    tokens.add(str.charAt(i) + "");
-                }
+                tokens.add(str.charAt(i) + "");
             }
         }
-        return tokens
+        return tokens;
     }
 
     private static int calculateInfix (ArrayList<String> tokens) {
@@ -333,13 +327,13 @@ public class Pass1 {
         return operands.pop();
     }
 
-    private static int insertLiterals(int address){
+    private static int insertLiterals(int address) throws Exception{
         if (!literals.isEmpty()){
             for (String lit : literals){
                 Literal literal = new Literal(address, lit);
                 listingFileLines.add(literal.toString());
                 assemblyLines.add(literal);
-                SYMTAB.put(lit, address);
+                SYMTAB.put(lit, literal.getSymbol());
                 SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t\t" + lit);
                 address = literal.getNextAddress();
             }

@@ -13,4 +13,12 @@ public class Symbol {
         this.value = value;
         this.type = type;
     }
+
+    public int getValue() {
+        return value;
+    }
+
+    public char getType() {
+        return type;
+    }
 }
