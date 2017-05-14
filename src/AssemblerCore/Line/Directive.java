@@ -90,7 +90,11 @@ public class Directive extends AssemblyLine {
                 return this.address;
 
             case "CSECT":
-                    return this.address;
+            {
+                Pass1.nameCSECT = label;
+                return this.address;
+            }
+
 
             default:
                 throw new Exception("Unknown Directive");
@@ -221,7 +225,7 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        return new Symbol(label, value, type, );
+        return new Symbol(label, value, type, Pass1.nameCSECT, true);
 
     }
 

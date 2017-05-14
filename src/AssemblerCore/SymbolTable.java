@@ -7,9 +7,9 @@ import java.util.HashSet;
  */
 public class SymbolTable {
 
-    private final HashSet<Symbol> symbols = new HashSet<Symbol>();
+    private static final HashSet<Symbol> symbols = new HashSet<Symbol>();
 
-    public  HashSet<Symbol> getHashSetOfCSECT(String nCSECT)
+    public static HashSet<Symbol> getHashSetOfCSECT(String nCSECT)
     {
         HashSet<Symbol> CSECTsymbols = new HashSet<Symbol>();
         int sz = symbols.size();
@@ -20,7 +20,7 @@ public class SymbolTable {
         }
         return CSECTsymbols;
     }
-    public void insertInHashSet(Symbol symb)
+    public static void insertInHashSet(Symbol symb)
     {
         symbols.add(symb);
     }

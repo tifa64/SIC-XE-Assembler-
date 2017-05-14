@@ -26,6 +26,7 @@ public class Pass1 {
     public static int programLength;
     public static int programStart;
     private static boolean success;
+    public static String nameCSECT;
 
     private Pass1() {
     }
