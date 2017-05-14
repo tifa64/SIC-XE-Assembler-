@@ -3,6 +3,7 @@ package AssemblerCore.Line;
 import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
+import AssemblerCore.SymbolTable;
 
 import java.awt.*;
 
@@ -217,7 +218,8 @@ public class Directive extends AssemblyLine {
                 return "";
             }
             case "CSECT": {
-                Pass2.csect = this.label;
+                Pass2.symbols = SymbolTable.getHashSetOfCSECT(this.label);
+                Pass2.externalRef.clear();
                 return "";
             }
             default:

@@ -7,18 +7,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Created by louay on 4/15/2017.
  */
 public class Pass2 {
 
-    public static final ArrayList<String> MRecords = new ArrayList<>();
     private static final ArrayList<String> fileLines = new ArrayList<>();
+
+    public static final ArrayList<String> MRecords = new ArrayList<>();
+    public static final HashSet<String> externalRef = new HashSet<>();
     public static int baseValue = -1;
-    public static String csect = "";
+    public static HashSet<Symbol> symbols = new HashSet<>();
 
     public static void generateObjectCodes() {
+
         MRecords.clear();
         baseValue = -1;
         fileLines.clear();
