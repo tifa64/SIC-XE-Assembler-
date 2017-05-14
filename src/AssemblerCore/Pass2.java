@@ -143,7 +143,11 @@ public class Pass2 {
         return Pass2.symbols.containsKey(symbol);
     }
 
-    public static Symbol getSymbol(String symbol) {
-        return Pass2.symbols.get(symbol);
+    public static Symbol getSymbol(String symbol) throws Exception{
+        if (isSymbolExists(symbol)) {
+            return Pass2.symbols.get(symbol);
+        } else {
+            throw new Exception("Symbol " + symbol + " is not found.");
+        }
     }
 }

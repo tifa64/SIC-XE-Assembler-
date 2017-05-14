@@ -203,11 +203,7 @@ public class Directive extends AssemblyLine {
                 if (AssemblyLine.isInteger(operand)) {
                     Pass2.baseValue = Integer.parseInt(operand);
                 } else {
-                    if (Pass2.isSymbolExists(operand)) {
-                        Pass2.baseValue = Pass2.getSymbol(operand).getValue();
-                    } else {
-                        throw new Exception("Symbol " + operand + " is not found.");
-                    }
+                    Pass2.baseValue = Pass2.getSymbol(operand).getValue();
                 }
                 return "";
             }
@@ -241,12 +237,8 @@ public class Directive extends AssemblyLine {
                 String[] definitions = (this.operand + this.comment).split(",");
                 for (String ref : definitions) {
                     sb.append(ref).append(" ");
-                    if (Pass2.isSymbolExists(ref)) {
-                        String address = Pass2.padStringWithZeroes(Integer.toHexString(Pass2.getSymbol(ref).getValue()), 6);
-                        sb.append(address).append(" ");
-                    } else {
-                        throw new Exception("Unknown symbol: " + ref);
-                    }
+                    String address = Pass2.padStringWithZeroes(Integer.toHexString(Pass2.getSymbol(ref).getValue()), 6);
+                    sb.append(address).append(" ");
                 }
                 return sb.toString();
             }
