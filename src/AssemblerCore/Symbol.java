@@ -19,10 +19,6 @@ public class Symbol {
         this.exdef = exdef;
     }
 
-    public String getSymbolName()
-    {
-        return symbol;
-    }
     public int getValue() {
         return value;
     }
@@ -31,7 +27,7 @@ public class Symbol {
         return type;
     }
 
-    public String getCSETNamme() {
+    public String getCSETName() {
         return cset;
     }
 

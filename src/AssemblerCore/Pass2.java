@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 /**
  * Created by louay on 4/15/2017.
@@ -16,11 +15,11 @@ import java.util.Hashtable;
 public class Pass2 {
 
     private static final ArrayList<String> fileLines = new ArrayList<>();
-    private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
 
     public static final ArrayList<String> MRecords = new ArrayList<>();
     public static final HashSet<String> externalRef = new HashSet<>();
     public static int baseValue = -1;
+    public static HashSet<Symbol> symbols = new HashSet<>();
 
     public static void generateObjectCodes() {
 
@@ -55,8 +54,8 @@ public class Pass2 {
                         fileLines.add(currentObjCode);
                         break;
                     }
-                    /*Case External Reference or definition*/
-                    else if (currentObjCode.startsWith("R ") || currentObjCode.startsWith("D ")) {
+                    /*Case External Reference*/
+                    else if (currentObjCode.startsWith("R ")) {
                         fileLines.add(currentObjCode);
                         break;
                     }
@@ -130,24 +129,5 @@ public class Pass2 {
             sb.append(str).append("\n");
         }
         return sb.toString();
-    }
-
-    public static void addToHashTable(HashSet<Symbol> symbols) {
-        Pass2.symbols.clear();
-        for (Symbol s : symbols) {
-            Pass2.symbols.put(s.getSymbolName(), s);
-        }
-    }
-
-    private static boolean isSymbolExists (String symbol) {
-        return Pass2.symbols.containsKey(symbol);
-    }
-
-    public static Symbol getSymbol(String symbol) throws Exception{
-        if (isSymbolExists(symbol)) {
-            return Pass2.symbols.get(symbol);
-        } else {
-            throw new Exception("Symbol " + symbol + " is not found.");
-        }
     }
 }

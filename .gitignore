@@ -3,3 +3,7 @@ out/
 ListingFile.txt
 Symbol Table File.txt
 HTME.txt
+src/AssemblerCore/Line/Directive_BACKUP_18340.java
+src/AssemblerCore/Line/Directive_BASE_18340.java
+src/AssemblerCore/Line/Directive_LOCAL_18340.java
+src/AssemblerCore/Line/Directive_REMOTE_18340.java

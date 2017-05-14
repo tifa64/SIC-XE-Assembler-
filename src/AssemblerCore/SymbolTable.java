@@ -15,7 +15,7 @@ public class SymbolTable {
         int sz = symbols.size();
         for(Symbol s : symbols)
         {
-            if(s.getCSETNamme().equals(nCSECT))
+            if(s.getCSETName().equals(nCSECT))
                 CSECTsymbols.add(s);
         }
         return CSECTsymbols;
@@ -33,15 +33,20 @@ public class SymbolTable {
     public static boolean containsKey(String nCSECT, String symb)
     {
         HashSet<Symbol> CSECTsymbols = getHashSetOfCSECT(nCSECT);
-        return CSECTsymbols.contains(symb);
-
+        for(Symbol s : CSECTsymbols)
+        {
+            if(s.getSymbolName().equals(symb))
+                return true;
+        }
+        return false;
     }
 
-    public static Symbol getSymbolValue(String symb)
+    public static Symbol getSymbol(String nCSECT, String symb)
     {
-        for(Symbol s : symbols)
+        HashSet<Symbol> CSECTsymbols = getHashSetOfCSECT(nCSECT);
+        for(Symbol s : CSECTsymbols)
         {
-            if(s.getCSETNamme().equals(symb))
+            if(s.getSymbolName().equals(symb))
                 return s;
         }
         return null;

@@ -79,7 +79,7 @@ public class Pass1 {
                             success = false;
                         } else {
                             insertInHashSet(al.getSymbol());
-                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType());
+                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getSymbol().getValue()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType());
                         }
 
                     }
@@ -271,7 +271,7 @@ public class Pass1 {
                 if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
                     tokens.add(sb.toString());
                 } else if (containsKey(nameCSECT, sb.toString())) {
-                    tokens.add(Integer.toString(getSymbolValue(sb.toString()).getValue()));
+                    tokens.add(Integer.toString(getSymbol(nameCSECT ,sb.toString()).getValue()));
                 } else {
                     throw new Exception("Forward reference");
                 }

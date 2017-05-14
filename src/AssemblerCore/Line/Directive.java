@@ -5,8 +5,6 @@ import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
 import AssemblerCore.SymbolTable;
 
-import java.awt.*;
-
 /**
  * Created by louay on 3/26/2017.
  */
@@ -37,7 +35,6 @@ public class Directive extends AssemblyLine {
     public int getNextAddress() throws Exception {
         switch (mnemonic) {
             case "START": {
-                Pass1.nameCSECT = label;
                 Pass1.programStart = this.address;
                 return this.address;
             }
@@ -96,21 +93,9 @@ public class Directive extends AssemblyLine {
             case "CSECT":
             {
                 Pass1.nameCSECT = label;
-                Pass1.ExDef.clear();
                 return this.address;
             }
 
-            case "EXDEF":
-            {
-                String externalDefinitions = operand+comment;
-                String[] tokens = externalDefinitions.split("[,]");
-                for(String s : tokens)
-                    Pass1.ExDef.add(s);
-
-                return this.address;
-            }
-            case "EXREF":
-                return this.address;
 
             default:
                 throw new Exception("Unknown Directive");
@@ -159,6 +144,7 @@ public class Directive extends AssemblyLine {
     public String getObjectCode() throws Exception {
         switch (mnemonic) {
             case "START": {
+                Pass2.csect = this.label;
                 return "H" + " " + this.label +
                         " " + Pass2.padStringWithZeroes(this.operand, 6) +
                         " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength), 6);
@@ -203,7 +189,7 @@ public class Directive extends AssemblyLine {
                 if (AssemblyLine.isInteger(operand)) {
                     Pass2.baseValue = Integer.parseInt(operand);
                 } else {
-                    Pass2.baseValue = Pass2.getSymbol(operand).getValue();
+                    Pass2.baseValue = Pass1.getSymbolValue(operand);
                 }
                 return "";
             }
@@ -217,7 +203,7 @@ public class Directive extends AssemblyLine {
                 return "";
             }
             case "CSECT": {
-                Pass2.addToHashTable(SymbolTable.getHashSetOfCSECT(this.label));
+                Pass2.symbols = SymbolTable.getHashSetOfCSECT(this.label);
                 Pass2.externalRef.clear();
                 return "";
             }
@@ -227,18 +213,6 @@ public class Directive extends AssemblyLine {
                 String[] refrences = (this.operand + this.comment).split(",");
                 for (String ref : refrences) {
                     sb.append(ref).append(" ");
-                    Pass2.externalRef.add(ref);
-                }
-                return sb.toString();
-            }
-            case "EXTDEF": {
-                StringBuilder sb = new StringBuilder();
-                sb.append("D ");
-                String[] definitions = (this.operand + this.comment).split(",");
-                for (String ref : definitions) {
-                    sb.append(ref).append(" ");
-                    String address = Pass2.padStringWithZeroes(Integer.toHexString(Pass2.getSymbol(ref).getValue()), 6);
-                    sb.append(address).append(" ");
                 }
                 return sb.toString();
             }
@@ -268,7 +242,7 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(mnemonic));
+        return new Symbol(label, value, type, Pass1.nameCSECT, true);
 
     }
 
