@@ -166,13 +166,7 @@ public class Pass1 {
     public static int calculateOperandValue(String str) throws Exception {
         int result = 0;
         ArrayList<String> tokens = getTokens(str);
-        if (validateExpression(tokens)) {
-            result = calculateInfix(tokens);
-        } else {
-            throw new Exception("Invalid Expression");
-        }
-
-
+        result = calculateInfix(tokens);
         return result;
     }
 
@@ -342,11 +336,6 @@ public class Pass1 {
             literals.clear();
         }
         return address;
-    }
-
-    private static boolean validateExpression(ArrayList<String> tokens) {
-
-        return true;
     }
 
 }

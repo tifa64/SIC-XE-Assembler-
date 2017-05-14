@@ -70,9 +70,11 @@ public class Directive extends AssemblyLine {
                 return this.address + intLenghtOfOperand;
             }
             case "WORD": {
-                int decimal = Integer.parseInt(operand);
-                if (decimal < -8388608 || decimal > 8388607)
-                    throw new Exception("Out of range");
+                if (AssemblyLine.isInteger(operand)) {
+                    int decimal = Integer.parseInt(operand);
+                    if (decimal < -8388608 || decimal > 8388607)
+                        throw new Exception("Out of range");
+                }
                 return this.address + 3;
             }
             case "BASE": {
