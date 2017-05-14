@@ -16,6 +16,7 @@ public class Pass2 {
     public static final ArrayList<String> MRecords = new ArrayList<>();
     private static final ArrayList<String> fileLines = new ArrayList<>();
     public static int baseValue = -1;
+    public static String csect = "";
 
     public static void generateObjectCodes() {
         MRecords.clear();

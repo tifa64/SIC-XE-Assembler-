@@ -157,10 +157,12 @@ public class Directive extends AssemblyLine {
     @Override
     public String getObjectCode() throws Exception {
         switch (mnemonic) {
-            case "START":
+            case "START": {
+                Pass2.csect = this.label;
                 return "H" + " " + this.label +
                         " " + Pass2.padStringWithZeroes(this.operand, 6) +
                         " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength), 6);
+            }
             case "END":
                 return ("E" + " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programStart), 6));
             case "RESB":
@@ -212,6 +214,10 @@ public class Directive extends AssemblyLine {
             case "LTORG":
             case "EQU":
             case "ORG": {
+                return "";
+            }
+            case "CSECT": {
+                Pass2.csect = this.label;
                 return "";
             }
             default:
