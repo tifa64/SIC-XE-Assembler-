@@ -222,6 +222,15 @@ public class Directive extends AssemblyLine {
                 Pass2.externalRef.clear();
                 return "";
             }
+            case "EXTREF": {
+                StringBuilder sb = new StringBuilder();
+                sb.append("R ");
+                String[] refrences = (this.operand + this.comment).split(",");
+                for (String ref : refrences) {
+                    sb.append(ref).append(" ");
+                }
+                return sb.toString();
+            }
             default:
                 throw new Exception("Unknown Directive");
         }

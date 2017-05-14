@@ -54,6 +54,11 @@ public class Pass2 {
                         fileLines.add(currentObjCode);
                         break;
                     }
+                    /*Case External Reference*/
+                    else if (currentObjCode.startsWith("R ")) {
+                        fileLines.add(currentObjCode);
+                        break;
+                    }
                     /*Case Comment**/
                     else if (currentObjCode.length() == 0) {
                         continue;
