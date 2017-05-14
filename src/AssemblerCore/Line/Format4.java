@@ -51,17 +51,17 @@ public class Format4 extends Format {
         if (operand.charAt(0) == '@') {
             nixbpe.set(n);
             value = value.substring(1);
-            addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
+            addressHex = Integer.toHexString(Pass2.getSymbol(value).getValue());
         } else if (operand.charAt(0) == '#') {
             nixbpe.set(i);
             value = value.substring(1);
             if (value.charAt(0) <= '9' && value.charAt(0) >= '0') {
                 addressHex = Integer.toHexString(Integer.parseInt(value));
             } else {
-                addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
+                addressHex = Integer.toHexString(Pass2.getSymbol(value).getValue());
             }
         } else {
-            addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
+            addressHex = Integer.toHexString(Pass2.getSymbol(value).getValue());
             nixbpe.set(n);
             nixbpe.set(i);
         }

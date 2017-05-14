@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static AssemblerCore.SymbolTable.*;
+
 /**
  * Created by louay on 3/25/2017.
  */
@@ -19,19 +21,21 @@ public class Pass1 {
 
     public static final HashSet<String> literals = new HashSet<>();
     static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
-    private static final Hashtable<String, Symbol> SYMTAB = new Hashtable<String, Symbol>();
+    public static final HashSet<String> ExDef = new HashSet<String>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
     public static int programLength;
     public static int programStart;
     private static boolean success;
+    public static String nameCSECT;
+    public static int address;
 
     private Pass1() {
     }
 
     public static void generatePass1Files(File file) {
-        SYMTAB.clear();
+        ClearHahset();
         assemblyLines.clear();
         listingFileLines.clear();
         SYMTAB_Lines.clear();
@@ -45,7 +49,7 @@ public class Pass1 {
                     i--;
                 }
             }
-            int address = 0;
+            address = 0;
 
             for (String line : lines) {
                 AssemblyLine al = null;
@@ -71,12 +75,12 @@ public class Pass1 {
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {
-                        if (SYMTAB.containsKey(tempLabel)) {
+                        if (containsKey(nameCSECT, tempLabel)) {
                             listingFileLines.add("****** ERROR :: Symbol " + tempLabel + " is already defined ******");
                             success = false;
                         } else {
-                            SYMTAB.put(tempLabel, al.getSymbol());
-                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType());
+                            insertInHashSet(al.getSymbol());
+                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getSymbol().getValue()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType() + "\t\t" + nameCSECT);
                         }
 
                     }
@@ -151,24 +155,19 @@ public class Pass1 {
         return sb.toString();
     }
 
-    public static int getSymbolValue(String symbol) throws Exception {
-        if (SYMTAB.containsKey(symbol)) {
-            return SYMTAB.get(symbol).getValue();
-        } else {
-            throw new Exception("Symbol " + symbol + " is not found.");
-        }
+
+    public static boolean isExternalDef(String lbl)
+    {
+        if(ExDef.contains(lbl))
+            return true;
+
+        return false;
     }
 
     public static int calculateOperandValue(String str) throws Exception {
         int result = 0;
         ArrayList<String> tokens = getTokens(str);
-        if (validateExpression(tokens)) {
-            result = calculateInfix(tokens);
-        } else {
-            throw new Exception("Invalid Expression");
-        }
-
-
+        result = calculateInfix(tokens);
         return result;
     }
 
@@ -266,8 +265,8 @@ public class Pass1 {
             if (flag) {
                 if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
                     tokens.add(sb.toString());
-                } else if (SYMTAB.containsKey(sb.toString())) {
-                    tokens.add(Integer.toString(SYMTAB.get(sb.toString()).getValue()));
+                } else if (containsKey(nameCSECT, sb.toString())) {
+                    tokens.add(Integer.toString(getSymbol(nameCSECT ,sb.toString()).getValue()));
                 } else {
                     throw new Exception("Forward reference");
                 }
@@ -331,18 +330,13 @@ public class Pass1 {
                 Literal literal = new Literal(address, lit);
                 listingFileLines.add(literal.toString());
                 assemblyLines.add(literal);
-                SYMTAB.put(lit, literal.getSymbol());
-                SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t\t" + lit);
+                insertInHashSet(literal.getSymbol());
+                SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t" + lit + "\t\tR" + "\t\t" + nameCSECT);
                 address = literal.getNextAddress();
             }
             literals.clear();
         }
         return address;
-    }
-
-    private static boolean validateExpression(ArrayList<String> tokens) {
-
-        return true;
     }
 
 }

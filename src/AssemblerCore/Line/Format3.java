@@ -65,7 +65,7 @@ public class Format3 extends Format {
                 TA = Integer.parseInt(modifiedOperand);
                 isOperandNumber = true;
             } else {
-                TA = Pass1.getSymbolValue(modifiedOperand);
+                TA = Pass2.getSymbol(modifiedOperand).getValue();
             }
             displacement = TA - PC;
             if (!isOperandNumber) {

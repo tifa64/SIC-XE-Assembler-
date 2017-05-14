@@ -1,5 +1,6 @@
 package AssemblerCore.Line;
 
+import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
 
@@ -60,6 +61,6 @@ public abstract class Format extends AssemblyLine {
 
     @Override
     public Symbol getSymbol() throws Exception {
-        return new Symbol(label, address, 'R');
+        return new Symbol(label, address, 'R', Pass1.nameCSECT, Pass1.isExternalDef(mnemonic));
     }
 }

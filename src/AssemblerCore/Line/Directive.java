@@ -3,6 +3,7 @@ package AssemblerCore.Line;
 import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
+import AssemblerCore.SymbolTable;
 
 /**
  * Created by louay on 3/26/2017.
@@ -20,6 +21,8 @@ public class Directive extends AssemblyLine {
         this.comment = line.substring(35, 66).replaceAll("\\s+", "");
         if (mnemonic.equals("START")) {
             this.address = Integer.parseInt(operand, 16);
+        } else if (mnemonic.equals("CSECT")){
+            this.address = 0;
         } else {
             this.address = super.address;
         }
@@ -34,6 +37,7 @@ public class Directive extends AssemblyLine {
     public int getNextAddress() throws Exception {
         switch (mnemonic) {
             case "START": {
+                Pass1.nameCSECT = label;
                 Pass1.programStart = this.address;
                 return this.address;
             }
@@ -68,9 +72,11 @@ public class Directive extends AssemblyLine {
                 return this.address + intLenghtOfOperand;
             }
             case "WORD": {
-                int decimal = Integer.parseInt(operand);
-                if (decimal < -8388608 || decimal > 8388607)
-                    throw new Exception("Out of range");
+                if (AssemblyLine.isInteger(operand)) {
+                    int decimal = Integer.parseInt(operand);
+                    if (decimal < -8388608 || decimal > 8388607)
+                        throw new Exception("Out of range");
+                }
                 return this.address + 3;
             }
             case "BASE": {
@@ -79,13 +85,34 @@ public class Directive extends AssemblyLine {
             }
             case "NOBASE":
                 return this.address;
+
             case "LTORG":
                 throw new Exception("LTORG");
+
             case "ORG":
                 return Pass1.calculateOperandValue(operand);
 
             case "EQU":
+                return this.address;
 
+            case "CSECT":
+            {
+                Pass1.nameCSECT = label;
+                Pass1.ExDef.clear();
+                Pass1.address = 0;
+                return 0;
+            }
+
+            case "EXTDEF":
+            {
+                String externalDefinitions = operand+comment;
+                String[] tokens = externalDefinitions.split("[,]");
+                for(String s : tokens)
+                    Pass1.ExDef.add(s);
+
+                return this.address;
+            }
+            case "EXTREF":
                 return this.address;
 
             default:
@@ -115,12 +142,16 @@ public class Directive extends AssemblyLine {
             sb.append(" ");
         }
         sb.append("\t");
-        sb.append(this.operand);
-        for (int i = sb.toString().length(); i <= 41; i++) {
-            sb.append(" ");
+        if (mnemonic.equals("EXTDEF") || mnemonic.equals("EXTREF")) {
+            sb.append(this.operand + this.comment);
+        } else {
+            sb.append(this.operand);
+            for (int i = sb.toString().length(); i <= 41; i++) {
+                sb.append(" ");
+            }
+            sb.append("\t");
+            sb.append(this.comment);
         }
-        sb.append("\t");
-        sb.append(this.comment);
         return sb.toString();
     }
 
@@ -134,10 +165,11 @@ public class Directive extends AssemblyLine {
     @Override
     public String getObjectCode() throws Exception {
         switch (mnemonic) {
-            case "START":
+            case "START": {
                 return "H" + " " + this.label +
                         " " + Pass2.padStringWithZeroes(this.operand, 6) +
                         " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength), 6);
+            }
             case "END":
                 return ("E" + " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programStart), 6));
             case "RESB":
@@ -178,7 +210,7 @@ public class Directive extends AssemblyLine {
                 if (AssemblyLine.isInteger(operand)) {
                     Pass2.baseValue = Integer.parseInt(operand);
                 } else {
-                    Pass2.baseValue = Pass1.getSymbolValue(operand);
+                    Pass2.baseValue = Pass2.getSymbol(operand).getValue();
                 }
                 return "";
             }
@@ -191,6 +223,32 @@ public class Directive extends AssemblyLine {
             case "ORG": {
                 return "";
             }
+            case "CSECT": {
+                Pass2.addToHashTable(SymbolTable.getHashSetOfCSECT(this.label));
+                Pass2.externalRef.clear();
+                return "";
+            }
+            case "EXTREF": {
+                StringBuilder sb = new StringBuilder();
+                sb.append("R ");
+                String[] refrences = (this.operand + this.comment).split(",");
+                for (String ref : refrences) {
+                    sb.append(ref).append(" ");
+                    Pass2.externalRef.add(ref);
+                }
+                return sb.toString();
+            }
+            case "EXTDEF": {
+                StringBuilder sb = new StringBuilder();
+                sb.append("D ");
+                String[] definitions = (this.operand + this.comment).split(",");
+                for (String ref : definitions) {
+                    sb.append(ref).append(" ");
+                    String address = Pass2.padStringWithZeroes(Integer.toHexString(Pass2.getSymbol(ref).getValue()), 6);
+                    sb.append(address).append(" ");
+                }
+                return sb.toString();
+            }
             default:
                 throw new Exception("Unknown Directive");
         }
@@ -198,7 +256,7 @@ public class Directive extends AssemblyLine {
 
     @Override
     public void checkOperand() throws Exception {
-        if ((!this.mnemonic.equals("LTORG") && (!this.mnemonic.equals("NOBASE"))) && this.operand.length() == 0) {
+        if ((!this.mnemonic.equals("LTORG") && (!this.mnemonic.equals("NOBASE")) && (!this.mnemonic.equals("CSECT"))) && this.operand.length() == 0) {
             throw new Exception("No Operand");
         }
     }
@@ -217,7 +275,7 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        return new Symbol(label, value, type);
+        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(mnemonic));
 
     }
 
