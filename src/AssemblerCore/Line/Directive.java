@@ -231,6 +231,18 @@ public class Directive extends AssemblyLine {
                 }
                 return sb.toString();
             }
+            case "EXTDEF": {
+                StringBuilder sb = new StringBuilder();
+                sb.append("D ");
+                String[] definitions = (this.operand + this.comment).split(",");
+                for (String ref : definitions) {
+                    sb.append(ref).append(" ");
+                    if (Pass2.isSymbolExists(ref)) {
+                        String address = Pass2.padStringWithZeroes(Integer.toHexString(Pass2.getSymbol(ref).getValue()), 6);
+                        sb.append(address).append(" ");
+                    } else {
+                        throw new Exception("Unknown symbol: " + ref);
+                    }
                 }
                 return sb.toString();
             }

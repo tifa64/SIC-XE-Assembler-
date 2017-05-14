@@ -16,8 +16,8 @@ import java.util.Hashtable;
 public class Pass2 {
 
     private static final ArrayList<String> fileLines = new ArrayList<>();
+    private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
 
-    public static final Hashtable<String, Symbol> symbols = new Hashtable<>();
     public static final ArrayList<String> MRecords = new ArrayList<>();
     public static final HashSet<String> externalRef = new HashSet<>();
     public static int baseValue = -1;
@@ -55,8 +55,8 @@ public class Pass2 {
                         fileLines.add(currentObjCode);
                         break;
                     }
-                    /*Case External Reference*/
-                    else if (currentObjCode.startsWith("R ")) {
+                    /*Case External Reference or definition*/
+                    else if (currentObjCode.startsWith("R ") || currentObjCode.startsWith("D ")) {
                         fileLines.add(currentObjCode);
                         break;
                     }
@@ -137,5 +137,13 @@ public class Pass2 {
         for (Symbol s : symbols) {
             Pass2.symbols.put(s.getSymbolName(), s);
         }
+    }
+
+    public static boolean isSymbolExists (String symbol) {
+        return Pass2.symbols.containsKey(symbol);
+    }
+
+    public static Symbol getSymbol(String symbol) {
+        return Pass2.symbols.get(symbol);
     }
 }
