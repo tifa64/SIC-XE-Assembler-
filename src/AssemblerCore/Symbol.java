@@ -16,6 +16,7 @@ public class Symbol {
         this.value = value;
         this.type = type;
         this.cset = cset;
+        this.exdef = exdef;
     }
 
     public int getValue() {
