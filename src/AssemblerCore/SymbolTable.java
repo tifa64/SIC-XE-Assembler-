@@ -9,13 +9,13 @@ public class SymbolTable {
 
     private final HashSet<Symbol> symbols = new HashSet<Symbol>();
 
-    public  HashSet<Symbol> getHashSetOfCSECT(int nCSECT)
+    public  HashSet<Symbol> getHashSetOfCSECT(String nCSECT)
     {
         HashSet<Symbol> CSECTsymbols = new HashSet<Symbol>();
         int sz = symbols.size();
         for(Symbol s : symbols)
         {
-            if(s.getCSETNumber() == nCSECT)
+            if(s.getCSETNamme().equals(nCSECT))
                 CSECTsymbols.add(s);
         }
         return CSECTsymbols;

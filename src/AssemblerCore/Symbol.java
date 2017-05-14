@@ -7,11 +7,11 @@ public class Symbol {
     private final String symbol;
     private final int value;
     private final char type;
-    private final int cset;
+    private final String cset;
     private final boolean exdef;
 
 
-    public Symbol(String symbol, int value, char type, int cset, boolean exdef) {
+    public Symbol(String symbol, int value, char type, String cset, boolean exdef) {
         this.symbol = symbol;
         this.value = value;
         this.type = type;
@@ -27,7 +27,7 @@ public class Symbol {
         return type;
     }
 
-    public int getCSETNumber() {
+    public String getCSETNamme() {
         return cset;
     }
 

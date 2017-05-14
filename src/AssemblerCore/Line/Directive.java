@@ -79,7 +79,7 @@ public class Directive extends AssemblyLine {
             }
             case "NOBASE":
                 return this.address;
-            
+
             case "LTORG":
                 throw new Exception("LTORG");
 
@@ -89,7 +89,7 @@ public class Directive extends AssemblyLine {
             case "EQU":
                 return this.address;
 
-            case "CSECT"
+            case "CSECT":
                     return this.address;
 
             default:
@@ -221,7 +221,7 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        return new Symbol(label, value, type);
+        return new Symbol(label, value, type, );
 
     }
 
