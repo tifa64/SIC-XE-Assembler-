@@ -139,7 +139,7 @@ public class Pass2 {
         }
     }
 
-    public static boolean isSymbolExists (String symbol) {
+    private static boolean isSymbolExists (String symbol) {
         return Pass2.symbols.containsKey(symbol);
     }
 
