@@ -4,6 +4,8 @@ import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
 
+import java.awt.*;
+
 /**
  * Created by louay on 3/26/2017.
  */
@@ -34,6 +36,7 @@ public class Directive extends AssemblyLine {
     public int getNextAddress() throws Exception {
         switch (mnemonic) {
             case "START": {
+                Pass1.nameCSECT = label;
                 Pass1.programStart = this.address;
                 return this.address;
             }
@@ -92,9 +95,21 @@ public class Directive extends AssemblyLine {
             case "CSECT":
             {
                 Pass1.nameCSECT = label;
+                Pass1.ExDef.clear();
                 return this.address;
             }
 
+            case "EXDEF":
+            {
+                String externalDefinitions = operand+comment;
+                String[] tokens = externalDefinitions.split("[,]");
+                for(String s : tokens)
+                    Pass1.ExDef.add(s);
+
+                return this.address;
+            }
+            case "EXREF":
+                return this.address;
 
             default:
                 throw new Exception("Unknown Directive");
@@ -225,7 +240,7 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        return new Symbol(label, value, type, Pass1.nameCSECT, true);
+        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(mnemonic));
 
     }
 

@@ -20,6 +20,7 @@ public class Pass1 {
     public static final HashSet<String> literals = new HashSet<>();
     static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
     private static final Hashtable<String, Symbol> SYMTAB = new Hashtable<String, Symbol>();
+    public static final HashSet<String> ExDef = new HashSet<String>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
@@ -158,6 +159,14 @@ public class Pass1 {
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
         }
+    }
+
+    public static boolean isExternalDef(String lbl)
+    {
+        if(ExDef.contains(lbl))
+            return true;
+
+        return false;
     }
 
     public static int calculateOperandValue(String str) throws Exception {
