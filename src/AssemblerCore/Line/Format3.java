@@ -65,7 +65,11 @@ public class Format3 extends Format {
                 TA = Integer.parseInt(modifiedOperand);
                 isOperandNumber = true;
             } else {
-                TA = Pass1.getSymbolValue(modifiedOperand);
+                if (Pass2.isSymbolExists(modifiedOperand)) {
+                    TA = Pass2.getSymbol(modifiedOperand).getValue();
+                } else {
+                    throw new Exception("Symbol " + modifiedOperand + " is not found.");
+                }
             }
             displacement = TA - PC;
             if (!isOperandNumber) {
