@@ -159,7 +159,6 @@ public class Directive extends AssemblyLine {
     public String getObjectCode() throws Exception {
         switch (mnemonic) {
             case "START": {
-                Pass2.csect = this.label;
                 return "H" + " " + this.label +
                         " " + Pass2.padStringWithZeroes(this.operand, 6) +
                         " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength), 6);
@@ -218,7 +217,7 @@ public class Directive extends AssemblyLine {
                 return "";
             }
             case "CSECT": {
-                Pass2.symbols = SymbolTable.getHashSetOfCSECT(this.label);
+                Pass2.addToHashTable(SymbolTable.getHashSetOfCSECT(this.label));
                 Pass2.externalRef.clear();
                 return "";
             }
@@ -228,6 +227,10 @@ public class Directive extends AssemblyLine {
                 String[] refrences = (this.operand + this.comment).split(",");
                 for (String ref : refrences) {
                     sb.append(ref).append(" ");
+                    Pass2.externalRef.add(ref);
+                }
+                return sb.toString();
+            }
                 }
                 return sb.toString();
             }

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Hashtable;
 
 /**
  * Created by louay on 4/15/2017.
@@ -16,10 +17,10 @@ public class Pass2 {
 
     private static final ArrayList<String> fileLines = new ArrayList<>();
 
+    public static final Hashtable<String, Symbol> symbols = new Hashtable<>();
     public static final ArrayList<String> MRecords = new ArrayList<>();
     public static final HashSet<String> externalRef = new HashSet<>();
     public static int baseValue = -1;
-    public static HashSet<Symbol> symbols = new HashSet<>();
 
     public static void generateObjectCodes() {
 
@@ -129,5 +130,12 @@ public class Pass2 {
             sb.append(str).append("\n");
         }
         return sb.toString();
+    }
+
+    public static void addToHashTable(HashSet<Symbol> symbols) {
+        Pass2.symbols.clear();
+        for (Symbol s : symbols) {
+            Pass2.symbols.put(s.getSymbolName(), s);
+        }
     }
 }

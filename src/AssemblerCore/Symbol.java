@@ -4,7 +4,7 @@ package AssemblerCore;
  * Created by louay on 5/13/2017.
  */
 public class Symbol {
-    private final String symbol;
+    private final String symbolName;
     private final int value;
     private final char type;
     private final String cset;
@@ -12,7 +12,7 @@ public class Symbol {
 
 
     public Symbol(String symbol, int value, char type, String cset, boolean exdef) {
-        this.symbol = symbol;
+        this.symbolName = symbol;
         this.value = value;
         this.type = type;
         this.cset = cset;
@@ -40,4 +40,7 @@ public class Symbol {
         return exdef;
     }
 
+    public String getSymbolName() {
+        return symbolName;
+    }
 }
