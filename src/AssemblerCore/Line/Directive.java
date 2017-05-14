@@ -186,7 +186,9 @@ public class Directive extends AssemblyLine {
                 Pass2.baseValue = -1;
                 return "";
             }
-            case "LTORG": {
+            case "LTORG":
+            case "EQU":
+            case "ORG": {
                 return "";
             }
             default:
