@@ -26,4 +26,14 @@ public class Symbol {
     public char getType() {
         return type;
     }
+
+    public int getCSETNumber() {
+        return cset;
+    }
+
+    public boolean isExDef() {
+
+        return exdef;
+    }
+
 }

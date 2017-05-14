@@ -79,14 +79,18 @@ public class Directive extends AssemblyLine {
             }
             case "NOBASE":
                 return this.address;
+            
             case "LTORG":
                 throw new Exception("LTORG");
+
             case "ORG":
                 return Pass1.calculateOperandValue(operand);
 
             case "EQU":
-
                 return this.address;
+
+            case "CSECT"
+                    return this.address;
 
             default:
                 throw new Exception("Unknown Directive");

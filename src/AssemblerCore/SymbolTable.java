@@ -11,11 +11,18 @@ public class SymbolTable {
 
     public  HashSet<Symbol> getHashSetOfCSECT(int nCSECT)
     {
-        return  null;
+        HashSet<Symbol> CSECTsymbols = new HashSet<Symbol>();
+        int sz = symbols.size();
+        for(Symbol s : symbols)
+        {
+            if(s.getCSETNumber() == nCSECT)
+                CSECTsymbols.add(s);
+        }
+        return CSECTsymbols;
     }
-    public void insertInHashSet()
+    public void insertInHashSet(Symbol symb)
     {
-
+        symbols.add(symb);
     }
 
 }
