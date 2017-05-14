@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static AssemblerCore.SymbolTable.*;
+
 /**
  * Created by louay on 3/25/2017.
  */
@@ -19,7 +21,6 @@ public class Pass1 {
 
     public static final HashSet<String> literals = new HashSet<>();
     static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
-    private static final Hashtable<String, Symbol> SYMTAB = new Hashtable<String, Symbol>();
     public static final HashSet<String> ExDef = new HashSet<String>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
@@ -33,7 +34,7 @@ public class Pass1 {
     }
 
     public static void generatePass1Files(File file) {
-        SYMTAB.clear();
+        ClearHahset();
         assemblyLines.clear();
         listingFileLines.clear();
         SYMTAB_Lines.clear();
@@ -73,11 +74,11 @@ public class Pass1 {
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {
-                        if (SYMTAB.containsKey(tempLabel)) {
+                        if (containsKey(nameCSECT, tempLabel)) {
                             listingFileLines.add("****** ERROR :: Symbol " + tempLabel + " is already defined ******");
                             success = false;
                         } else {
-                            SYMTAB.put(tempLabel, al.getSymbol());
+                            insertInHashSet(al.getSymbol());
                             SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType());
                         }
 
@@ -153,13 +154,6 @@ public class Pass1 {
         return sb.toString();
     }
 
-    public static int getSymbolValue(String symbol) throws Exception {
-        if (SYMTAB.containsKey(symbol)) {
-            return SYMTAB.get(symbol).getValue();
-        } else {
-            throw new Exception("Symbol " + symbol + " is not found.");
-        }
-    }
 
     public static boolean isExternalDef(String lbl)
     {
@@ -276,8 +270,8 @@ public class Pass1 {
             if (flag) {
                 if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
                     tokens.add(sb.toString());
-                } else if (SYMTAB.containsKey(sb.toString())) {
-                    tokens.add(Integer.toString(SYMTAB.get(sb.toString()).getValue()));
+                } else if (containsKey(nameCSECT, sb.toString())) {
+                    tokens.add(Integer.toString(getSymbolValue(sb.toString()).getValue()));
                 } else {
                     throw new Exception("Forward reference");
                 }
@@ -341,7 +335,7 @@ public class Pass1 {
                 Literal literal = new Literal(address, lit);
                 listingFileLines.add(literal.toString());
                 assemblyLines.add(literal);
-                SYMTAB.put(lit, literal.getSymbol());
+                insertInHashSet(literal.getSymbol());
                 SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t\t" + lit);
                 address = literal.getNextAddress();
             }

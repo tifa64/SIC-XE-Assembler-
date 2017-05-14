@@ -25,4 +25,26 @@ public class SymbolTable {
         symbols.add(symb);
     }
 
+    public static void ClearHahset()
+    {
+        symbols.clear();
+    }
+
+    public static boolean containsKey(String nCSECT, String symb)
+    {
+        HashSet<Symbol> CSECTsymbols = getHashSetOfCSECT(nCSECT);
+        return CSECTsymbols.contains(symb);
+
+    }
+
+    public static Symbol getSymbolValue(String symb)
+    {
+        for(Symbol s : symbols)
+        {
+            if(s.getCSETNamme().equals(symb))
+                return s;
+        }
+        return null;
+    }
+
 }

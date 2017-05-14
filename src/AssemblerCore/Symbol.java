@@ -19,6 +19,10 @@ public class Symbol {
         this.exdef = exdef;
     }
 
+    public String getSymbolName()
+    {
+        return symbol;
+    }
     public int getValue() {
         return value;
     }
