@@ -203,7 +203,11 @@ public class Directive extends AssemblyLine {
                 if (AssemblyLine.isInteger(operand)) {
                     Pass2.baseValue = Integer.parseInt(operand);
                 } else {
-                    Pass2.baseValue = Pass1.getSymbolValue(operand);
+                    if (Pass2.isSymbolExists(operand)) {
+                        Pass2.baseValue = Pass2.getSymbol(operand).getValue();
+                    } else {
+                        throw new Exception("Symbol " + operand + " is not found.");
+                    }
                 }
                 return "";
             }
