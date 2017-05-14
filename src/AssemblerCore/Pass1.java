@@ -29,6 +29,7 @@ public class Pass1 {
     public static int programStart;
     private static boolean success;
     public static String nameCSECT;
+    public static int address;
 
     private Pass1() {
     }
@@ -48,7 +49,7 @@ public class Pass1 {
                     i--;
                 }
             }
-            int address = 0;
+            address = 0;
 
             for (String line : lines) {
                 AssemblyLine al = null;
@@ -330,7 +331,7 @@ public class Pass1 {
                 listingFileLines.add(literal.toString());
                 assemblyLines.add(literal);
                 insertInHashSet(literal.getSymbol());
-                SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t\t" + lit);
+                SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t" + lit + "\t\tR" + "\t\t" + nameCSECT);
                 address = literal.getNextAddress();
             }
             literals.clear();

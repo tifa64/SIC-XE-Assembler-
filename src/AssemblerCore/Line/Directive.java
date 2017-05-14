@@ -21,6 +21,8 @@ public class Directive extends AssemblyLine {
         this.comment = line.substring(35, 66).replaceAll("\\s+", "");
         if (mnemonic.equals("START")) {
             this.address = Integer.parseInt(operand, 16);
+        } else if (mnemonic.equals("CSECT")){
+            this.address = 0;
         } else {
             this.address = super.address;
         }
@@ -97,7 +99,8 @@ public class Directive extends AssemblyLine {
             {
                 Pass1.nameCSECT = label;
                 Pass1.ExDef.clear();
-                return this.address;
+                Pass1.address = 0;
+                return 0;
             }
 
             case "EXTDEF":
@@ -139,12 +142,16 @@ public class Directive extends AssemblyLine {
             sb.append(" ");
         }
         sb.append("\t");
-        sb.append(this.operand);
-        for (int i = sb.toString().length(); i <= 41; i++) {
-            sb.append(" ");
+        if (mnemonic.equals("EXTDEF") || mnemonic.equals("EXTREF")) {
+            sb.append(this.operand + this.comment);
+        } else {
+            sb.append(this.operand);
+            for (int i = sb.toString().length(); i <= 41; i++) {
+                sb.append(" ");
+            }
+            sb.append("\t");
+            sb.append(this.comment);
         }
-        sb.append("\t");
-        sb.append(this.comment);
         return sb.toString();
     }
 
