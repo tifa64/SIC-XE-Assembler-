@@ -7,11 +7,15 @@ public class Symbol {
     private final String symbol;
     private final int value;
     private final char type;
+    private final int cset;
+    private final boolean exdef;
 
-    public Symbol(String symbol, int value, char type) {
+
+    public Symbol(String symbol, int value, char type, int cset, boolean exdef) {
         this.symbol = symbol;
         this.value = value;
         this.type = type;
+        this.cset = cset;
     }
 
     public int getValue() {
