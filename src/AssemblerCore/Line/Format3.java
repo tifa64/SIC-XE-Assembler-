@@ -24,7 +24,7 @@ public class Format3 extends Format {
     @Override
     public int getNextAddress() {
 
-        if(operand.length() > 0 && operand.charAt(0) == '=')
+        if (operand.length() > 0 && operand.charAt(0) == '=')
             Pass1.literals.add(operand);
         return this.address + 3;
     }
@@ -45,7 +45,7 @@ public class Format3 extends Format {
         int TA = 0;
         int displacement = 0;
 
-        if (operand.length() > 0){
+        if (operand.length() > 0) {
             if (operand.charAt(0) == '@') {
                 modifiedOperand = operand.substring(1, operand.length());
                 n = '1';

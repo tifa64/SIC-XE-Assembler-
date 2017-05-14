@@ -17,19 +17,18 @@ import java.util.*;
  */
 public class Pass1 {
 
-    public static int programLength;
-    public static int programStart;
-    public static final HashSet<String>  literals = new HashSet<>();
-
+    public static final HashSet<String> literals = new HashSet<>();
     static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
-
     private static final Hashtable<String, Symbol> SYMTAB = new Hashtable<String, Symbol>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
+    public static int programLength;
+    public static int programStart;
     private static boolean success;
 
-    private Pass1() { }
+    private Pass1() {
+    }
 
     public static void generatePass1Files(File file) {
         SYMTAB.clear();
@@ -57,12 +56,12 @@ public class Pass1 {
                         address = al.getNextAddress();
                         al.checkOperand();
                     } catch (Exception e) {
-                        if (e.getMessage().equals("No Operand")){
+                        if (e.getMessage().equals("No Operand")) {
                             listingFileLines.add("****** ERROR :: No Operand specified ******");
                             success = false;
                         } else if (e.getMessage().equals("LTORG") || e.getMessage().equals("End Of File")) {
                             address = insertLiterals(address);
-                            if (e.getMessage().equals("End Of File")){
+                            if (e.getMessage().equals("End Of File")) {
                                 listingFileLines.add("---- END OF FILE ----");
                             }
                         } else {
@@ -75,8 +74,7 @@ public class Pass1 {
                         if (SYMTAB.containsKey(tempLabel)) {
                             listingFileLines.add("****** ERROR :: Symbol " + tempLabel + " is already defined ******");
                             success = false;
-                        }
-                        else {
+                        } else {
                             SYMTAB.put(tempLabel, al.getSymbol());
                             SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType());
                         }
@@ -133,28 +131,28 @@ public class Pass1 {
         }
     }
 
-    public static boolean isSuccess(){
+    public static boolean isSuccess() {
         return success;
     }
 
-    public static String getListingFileLines(){
+    public static String getListingFileLines() {
         StringBuilder sb = new StringBuilder();
-        for (String str : listingFileLines){
+        for (String str : listingFileLines) {
             sb.append(str).append("\n");
         }
         return sb.toString();
     }
 
-    public static String getSymTableLines(){
+    public static String getSymTableLines() {
         StringBuilder sb = new StringBuilder();
-        for (String str : SYMTAB_Lines){
+        for (String str : SYMTAB_Lines) {
             sb.append(str).append("\n");
         }
         return sb.toString();
     }
 
     public static int getSymbolValue(String symbol) throws Exception {
-        if (SYMTAB.containsKey(symbol)){
+        if (SYMTAB.containsKey(symbol)) {
             return SYMTAB.get(symbol).getValue();
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
@@ -163,7 +161,7 @@ public class Pass1 {
 
     public static int calculateOperandValue(String str) throws Exception {
         int result = 0;
-        ArrayList <String> tokens = getTokens(str);
+        ArrayList<String> tokens = getTokens(str);
         if (validateExpression(tokens)) {
             result = calculateInfix(tokens);
         } else {
@@ -175,7 +173,7 @@ public class Pass1 {
     }
 
     public static char getExpressionType(String str) throws Exception {
-        ArrayList <String> tokens = getTokens(str);
+        ArrayList<String> tokens = getTokens(str);
 
         Stack<Pair<String, Character>> operands = new Stack<>();
         Stack<Character> operators = new Stack<>();
@@ -194,20 +192,20 @@ public class Pass1 {
                                 if (a.getValue().equals('R') && b.getValue().equals('R')) {
                                     throw new Exception("Relative + Relative");
                                 } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
-                                    operands.push(new Pair<>("ay 7aga",'R'));
+                                    operands.push(new Pair<>("ay 7aga", 'R'));
                                 } else if (a.getValue().equals('A') && b.getValue().equals('R')) {
-                                    operands.push(new Pair<>("ay 7aga",'R'));
+                                    operands.push(new Pair<>("ay 7aga", 'R'));
                                 } else {
-                                    operands.push(new Pair<>("ay 7aga",'A'));
+                                    operands.push(new Pair<>("ay 7aga", 'A'));
                                 }
                                 break;
                             case '-': {
                                 if (a.getValue().equals('A') && b.getValue().equals('R')) {
                                     throw new Exception("Absolute - Relative");
                                 } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
-                                    operands.push(new Pair<>("ay 7aga",'R'));
+                                    operands.push(new Pair<>("ay 7aga", 'R'));
                                 } else {
-                                    operands.push(new Pair<>("ay 7aga",'A'));
+                                    operands.push(new Pair<>("ay 7aga", 'A'));
                                 }
                                 break;
                             }
@@ -231,20 +229,20 @@ public class Pass1 {
                     if (a.getValue().equals('R') && b.getValue().equals('R')) {
                         throw new Exception("Relative + Relative");
                     } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
-                        operands.push(new Pair<>("ay 7aga",'R'));
+                        operands.push(new Pair<>("ay 7aga", 'R'));
                     } else if (a.getValue().equals('A') && b.getValue().equals('R')) {
-                        operands.push(new Pair<>("ay 7aga",'R'));
+                        operands.push(new Pair<>("ay 7aga", 'R'));
                     } else {
-                        operands.push(new Pair<>("ay 7aga",'A'));
+                        operands.push(new Pair<>("ay 7aga", 'A'));
                     }
                     break;
                 case '-': {
                     if (a.getValue().equals('A') && b.getValue().equals('R')) {
                         throw new Exception("Absolute - Relative");
                     } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
-                        operands.push(new Pair<>("ay 7aga",'R'));
+                        operands.push(new Pair<>("ay 7aga", 'R'));
                     } else {
-                        operands.push(new Pair<>("ay 7aga",'A'));
+                        operands.push(new Pair<>("ay 7aga", 'A'));
                     }
                     break;
                 }
@@ -254,7 +252,7 @@ public class Pass1 {
         return operands.pop().getValue();
     }
 
-    private static ArrayList<String> getTokens(String str) throws Exception{
+    private static ArrayList<String> getTokens(String str) throws Exception {
         int n = str.length();
         ArrayList<String> tokens = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -281,7 +279,7 @@ public class Pass1 {
         return tokens;
     }
 
-    private static int calculateInfix (ArrayList<String> tokens) {
+    private static int calculateInfix(ArrayList<String> tokens) {
         Stack<Integer> operands = new Stack<>();
         Stack<Character> operators = new Stack<>();
 
@@ -327,9 +325,9 @@ public class Pass1 {
         return operands.pop();
     }
 
-    private static int insertLiterals(int address) throws Exception{
-        if (!literals.isEmpty()){
-            for (String lit : literals){
+    private static int insertLiterals(int address) throws Exception {
+        if (!literals.isEmpty()) {
+            for (String lit : literals) {
                 Literal literal = new Literal(address, lit);
                 listingFileLines.add(literal.toString());
                 assemblyLines.add(literal);

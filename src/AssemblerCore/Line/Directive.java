@@ -73,8 +73,8 @@ public class Directive extends AssemblyLine {
                     throw new Exception("Out of range");
                 return this.address + 3;
             }
-            case "BASE":{
-                if(operand.charAt(0) == '=')
+            case "BASE": {
+                if (operand.charAt(0) == '=')
                     Pass1.literals.add(operand);
             }
             case "NOBASE":
@@ -196,7 +196,7 @@ public class Directive extends AssemblyLine {
 
     @Override
     public void checkOperand() throws Exception {
-        if ((!this.mnemonic.equals("LTORG") && (!this.mnemonic.equals("NOBASE"))) && this.operand.length() == 0){
+        if ((!this.mnemonic.equals("LTORG") && (!this.mnemonic.equals("NOBASE"))) && this.operand.length() == 0) {
             throw new Exception("No Operand");
         }
     }
@@ -220,7 +220,7 @@ public class Directive extends AssemblyLine {
     }
 
     @Override
-    public int getAddress(){
+    public int getAddress() {
         return address;
     }
 }

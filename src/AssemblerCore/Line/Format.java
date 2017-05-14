@@ -53,7 +53,7 @@ public abstract class Format extends AssemblyLine {
 
     @Override
     public void checkOperand() throws Exception {
-        if (!this.mnemonic.equals("RSUB") && this.operand.length() == 0){
+        if (!this.mnemonic.equals("RSUB") && this.operand.length() == 0) {
             throw new Exception("No Operand");
         }
     }

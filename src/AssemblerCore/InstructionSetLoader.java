@@ -60,7 +60,7 @@ public class InstructionSetLoader {
     }
 
     public int getRegOpCode(String register) throws Exception {
-        if (Regs.containsKey(register)){
+        if (Regs.containsKey(register)) {
             return Regs.get(register);
         } else {
             throw new Exception("Register " + register + " is unknown.");
