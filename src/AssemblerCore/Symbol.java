@@ -27,7 +27,7 @@ public class Symbol {
         return type;
     }
 
-    public String getCSETName() {
+    public String getCSECTName() {
         return cset;
     }
 

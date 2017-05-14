@@ -79,7 +79,7 @@ public class Pass1 {
                             success = false;
                         } else {
                             insertInHashSet(al.getSymbol());
-                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getSymbol().getValue()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType());
+                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getSymbol().getValue()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType() + "\t\t" + nameCSECT);
                         }
 
                     }

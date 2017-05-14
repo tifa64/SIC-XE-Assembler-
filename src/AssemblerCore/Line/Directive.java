@@ -98,7 +98,7 @@ public class Directive extends AssemblyLine {
                 return this.address;
             }
 
-            case "EXDEF":
+            case "EXTDEF":
             {
                 String externalDefinitions = operand+comment;
                 String[] tokens = externalDefinitions.split("[,]");
@@ -107,7 +107,7 @@ public class Directive extends AssemblyLine {
 
                 return this.address;
             }
-            case "EXREF":
+            case "EXTREF":
                 return this.address;
 
             default:
@@ -247,7 +247,7 @@ public class Directive extends AssemblyLine {
 
     @Override
     public void checkOperand() throws Exception {
-        if ((!this.mnemonic.equals("LTORG") && (!this.mnemonic.equals("NOBASE"))) && this.operand.length() == 0) {
+        if ((!this.mnemonic.equals("LTORG") && (!this.mnemonic.equals("NOBASE")) && (!this.mnemonic.equals("CSECT"))) && this.operand.length() == 0) {
             throw new Exception("No Operand");
         }
     }
