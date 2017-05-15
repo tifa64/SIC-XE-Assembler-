@@ -1,6 +1,7 @@
 package AssemblerCore;
 
 import AssemblerCore.Line.AssemblyLine;
+import AssemblerCore.Line.Directive;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -26,11 +27,12 @@ public class Pass2 {
         MRecords.clear();
         baseValue = -1;
         fileLines.clear();
+        Directive.reset();
 
         int recordSize = 0;
         String currentObjCode = "";
         StringBuilder objCodeSB = new StringBuilder();
-        String programStart = Integer.toHexString(Pass1.programsStart).toUpperCase();
+        String programStart = Integer.toHexString(Directive.globalProgramStart).toUpperCase();
         String currentTRecordStart = padStringWithZeroes(programStart, 6);
         boolean successFlag = true;
         boolean firstResFlag = true;

@@ -10,7 +10,7 @@ import AssemblerCore.SymbolTable;
  */
 public class Directive extends AssemblyLine {
     private static boolean firstCSECTflag = true;
-    private static int globalProgramStart = 0;
+    public static int globalProgramStart = 0;
     protected final String label, mnemonic, operand, comment;
     protected final int address;
 
@@ -28,6 +28,10 @@ public class Directive extends AssemblyLine {
         } else {
             this.address = super.address;
         }
+    }
+
+    public static void reset() {
+        firstCSECTflag = true;
     }
 
     @Override
