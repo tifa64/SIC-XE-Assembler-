@@ -56,4 +56,13 @@ public class SymbolTable {
         throw new Exception("An EQU Symbol " + symb + " isn't immediate");
     }
 
+    public static boolean symbolIsExDed(String symb)
+    {
+        for (Symbol s : symbols) {
+            if (s.getSymbolName().equals(symb) && s.isExDef())
+                return true;
+        }
+        return false;
+    }
+
 }

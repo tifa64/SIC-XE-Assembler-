@@ -4,6 +4,8 @@ import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
 
+import static AssemblerCore.SymbolTable.symbolIsExDed;
+
 /**
  * Created by louay on 3/26/2017.
  */
@@ -61,6 +63,6 @@ public abstract class Format extends AssemblyLine {
 
     @Override
     public Symbol getSymbol() throws Exception {
-        return new Symbol(label, address, 'R', Pass1.nameCSECT, Pass1.isExternalDef(mnemonic), false);
+        return new Symbol(label, address, 'R', Pass1.nameCSECT, Pass1.isExternalDef(label), false);
     }
 }

@@ -48,7 +48,6 @@ public class Format3 extends Format {
 
         if (operand.length() > 0) {
 
-            System.out.println(operand);
             String symbolOperand = operand.split(",")[0];
             if (!AssemblyLine.isInteger(symbolOperand.substring(1))) {
                 if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {

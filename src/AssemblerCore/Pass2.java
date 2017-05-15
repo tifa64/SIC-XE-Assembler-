@@ -103,6 +103,11 @@ public class Pass2 {
                         successFlag = false;
                         errorMsg = m.getMessage();
                     }
+                    else if(m.getMessage().equals("Symbol doens't have an external definition"))
+                    {
+                        successFlag = false;
+                        errorMsg = m.getMessage();
+                    }
                     else {
                         successFlag = false;
                         errorMsg = m.getMessage();

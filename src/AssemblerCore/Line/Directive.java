@@ -5,6 +5,8 @@ import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
 import AssemblerCore.SymbolTable;
 
+import static AssemblerCore.SymbolTable.symbolIsExDed;
+
 /**
  * Created by louay on 3/26/2017.
  */
@@ -46,6 +48,7 @@ public class Directive extends AssemblyLine {
                 Pass1.nameCSECT = label;
                 Pass1.programsStart = this.address;
                 globalProgramStart = this.address;
+                Pass1.ExDef.add(label);
                 return this.address;
             }
             case "END": {
@@ -107,8 +110,8 @@ public class Directive extends AssemblyLine {
                 Pass1.programsStart = 0;
                 Pass1.insertLiterals(Pass1.address);
                 Pass1.nameCSECT = label;
-                Pass1.ExDef.clear();
                 Pass1.address = 0;
+                Pass1.ExDef.add(label);
                 return 0;
             }
 
@@ -269,7 +272,10 @@ public class Directive extends AssemblyLine {
                 String[] refrences = (this.operand + this.comment).split(",");
                 for (String ref : refrences) {
                     sb.append(ref).append(" ");
-                    Pass2.externalRef.add(ref);
+                    if(Pass1.isExternalDef(ref))
+                        Pass2.externalRef.add(ref);
+                    else
+                      throw new Exception("Symbol doens't have an external definition");
                 }
                 return sb.toString();
             }
@@ -310,7 +316,7 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(mnemonic), mnemonic.equals("EQU"));
+        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(label), mnemonic.equals("EQU"));
 
     }
 
