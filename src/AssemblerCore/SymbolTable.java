@@ -9,44 +9,37 @@ public class SymbolTable {
 
     private static final HashSet<Symbol> symbols = new HashSet<Symbol>();
 
-    public static HashSet<Symbol> getHashSetOfCSECT(String nCSECT)
-    {
+    public static HashSet<Symbol> getHashSetOfCSECT(String nCSECT) {
         HashSet<Symbol> CSECTsymbols = new HashSet<Symbol>();
         int sz = symbols.size();
-        for(Symbol s : symbols)
-        {
-            if(s.getCSECTName().equals(nCSECT))
+        for (Symbol s : symbols) {
+            if (s.getCSECTName().equals(nCSECT))
                 CSECTsymbols.add(s);
         }
         return CSECTsymbols;
     }
-    public static void insertInHashSet(Symbol symb)
-    {
+
+    public static void insertInHashSet(Symbol symb) {
         symbols.add(symb);
     }
 
-    public static void ClearHahset()
-    {
+    public static void ClearHahset() {
         symbols.clear();
     }
 
-    public static boolean containsKey(String nCSECT, String symb)
-    {
+    public static boolean containsKey(String nCSECT, String symb) {
         HashSet<Symbol> CSECTsymbols = getHashSetOfCSECT(nCSECT);
-        for(Symbol s : CSECTsymbols)
-        {
-            if(s.getSymbolName().equals(symb))
+        for (Symbol s : CSECTsymbols) {
+            if (s.getSymbolName().equals(symb))
                 return true;
         }
         return false;
     }
 
-    public static Symbol getSymbol(String nCSECT, String symb)
-    {
+    public static Symbol getSymbol(String nCSECT, String symb) {
         HashSet<Symbol> CSECTsymbols = getHashSetOfCSECT(nCSECT);
-        for(Symbol s : CSECTsymbols)
-        {
-            if(s.getSymbolName().equals(symb))
+        for (Symbol s : CSECTsymbols) {
+            if (s.getSymbolName().equals(symb))
                 return s;
         }
         return null;

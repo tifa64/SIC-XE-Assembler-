@@ -9,6 +9,8 @@ import AssemblerCore.SymbolTable;
  * Created by louay on 3/26/2017.
  */
 public class Directive extends AssemblyLine {
+    private static boolean firstCSECTflag = true;
+    private static int globalProgramStart = 0;
     protected final String label, mnemonic, operand, comment;
     protected final int address;
 
@@ -21,7 +23,7 @@ public class Directive extends AssemblyLine {
         this.comment = line.substring(35, 66).replaceAll("\\s+", "");
         if (mnemonic.equals("START")) {
             this.address = Integer.parseInt(operand, 16);
-        } else if (mnemonic.equals("CSECT")){
+        } else if (mnemonic.equals("CSECT")) {
             this.address = 0;
         } else {
             this.address = super.address;
@@ -38,11 +40,12 @@ public class Directive extends AssemblyLine {
         switch (mnemonic) {
             case "START": {
                 Pass1.nameCSECT = label;
-                Pass1.programStart = this.address;
+                Pass1.programsStart = this.address;
+                globalProgramStart = this.address;
                 return this.address;
             }
             case "END": {
-                Pass1.programLength = this.address - Pass1.programStart;
+                Pass1.programLength.put(Pass1.nameCSECT, this.address - Pass1.programsStart);
                 throw new Exception("End Of File");
             }
             case "RESB": {
@@ -95,19 +98,20 @@ public class Directive extends AssemblyLine {
             case "EQU":
                 return this.address;
 
-            case "CSECT":
-            {
+            case "CSECT": {
+                Pass1.programLength.put(Pass1.nameCSECT, this.address - Pass1.programsStart);
+                Pass1.programsStart = 0;
+                Pass1.insertLiterals(Pass1.address);
                 Pass1.nameCSECT = label;
                 Pass1.ExDef.clear();
                 Pass1.address = 0;
                 return 0;
             }
 
-            case "EXTDEF":
-            {
-                String externalDefinitions = operand+comment;
+            case "EXTDEF": {
+                String externalDefinitions = operand + comment;
                 String[] tokens = externalDefinitions.split("[,]");
-                for(String s : tokens)
+                for (String s : tokens)
                     Pass1.ExDef.add(s);
 
                 return this.address;
@@ -166,12 +170,14 @@ public class Directive extends AssemblyLine {
     public String getObjectCode() throws Exception {
         switch (mnemonic) {
             case "START": {
+                Pass2.addToHashTable(SymbolTable.getHashSetOfCSECT(this.label));
+                Pass2.externalRef.clear();
                 return "H" + " " + this.label +
                         " " + Pass2.padStringWithZeroes(this.operand, 6) +
-                        " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength), 6);
+                        " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength.get(this.label)), 6);
             }
             case "END":
-                return ("E" + " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programStart), 6));
+                return ("E" + " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programsStart), 6));
             case "RESB":
             case "RESW": {
                 throw new Exception("Reserve directive, breaking T record");
@@ -200,11 +206,17 @@ public class Directive extends AssemblyLine {
                 return sb.toString().toUpperCase();
             }
             case "WORD": {
-                int decimal = Integer.parseInt(operand);
-                if (decimal < -8388608 || decimal > 8388607)
-                    throw new Exception("Out of range");
-                String hexa = Pass2.padStringWithZeroes(Integer.toHexString(decimal), 6);
-                return hexa;
+                if (AssemblyLine.isInteger(operand)) {
+                    int decimal = Integer.parseInt(operand);
+                    if (decimal < -8388608 || decimal > 8388607)
+                        throw new Exception("Out of range");
+                    String hexa = Pass2.padStringWithZeroes(Integer.toHexString(decimal), 6);
+                    return hexa;
+                } else {
+                    Pass1.getExpressionType(operand);
+                    String hexa = Pass2.padStringWithZeroes(Integer.toHexString(Pass1.calculateOperandValue(operand)), 6);
+                    return hexa;
+                }
             }
             case "BASE": {
                 if (AssemblyLine.isInteger(operand)) {
@@ -226,7 +238,16 @@ public class Directive extends AssemblyLine {
             case "CSECT": {
                 Pass2.addToHashTable(SymbolTable.getHashSetOfCSECT(this.label));
                 Pass2.externalRef.clear();
-                return "";
+                StringBuilder sb = new StringBuilder();
+                sb.append("E ");
+                if (firstCSECTflag) {
+                    firstCSECTflag = false;
+                    sb.append(globalProgramStart);
+                }
+                sb.append("\n").append("H ");
+                sb.append(this.label).append(" 000000");
+                sb.append(Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength.get(this.label)), 6));
+                return sb.toString();
             }
             case "EXTREF": {
                 StringBuilder sb = new StringBuilder();

@@ -15,11 +15,10 @@ import java.util.Hashtable;
  */
 public class Pass2 {
 
-    private static final ArrayList<String> fileLines = new ArrayList<>();
-    private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
-
     public static final ArrayList<String> MRecords = new ArrayList<>();
     public static final HashSet<String> externalRef = new HashSet<>();
+    private static final ArrayList<String> fileLines = new ArrayList<>();
+    private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
     public static int baseValue = -1;
 
     public static void generateObjectCodes() {
@@ -31,7 +30,7 @@ public class Pass2 {
         int recordSize = 0;
         String currentObjCode = "";
         StringBuilder objCodeSB = new StringBuilder();
-        String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+        String programStart = Integer.toHexString(Pass1.programsStart).toUpperCase();
         String currentTRecordStart = padStringWithZeroes(programStart, 6);
         boolean successFlag = true;
         boolean firstResFlag = true;
@@ -53,12 +52,10 @@ public class Pass2 {
                         }
                         fileLines.addAll(MRecords);
                         fileLines.add(currentObjCode);
-                        break;
                     }
                     /*Case External Reference or definition*/
                     else if (currentObjCode.startsWith("R ") || currentObjCode.startsWith("D ")) {
                         fileLines.add(currentObjCode);
-                        break;
                     }
                     /*Case Comment**/
                     else if (currentObjCode.length() == 0) {
@@ -139,13 +136,23 @@ public class Pass2 {
         }
     }
 
-    private static boolean isSymbolExists (String symbol) {
+    private static boolean isSymbolExists(String symbol) {
         return Pass2.symbols.containsKey(symbol);
     }
 
-    public static Symbol getSymbol(String symbol) throws Exception{
+    public static Symbol getSymbol(String symbol) throws Exception {
         if (isSymbolExists(symbol)) {
             return Pass2.symbols.get(symbol);
+        } else {
+            throw new Exception("Symbol " + symbol + " is not found.");
+        }
+    }
+
+    public static int getSymbolValue(String symbol) throws Exception {
+        if (isSymbolExists(symbol)) {
+            return Pass2.symbols.get(symbol).getValue();
+        } else if (externalRef.contains(symbol)) {
+            return 0;
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
         }
