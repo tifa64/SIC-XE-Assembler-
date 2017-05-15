@@ -176,8 +176,16 @@ public class Directive extends AssemblyLine {
                         " " + Pass2.padStringWithZeroes(this.operand, 6) +
                         " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength.get(this.label)), 6);
             }
-            case "END":
-                return ("E" + " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programsStart), 6));
+            case "END": {
+                StringBuilder sb = new StringBuilder();
+                sb.append("E ");
+                if (firstCSECTflag) {
+                    firstCSECTflag = false;
+                    sb.append(Pass2.padStringWithZeroes(Integer.toHexString(globalProgramStart), 6));
+                }
+                sb.append("\n");
+                return sb.toString();
+            }
             case "RESB":
             case "RESW": {
                 throw new Exception("Reserve directive, breaking T record");
@@ -242,10 +250,10 @@ public class Directive extends AssemblyLine {
                 sb.append("E ");
                 if (firstCSECTflag) {
                     firstCSECTflag = false;
-                    sb.append(globalProgramStart);
+                    sb.append(Pass2.padStringWithZeroes(Integer.toHexString(globalProgramStart), 6));
                 }
-                sb.append("\n").append("H ");
-                sb.append(this.label).append(" 000000");
+                sb.append("\n\n").append("H ");
+                sb.append(this.label).append(" 000000 ");
                 sb.append(Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength.get(this.label)), 6));
                 return sb.toString();
             }
