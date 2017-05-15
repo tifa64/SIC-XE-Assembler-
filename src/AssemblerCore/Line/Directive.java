@@ -334,32 +334,4 @@ public class Directive extends AssemblyLine {
     public int getAddress() {
         return address;
     }
-
-    private ArrayList<String> getExtRefTokens(String str) throws Exception {
-        int n = str.length();
-        ArrayList<String> tokens = new ArrayList<>();
-        char sign = '+';
-        for (int i = 0; i < n; i++) {
-            StringBuilder sb = new StringBuilder();
-            boolean flag = false;
-            while (i < n && (Character.isLetterOrDigit(str.charAt(i)) || str.charAt(i) == '*')) {
-                sb.append(str.charAt(i));
-                i++;
-                flag = true;
-            }
-            if (flag) {
-                if (Pass2.externalRef.contains(sb.toString())) {
-                    tokens.add(sign + sb.toString());
-                }
-            }
-            if (i < n) {
-                if (str.charAt(i) == '+' || str.charAt(i) == '(') {
-                    sign = '+';
-                } else if (str.charAt(i) == '-') {
-                    sign = '-';
-                }
-            }
-        }
-        return tokens;
-    }
 }
