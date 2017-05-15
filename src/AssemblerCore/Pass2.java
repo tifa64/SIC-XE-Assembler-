@@ -46,7 +46,7 @@ public class Pass2 {
                     if (currentObjCode.startsWith("H")) {
                         fileLines.add(currentObjCode);
                     }
-                    /*Case END**/
+                    /*Case END or CSECT**/
                     /*It will add the last line of T before it then will the END line**/
                     else if (currentObjCode.startsWith("E ")) {
                         if (recordSize > 0) {
@@ -54,6 +54,7 @@ public class Pass2 {
                             fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
                         }
                         fileLines.addAll(MRecords);
+                        MRecords.clear();
                         fileLines.add(currentObjCode);
                         currentTRecordStart = "000000";
                         objCodeSB = new StringBuilder();
@@ -102,11 +103,13 @@ public class Pass2 {
                     {
                         successFlag = false;
                         errorMsg = m.getMessage();
+                        break;
                     }
                     else if(m.getMessage().equals("Symbol doens't have an external definition"))
                     {
                         successFlag = false;
                         errorMsg = m.getMessage();
+                        break;
                     }
                     else {
                         successFlag = false;

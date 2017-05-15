@@ -6,6 +6,7 @@ import AssemblerCore.Symbol;
 import AssemblerCore.SymbolTable;
 
 import static AssemblerCore.SymbolTable.symbolIsExDed;
+import java.util.ArrayList;
 
 /**
  * Created by louay on 3/26/2017.
@@ -231,6 +232,15 @@ public class Directive extends AssemblyLine {
                 } else {
                     Pass1.getExpressionType(operand);
                     String hexa = Pass2.padStringWithZeroes(Integer.toHexString(Pass1.calculateOperandValue(operand)), 6);
+                    ArrayList<String> extRefTokens = getExtRefTokens(operand);
+                    for (String str : extRefTokens) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("M ");
+                        sb.append(Pass2.padStringWithZeroes(Integer.toHexString(this.address), 6));
+                        sb.append(" 06 ");
+                        sb.append(str);
+                        Pass2.MRecords.add(sb.toString());
+                    }
                     return hexa;
                 }
             }
