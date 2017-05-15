@@ -52,6 +52,7 @@ public class Pass2 {
                         }
                         fileLines.addAll(MRecords);
                         fileLines.add(currentObjCode);
+                        currentTRecordStart = "000000";
                     }
                     /*Case External Reference or definition*/
                     else if (currentObjCode.startsWith("R ") || currentObjCode.startsWith("D ")) {
