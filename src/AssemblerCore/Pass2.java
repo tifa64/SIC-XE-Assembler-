@@ -1,6 +1,7 @@
 package AssemblerCore;
 
 import AssemblerCore.Line.AssemblyLine;
+import AssemblerCore.Line.Directive;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -20,17 +21,19 @@ public class Pass2 {
     private static final ArrayList<String> fileLines = new ArrayList<>();
     private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
     public static int baseValue = -1;
+    public static String nameCSECT;
 
     public static void generateObjectCodes() {
 
         MRecords.clear();
         baseValue = -1;
         fileLines.clear();
+        Directive.reset();
 
         int recordSize = 0;
         String currentObjCode = "";
         StringBuilder objCodeSB = new StringBuilder();
-        String programStart = Integer.toHexString(Pass1.programsStart).toUpperCase();
+        String programStart = Integer.toHexString(Directive.globalProgramStart).toUpperCase();
         String currentTRecordStart = padStringWithZeroes(programStart, 6);
         boolean successFlag = true;
         boolean firstResFlag = true;
@@ -52,6 +55,9 @@ public class Pass2 {
                         }
                         fileLines.addAll(MRecords);
                         fileLines.add(currentObjCode);
+                        currentTRecordStart = "000000";
+                        objCodeSB = new StringBuilder();
+                        recordSize = 0;
                     }
                     /*Case External Reference or definition*/
                     else if (currentObjCode.startsWith("R ") || currentObjCode.startsWith("D ")) {
@@ -92,10 +98,10 @@ public class Pass2 {
                         }
                         currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
                     }
-                    else if(m.getMessage().equals("An EQU Symbol isn't immediate"))
+                    else if(m.getMessage().startsWith("An EQU"))
                     {
                         successFlag = false;
-                        errorMsg = "Error. You used a non immediate EQU Symbol";
+                        errorMsg = m.getMessage();
                     }
                     else {
                         successFlag = false;
