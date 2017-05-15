@@ -12,6 +12,9 @@ public class Directive extends AssemblyLine {
     protected final String label, mnemonic, operand, comment;
     protected final int address;
 
+    private static boolean firstCSECTflag = true;
+    private static int globalProgramStart = 0;
+
 
     protected Directive(int address, String line) {
         super(address, line);
@@ -38,11 +41,12 @@ public class Directive extends AssemblyLine {
         switch (mnemonic) {
             case "START": {
                 Pass1.nameCSECT = label;
-                Pass1.programStart = this.address;
+                Pass1.programsStart = this.address;
+                globalProgramStart = this.address;
                 return this.address;
             }
             case "END": {
-                Pass1.programLength = this.address - Pass1.programStart;
+                Pass1.programLength.put(Pass1.nameCSECT ,this.address - Pass1.programsStart);
                 throw new Exception("End Of File");
             }
             case "RESB": {
@@ -97,6 +101,8 @@ public class Directive extends AssemblyLine {
 
             case "CSECT":
             {
+                Pass1.programLength.put(Pass1.nameCSECT, this.address - Pass1.programsStart);
+                Pass1.programsStart = 0;
                 Pass1.insertLiterals(Pass1.address);
                 Pass1.nameCSECT = label;
                 Pass1.ExDef.clear();
@@ -171,10 +177,10 @@ public class Directive extends AssemblyLine {
                 Pass2.externalRef.clear();
                 return "H" + " " + this.label +
                         " " + Pass2.padStringWithZeroes(this.operand, 6) +
-                        " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength), 6);
+                        " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength.get(this.label)), 6);
             }
             case "END":
-                return ("E" + " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programStart), 6));
+                return ("E" + " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programsStart), 6));
             case "RESB":
             case "RESW": {
                 throw new Exception("Reserve directive, breaking T record");
@@ -235,7 +241,16 @@ public class Directive extends AssemblyLine {
             case "CSECT": {
                 Pass2.addToHashTable(SymbolTable.getHashSetOfCSECT(this.label));
                 Pass2.externalRef.clear();
-                return "";
+                StringBuilder sb = new StringBuilder();
+                sb.append("E ");
+                if (firstCSECTflag) {
+                    firstCSECTflag = false;
+                    sb.append(globalProgramStart);
+                }
+                sb.append("\n").append("H ");
+                sb.append(this.label).append(" 000000");
+                sb.append(Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength.get(this.label)), 6));
+                return sb.toString();
             }
             case "EXTREF": {
                 StringBuilder sb = new StringBuilder();
@@ -284,8 +299,7 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        String csect = this.mnemonic.equals("CSECT")? "!" : Pass1.nameCSECT;
-        return new Symbol(label, value, type, csect, Pass1.isExternalDef(mnemonic));
+        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(mnemonic));
 
     }
 

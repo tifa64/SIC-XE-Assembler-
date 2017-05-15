@@ -25,8 +25,8 @@ public class Pass1 {
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
-    public static int programLength;
-    public static int programStart;
+    public static Hashtable<String, Integer> programLength = new Hashtable<>();
+    public static int programsStart;
     private static boolean success;
     public static String nameCSECT;
     public static int address;

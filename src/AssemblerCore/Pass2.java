@@ -31,7 +31,7 @@ public class Pass2 {
         int recordSize = 0;
         String currentObjCode = "";
         StringBuilder objCodeSB = new StringBuilder();
-        String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+        String programStart = Integer.toHexString(Pass1.programsStart).toUpperCase();
         String currentTRecordStart = padStringWithZeroes(programStart, 6);
         boolean successFlag = true;
         boolean firstResFlag = true;
