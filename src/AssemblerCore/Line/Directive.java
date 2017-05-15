@@ -103,7 +103,7 @@ public class Directive extends AssemblyLine {
                 return this.address;
 
             case "CSECT": {
-                Pass1.programLength.put(Pass1.nameCSECT, this.address - Pass1.programsStart);
+                Pass1.programLength.put(Pass1.nameCSECT, super.address - Pass1.programsStart);
                 Pass1.programsStart = 0;
                 Pass1.insertLiterals(Pass1.address);
                 Pass1.nameCSECT = label;
