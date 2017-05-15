@@ -40,6 +40,7 @@ public class Pass1 {
         listingFileLines.clear();
         SYMTAB_Lines.clear();
         success = true;
+        literals.clear();
         List<String> lines = null;
         try {
             lines = Files.readAllLines(Paths.get(file.getPath()));
@@ -326,6 +327,10 @@ public class Pass1 {
     }
 
     public static int insertLiterals(int address) throws Exception {
+        int currentProgramLength = 0;
+        if (programLength.containsKey(nameCSECT)) {
+            currentProgramLength = programLength.get(nameCSECT);
+        }
         if (!literals.isEmpty()) {
             for (String lit : literals) {
                 Literal literal = new Literal(address, lit);
@@ -334,9 +339,14 @@ public class Pass1 {
                 insertInHashSet(literal.getSymbol());
                 SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t" + lit + "\t\tR" + "\t\t" + nameCSECT);
                 address = literal.getNextAddress();
+                currentProgramLength += (literal.getObjectCode().length() / 2);
             }
             literals.clear();
+            if (programLength.containsKey(nameCSECT)) {
+                programLength.put(nameCSECT, currentProgramLength);
+            }
         }
+        literals.clear();
         return address;
     }
 
