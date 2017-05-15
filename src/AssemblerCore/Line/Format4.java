@@ -46,10 +46,17 @@ public class Format4 extends Format {
         nixbpe.set(e);
         String value = operand;
 
-        if(symbolIsEqu(operand.substring(1,operand.length())) && operand.charAt(0) != '#')
-        {
-            throw new Exception("An EQU Symbol isn't immediate");
+        String symbolOperand = operand.split(",")[0];
+        if (!AssemblyLine.isInteger(symbolOperand.substring(1))) {
+            if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {
+                if (symbolIsEqu(symbolOperand.substring(1,symbolOperand.length())) && symbolOperand.charAt(0) != '#') {
+                    throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
+                }
+            } else if(symbolIsEqu(symbolOperand)) {
+                throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
+            }
         }
+
         if (operand.endsWith(",X")) {
             nixbpe.set(x);
             value = operand.substring(0, operand.length() - 2);

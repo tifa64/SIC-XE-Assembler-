@@ -176,6 +176,7 @@ public class Directive extends AssemblyLine {
             case "START": {
                 Pass2.addToHashTable(SymbolTable.getHashSetOfCSECT(this.label));
                 Pass2.externalRef.clear();
+                Pass2.nameCSECT = this.label;
                 return "H" + " " + this.label +
                         " " + Pass2.padStringWithZeroes(this.operand, 6) +
                         " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength.get(this.label)), 6);
@@ -259,6 +260,7 @@ public class Directive extends AssemblyLine {
                 sb.append("\n\n").append("H ");
                 sb.append(this.label).append(" 000000 ");
                 sb.append(Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength.get(this.label)), 6));
+                Pass2.nameCSECT = this.label;
                 return sb.toString();
             }
             case "EXTREF": {

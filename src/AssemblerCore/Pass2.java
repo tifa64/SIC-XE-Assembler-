@@ -21,6 +21,7 @@ public class Pass2 {
     private static final ArrayList<String> fileLines = new ArrayList<>();
     private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
     public static int baseValue = -1;
+    public static String nameCSECT;
 
     public static void generateObjectCodes() {
 
@@ -97,10 +98,10 @@ public class Pass2 {
                         }
                         currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
                     }
-                    else if(m.getMessage().equals("An EQU Symbol isn't immediate"))
+                    else if(m.getMessage().startsWith("An EQU"))
                     {
                         successFlag = false;
-                        errorMsg = "Error. You used a non immediate EQU Symbol";
+                        errorMsg = m.getMessage();
                     }
                     else {
                         successFlag = false;

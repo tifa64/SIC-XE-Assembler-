@@ -47,11 +47,13 @@ public class SymbolTable {
 
     public static boolean symbolIsEqu(String symb) throws Exception
     {
-        Symbol tempSymbol = getSymbol(Pass1.nameCSECT, symb);
+        Symbol tempSymbol = getSymbol(Pass2.nameCSECT, symb);
         if(tempSymbol != null)
             return tempSymbol.getIsEqu();
+        else if (Pass2.externalRef.contains(symb))
+            return false;
 
-        throw new Exception("An EQU Symbol isn't immediate");
+        throw new Exception("An EQU Symbol " + symb + " isn't immediate");
     }
 
 }
