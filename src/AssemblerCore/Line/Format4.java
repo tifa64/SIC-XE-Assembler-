@@ -98,7 +98,14 @@ public class Format4 extends Format {
             mRecordSB.append("M ");
             String mAddressHex = Pass2.padStringWithZeroes(Integer.toHexString(this.address + 1).toUpperCase(), 6);
             mRecordSB.append(mAddressHex);
-            mRecordSB.append(" 05");
+            mRecordSB.append(" 05 +");
+            String mRecordExtra;
+            if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#' ) {
+                mRecordExtra = symbolOperand.substring(1);
+            } else {
+                mRecordExtra = symbolOperand;
+            }
+            mRecordSB.append(mRecordExtra);
             Pass2.MRecords.add(mRecordSB.toString());
         }
 
