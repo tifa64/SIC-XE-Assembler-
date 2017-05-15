@@ -11,19 +11,17 @@ import java.io.File;
 /**
  * Created by louay on 4/19/2017.
  */
-public class MainGUI extends JDialog{
+public class MainGUI extends JDialog {
 
     private File selectedFile;
-
-    public static void main(String[] args) {
-        setUIFlavour();
-        JFrame frame = new JFrame("SIC/XE Assembler");
-        frame.setContentPane(new MainGUI().mainPanel);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
-
+    private JButton chooseFileButton;
+    private JTextField textField1;
+    private JButton startPass1Button;
+    private JButton startPass2Button;
+    private JPanel mainPanel;
+    private JTextArea listingFileArea;
+    private JTextArea symbolTableArea;
+    private JTextArea htmeRecordsArea;
     public MainGUI() {
         setModal(true);
         startPass1Button.setEnabled(false);
@@ -36,6 +34,15 @@ public class MainGUI extends JDialog{
         addActionListenersToUiComponents();
     }
 
+    public static void main(String[] args) {
+        setUIFlavour();
+        JFrame frame = new JFrame("SIC/XE Assembler");
+        frame.setContentPane(new MainGUI().mainPanel);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
     private static void setUIFlavour() {
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -44,12 +51,12 @@ public class MainGUI extends JDialog{
         }
     }
 
-    private void addActionListenersToUiComponents(){
+    private void addActionListenersToUiComponents() {
         chooseFileButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser fileChooser = new JFileChooser();
-                if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+                if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     selectedFile = fileChooser.getSelectedFile();
                     startPass1Button.setEnabled(true);
                     startPass2Button.setEnabled(false);
@@ -67,7 +74,7 @@ public class MainGUI extends JDialog{
                 Pass1.generatePass1Files(selectedFile);
                 listingFileArea.setText(Pass1.getListingFileLines());
                 symbolTableArea.setText(Pass1.getSymTableLines());
-                if (Pass1.isSuccess()){
+                if (Pass1.isSuccess()) {
                     startPass2Button.setEnabled(true);
                     htmeRecordsArea.setText("HTME records will be visible here");
                 } else {
@@ -87,13 +94,4 @@ public class MainGUI extends JDialog{
             }
         });
     }
-
-    private JButton chooseFileButton;
-    private JTextField textField1;
-    private JButton startPass1Button;
-    private JButton startPass2Button;
-    private JPanel mainPanel;
-    private JTextArea listingFileArea;
-    private JTextArea symbolTableArea;
-    private JTextArea htmeRecordsArea;
 }

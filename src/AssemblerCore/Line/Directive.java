@@ -9,11 +9,10 @@ import AssemblerCore.SymbolTable;
  * Created by louay on 3/26/2017.
  */
 public class Directive extends AssemblyLine {
-    protected final String label, mnemonic, operand, comment;
-    protected final int address;
-
     private static boolean firstCSECTflag = true;
     private static int globalProgramStart = 0;
+    protected final String label, mnemonic, operand, comment;
+    protected final int address;
 
 
     protected Directive(int address, String line) {
@@ -24,7 +23,7 @@ public class Directive extends AssemblyLine {
         this.comment = line.substring(35, 66).replaceAll("\\s+", "");
         if (mnemonic.equals("START")) {
             this.address = Integer.parseInt(operand, 16);
-        } else if (mnemonic.equals("CSECT")){
+        } else if (mnemonic.equals("CSECT")) {
             this.address = 0;
         } else {
             this.address = super.address;
@@ -46,7 +45,7 @@ public class Directive extends AssemblyLine {
                 return this.address;
             }
             case "END": {
-                Pass1.programLength.put(Pass1.nameCSECT ,this.address - Pass1.programsStart);
+                Pass1.programLength.put(Pass1.nameCSECT, this.address - Pass1.programsStart);
                 throw new Exception("End Of File");
             }
             case "RESB": {
@@ -99,8 +98,7 @@ public class Directive extends AssemblyLine {
             case "EQU":
                 return this.address;
 
-            case "CSECT":
-            {
+            case "CSECT": {
                 Pass1.programLength.put(Pass1.nameCSECT, this.address - Pass1.programsStart);
                 Pass1.programsStart = 0;
                 Pass1.insertLiterals(Pass1.address);
@@ -110,11 +108,10 @@ public class Directive extends AssemblyLine {
                 return 0;
             }
 
-            case "EXTDEF":
-            {
-                String externalDefinitions = operand+comment;
+            case "EXTDEF": {
+                String externalDefinitions = operand + comment;
                 String[] tokens = externalDefinitions.split("[,]");
-                for(String s : tokens)
+                for (String s : tokens)
                     Pass1.ExDef.add(s);
 
                 return this.address;

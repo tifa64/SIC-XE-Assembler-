@@ -15,11 +15,10 @@ import java.util.Hashtable;
  */
 public class Pass2 {
 
-    private static final ArrayList<String> fileLines = new ArrayList<>();
-    private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
-
     public static final ArrayList<String> MRecords = new ArrayList<>();
     public static final HashSet<String> externalRef = new HashSet<>();
+    private static final ArrayList<String> fileLines = new ArrayList<>();
+    private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
     public static int baseValue = -1;
 
     public static void generateObjectCodes() {
@@ -137,11 +136,11 @@ public class Pass2 {
         }
     }
 
-    private static boolean isSymbolExists (String symbol) {
+    private static boolean isSymbolExists(String symbol) {
         return Pass2.symbols.containsKey(symbol);
     }
 
-    public static Symbol getSymbol(String symbol) throws Exception{
+    public static Symbol getSymbol(String symbol) throws Exception {
         if (isSymbolExists(symbol)) {
             return Pass2.symbols.get(symbol);
         } else {
@@ -149,7 +148,7 @@ public class Pass2 {
         }
     }
 
-    public static int getSymbolValue(String symbol) throws Exception{
+    public static int getSymbolValue(String symbol) throws Exception {
         if (isSymbolExists(symbol)) {
             return Pass2.symbols.get(symbol).getValue();
         } else if (externalRef.contains(symbol)) {

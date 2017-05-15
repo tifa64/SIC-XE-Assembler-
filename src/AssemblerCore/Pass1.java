@@ -20,16 +20,16 @@ import static AssemblerCore.SymbolTable.*;
 public class Pass1 {
 
     public static final HashSet<String> literals = new HashSet<>();
-    static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
     public static final HashSet<String> ExDef = new HashSet<String>();
+    static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
     public static Hashtable<String, Integer> programLength = new Hashtable<>();
     public static int programsStart;
-    private static boolean success;
     public static String nameCSECT;
     public static int address;
+    private static boolean success;
 
     private Pass1() {
     }
@@ -156,9 +156,8 @@ public class Pass1 {
     }
 
 
-    public static boolean isExternalDef(String lbl)
-    {
-        if(ExDef.contains(lbl))
+    public static boolean isExternalDef(String lbl) {
+        if (ExDef.contains(lbl))
             return true;
 
         return false;
@@ -266,7 +265,7 @@ public class Pass1 {
                 if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
                     tokens.add(sb.toString());
                 } else if (containsKey(nameCSECT, sb.toString())) {
-                    tokens.add(Integer.toString(getSymbol(nameCSECT ,sb.toString()).getValue()));
+                    tokens.add(Integer.toString(getSymbol(nameCSECT, sb.toString()).getValue()));
                 } else if (Pass2.externalRef.contains(sb.toString())) {
                     tokens.add("0");
                 } else {
