@@ -97,6 +97,7 @@ public class Directive extends AssemblyLine {
 
             case "CSECT":
             {
+                Pass1.insertLiterals(Pass1.address);
                 Pass1.nameCSECT = label;
                 Pass1.ExDef.clear();
                 Pass1.address = 0;
@@ -166,6 +167,8 @@ public class Directive extends AssemblyLine {
     public String getObjectCode() throws Exception {
         switch (mnemonic) {
             case "START": {
+                Pass2.addToHashTable(SymbolTable.getHashSetOfCSECT(this.label));
+                Pass2.externalRef.clear();
                 return "H" + " " + this.label +
                         " " + Pass2.padStringWithZeroes(this.operand, 6) +
                         " " + Pass2.padStringWithZeroes(Integer.toHexString(Pass1.programLength), 6);
@@ -200,11 +203,17 @@ public class Directive extends AssemblyLine {
                 return sb.toString().toUpperCase();
             }
             case "WORD": {
-                int decimal = Integer.parseInt(operand);
-                if (decimal < -8388608 || decimal > 8388607)
-                    throw new Exception("Out of range");
-                String hexa = Pass2.padStringWithZeroes(Integer.toHexString(decimal), 6);
-                return hexa;
+                if (AssemblyLine.isInteger(operand)) {
+                    int decimal = Integer.parseInt(operand);
+                    if (decimal < -8388608 || decimal > 8388607)
+                        throw new Exception("Out of range");
+                    String hexa = Pass2.padStringWithZeroes(Integer.toHexString(decimal), 6);
+                    return hexa;
+                } else {
+                    Pass1.getExpressionType(operand);
+                    String hexa = Pass2.padStringWithZeroes(Integer.toHexString(Pass1.calculateOperandValue(operand)), 6);
+                    return hexa;
+                }
             }
             case "BASE": {
                 if (AssemblyLine.isInteger(operand)) {
@@ -275,7 +284,8 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(mnemonic));
+        String csect = this.mnemonic.equals("CSECT")? "!" : Pass1.nameCSECT;
+        return new Symbol(label, value, type, csect, Pass1.isExternalDef(mnemonic));
 
     }
 

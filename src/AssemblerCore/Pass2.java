@@ -53,12 +53,10 @@ public class Pass2 {
                         }
                         fileLines.addAll(MRecords);
                         fileLines.add(currentObjCode);
-                        break;
                     }
                     /*Case External Reference or definition*/
                     else if (currentObjCode.startsWith("R ") || currentObjCode.startsWith("D ")) {
                         fileLines.add(currentObjCode);
-                        break;
                     }
                     /*Case Comment**/
                     else if (currentObjCode.length() == 0) {
@@ -146,6 +144,16 @@ public class Pass2 {
     public static Symbol getSymbol(String symbol) throws Exception{
         if (isSymbolExists(symbol)) {
             return Pass2.symbols.get(symbol);
+        } else {
+            throw new Exception("Symbol " + symbol + " is not found.");
+        }
+    }
+
+    public static int getSymbolValue(String symbol) throws Exception{
+        if (isSymbolExists(symbol)) {
+            return Pass2.symbols.get(symbol).getValue();
+        } else if (externalRef.contains(symbol)) {
+            return 0;
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
         }

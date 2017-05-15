@@ -15,7 +15,7 @@ public class SymbolTable {
         int sz = symbols.size();
         for(Symbol s : symbols)
         {
-            if(s.getCSECTName().equals(nCSECT))
+            if(s.getCSECTName().equals(nCSECT) || s.getCSECTName().equals("!"))
                 CSECTsymbols.add(s);
         }
         return CSECTsymbols;

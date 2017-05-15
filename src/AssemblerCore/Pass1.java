@@ -267,6 +267,8 @@ public class Pass1 {
                     tokens.add(sb.toString());
                 } else if (containsKey(nameCSECT, sb.toString())) {
                     tokens.add(Integer.toString(getSymbol(nameCSECT ,sb.toString()).getValue()));
+                } else if (Pass2.externalRef.contains(sb.toString())) {
+                    tokens.add("0");
                 } else {
                     throw new Exception("Forward reference");
                 }
@@ -324,7 +326,7 @@ public class Pass1 {
         return operands.pop();
     }
 
-    private static int insertLiterals(int address) throws Exception {
+    public static int insertLiterals(int address) throws Exception {
         if (!literals.isEmpty()) {
             for (String lit : literals) {
                 Literal literal = new Literal(address, lit);
