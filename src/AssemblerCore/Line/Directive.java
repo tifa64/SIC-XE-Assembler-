@@ -296,7 +296,7 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(mnemonic));
+        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(mnemonic), mnemonic.equals("EQU"));
 
     }
 

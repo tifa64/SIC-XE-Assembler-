@@ -91,7 +91,13 @@ public class Pass2 {
                             firstResFlag = false;
                         }
                         currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
-                    } else {
+                    }
+                    else if(m.getMessage().equals("An EQU Symbol isn't immediate"))
+                    {
+                        successFlag = false;
+                        errorMsg = "Error. You used a non immediate EQU Symbol";
+                    }
+                    else {
                         successFlag = false;
                         errorMsg = m.getMessage();
                         m.printStackTrace();

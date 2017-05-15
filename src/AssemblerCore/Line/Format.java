@@ -61,6 +61,6 @@ public abstract class Format extends AssemblyLine {
 
     @Override
     public Symbol getSymbol() throws Exception {
-        return new Symbol(label, address, 'R', Pass1.nameCSECT, Pass1.isExternalDef(mnemonic));
+        return new Symbol(label, address, 'R', Pass1.nameCSECT, Pass1.isExternalDef(mnemonic), false);
     }
 }

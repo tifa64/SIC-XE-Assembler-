@@ -6,6 +6,8 @@ import AssemblerCore.Pass2;
 
 import java.util.BitSet;
 
+import static AssemblerCore.SymbolTable.symbolIsEqu;
+
 /**
  * Created by louay on 3/25/2017.
  */
@@ -43,6 +45,11 @@ public class Format4 extends Format {
         BitSet nixbpe = new BitSet(6);
         nixbpe.set(e);
         String value = operand;
+
+        if(symbolIsEqu(operand.substring(1,operand.length())) && operand.charAt(0) != '#')
+        {
+            throw new Exception("An EQU Symbol isn't immediate");
+        }
         if (operand.endsWith(",X")) {
             nixbpe.set(x);
             value = operand.substring(0, operand.length() - 2);

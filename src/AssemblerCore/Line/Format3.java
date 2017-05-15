@@ -5,6 +5,7 @@ import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 
 import static AssemblerCore.Pass2.baseValue;
+import static AssemblerCore.SymbolTable.symbolIsEqu;
 
 /**
  * Created by louay on 3/25/2017.
@@ -46,6 +47,13 @@ public class Format3 extends Format {
         int displacement = 0;
 
         if (operand.length() > 0) {
+
+            System.out.println(operand);
+            if(symbolIsEqu(operand.substring(1,operand.length())) && operand.charAt(0) != '#')
+            {
+                throw new Exception("An EQU Symbol isn't immediate");
+            }
+
             if (operand.charAt(0) == '@') {
                 modifiedOperand = operand.substring(1, operand.length());
                 n = '1';
@@ -60,6 +68,8 @@ public class Format3 extends Format {
                 modifiedOperand = operand.substring(0, operand.length() - 2);
                 x = '1';
             }
+
+
 
             if (isInteger(modifiedOperand)) {
                 TA = Integer.parseInt(modifiedOperand);
