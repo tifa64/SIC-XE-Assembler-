@@ -5,7 +5,6 @@ import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
 import AssemblerCore.SymbolTable;
 
-import static AssemblerCore.SymbolTable.symbolIsExDed;
 import java.util.ArrayList;
 
 /**
@@ -13,9 +12,11 @@ import java.util.ArrayList;
  */
 public class Directive extends AssemblyLine {
     private static boolean firstCSECTflag = true;
+    private static int lastSavedAddress = 0;
     public static int globalProgramStart = 0;
     protected final String label, mnemonic, operand, comment;
     protected final int address;
+
 
 
     protected Directive(int address, String line) {
@@ -100,8 +101,15 @@ public class Directive extends AssemblyLine {
             case "LTORG":
                 throw new Exception("LTORG");
 
-            case "ORG":
-                return Pass1.calculateOperandValue(operand);
+            case "ORG": {
+                if (operand.length() > 0) {
+                    int address = Pass1.calculateOperandValue(operand);
+                    lastSavedAddress = address;
+                    return lastSavedAddress;
+                }
+                return lastSavedAddress;
+            }
+
 
             case "EQU":
                 return this.address;
