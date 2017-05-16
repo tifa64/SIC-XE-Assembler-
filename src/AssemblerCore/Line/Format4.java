@@ -23,11 +23,6 @@ public class Format4 extends Format {
     }
 
     @Override
-    public int getType() {
-        return 4;
-    }
-
-    @Override
     public int getNextAddress() {
 
         if (operand.charAt(0) == '=')
@@ -49,10 +44,10 @@ public class Format4 extends Format {
         String symbolOperand = operand.split(",")[0];
         if (!AssemblyLine.isInteger(symbolOperand.substring(1))) {
             if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {
-                if (symbolIsEqu(symbolOperand.substring(1,symbolOperand.length())) && symbolOperand.charAt(0) != '#') {
+                if (symbolIsEqu(symbolOperand.substring(1, symbolOperand.length())) && symbolOperand.charAt(0) != '#') {
                     throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
                 }
-            } else if(symbolIsEqu(symbolOperand)) {
+            } else if (symbolIsEqu(symbolOperand)) {
                 throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
             }
         }
@@ -100,7 +95,7 @@ public class Format4 extends Format {
             mRecordSB.append(mAddressHex);
             mRecordSB.append(" 05 +");
             String mRecordExtra;
-            if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#' ) {
+            if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {
                 mRecordExtra = symbolOperand.substring(1);
             } else {
                 mRecordExtra = symbolOperand;

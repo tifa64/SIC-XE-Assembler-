@@ -52,22 +52,6 @@ public abstract class AssemblyLine {
         }
     }
 
-    public abstract int getType();
-
-    public abstract int getNextAddress() throws Exception;
-
-    public int getAddress() {
-        return this.address;
-    }
-
-    public abstract String getLabel();
-
-    public abstract String getObjectCode() throws Exception;
-
-    public abstract void checkOperand() throws Exception;
-
-    public abstract Symbol getSymbol() throws Exception;
-
     protected static ArrayList<String> getExtRefTokens(String str) throws Exception {
         int n = str.length();
         ArrayList<String> tokens = new ArrayList<>();
@@ -94,5 +78,19 @@ public abstract class AssemblyLine {
             }
         }
         return tokens;
+    }
+
+    public abstract int getNextAddress() throws Exception;
+
+    public abstract String getLabel();
+
+    public abstract String getObjectCode() throws Exception;
+
+    public abstract void checkOperand() throws Exception;
+
+    public abstract Symbol getSymbol() throws Exception;
+
+    public int getAddress() {
+        return this.address;
     }
 }

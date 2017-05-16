@@ -23,6 +23,7 @@ public class MainGUI extends JDialog {
     private JTextArea listingFileArea;
     private JTextArea symbolTableArea;
     private JTextArea htmeRecordsArea;
+
     public MainGUI() {
         setModal(true);
         startPass1Button.setEnabled(false);

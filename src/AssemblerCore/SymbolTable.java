@@ -7,11 +7,10 @@ import java.util.HashSet;
  */
 public class SymbolTable {
 
-    private static final HashSet<Symbol> symbols = new HashSet<Symbol>();
+    private static final HashSet<Symbol> symbols = new HashSet<>();
 
     public static HashSet<Symbol> getHashSetOfCSECT(String nCSECT) {
-        HashSet<Symbol> CSECTsymbols = new HashSet<Symbol>();
-        int sz = symbols.size();
+        HashSet<Symbol> CSECTsymbols = new HashSet<>();
         for (Symbol s : symbols) {
             if (s.getCSECTName().equals(nCSECT))
                 CSECTsymbols.add(s);
@@ -23,7 +22,7 @@ public class SymbolTable {
         symbols.add(symb);
     }
 
-    public static void ClearHahset() {
+    public static void clearHashSet() {
         symbols.clear();
     }
 
@@ -45,24 +44,14 @@ public class SymbolTable {
         return null;
     }
 
-    public static boolean symbolIsEqu(String symb) throws Exception
-    {
+    public static boolean symbolIsEqu(String symb) throws Exception {
         Symbol tempSymbol = getSymbol(Pass2.nameCSECT, symb);
-        if(tempSymbol != null)
+        if (tempSymbol != null)
             return tempSymbol.getIsEqu();
         else if (Pass2.externalRef.contains(symb))
             return false;
 
         throw new Exception("An EQU Symbol " + symb + " isn't immediate");
-    }
-
-    public static boolean symbolIsExDed(String symb)
-    {
-        for (Symbol s : symbols) {
-            if (s.getSymbolName().equals(symb) && s.isExDef())
-                return true;
-        }
-        return false;
     }
 
 }

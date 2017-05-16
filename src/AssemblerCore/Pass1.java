@@ -21,21 +21,24 @@ public class Pass1 {
 
     public static final HashSet<String> literals = new HashSet<>();
     public static final HashSet<String> ExDef = new HashSet<String>();
-    static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
+
+    protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
+
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
+
     public static Hashtable<String, Integer> programLength = new Hashtable<>();
     public static int programsStart;
     public static String nameCSECT;
     public static int address;
+
     private static boolean success;
 
-    private Pass1() {
-    }
+    private Pass1() {}
 
     public static void generatePass1Files(File file) {
-        ClearHahset();
+        clearHashSet();
         assemblyLines.clear();
         listingFileLines.clear();
         SYMTAB_Lines.clear();
@@ -157,7 +160,6 @@ public class Pass1 {
         return sb.toString();
     }
 
-
     public static boolean isExternalDef(String lbl) {
         if (ExDef.contains(lbl))
             return true;
@@ -252,6 +254,30 @@ public class Pass1 {
         return operands.pop().getValue();
     }
 
+    public static int insertLiterals(int address) throws Exception {
+        int currentProgramLength = 0;
+        if (programLength.containsKey(nameCSECT)) {
+            currentProgramLength = programLength.get(nameCSECT);
+        }
+        if (!literals.isEmpty()) {
+            for (String lit : literals) {
+                Literal literal = new Literal(address, lit);
+                listingFileLines.add(literal.toString());
+                assemblyLines.add(literal);
+                insertInHashSet(literal.getSymbol());
+                SYMTAB_Lines.add(lit + "\t\tR" + "\t\t" + Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t" + nameCSECT);
+                address = literal.getNextAddress();
+                currentProgramLength += (literal.getObjectCode().length() / 2);
+            }
+            literals.clear();
+            if (programLength.containsKey(nameCSECT)) {
+                programLength.put(nameCSECT, currentProgramLength);
+            }
+        }
+        literals.clear();
+        return address;
+    }
+
     private static ArrayList<String> getTokens(String str) throws Exception {
         int n = str.length();
         ArrayList<String> tokens = new ArrayList<>();
@@ -325,30 +351,6 @@ public class Pass1 {
         }
 
         return operands.pop();
-    }
-
-    public static int insertLiterals(int address) throws Exception {
-        int currentProgramLength = 0;
-        if (programLength.containsKey(nameCSECT)) {
-            currentProgramLength = programLength.get(nameCSECT);
-        }
-        if (!literals.isEmpty()) {
-            for (String lit : literals) {
-                Literal literal = new Literal(address, lit);
-                listingFileLines.add(literal.toString());
-                assemblyLines.add(literal);
-                insertInHashSet(literal.getSymbol());
-                SYMTAB_Lines.add(lit + "\t\tR" + "\t\t" + Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t" + nameCSECT);
-                address = literal.getNextAddress();
-                currentProgramLength += (literal.getObjectCode().length() / 2);
-            }
-            literals.clear();
-            if (programLength.containsKey(nameCSECT)) {
-                programLength.put(nameCSECT, currentProgramLength);
-            }
-        }
-        literals.clear();
-        return address;
     }
 
 }

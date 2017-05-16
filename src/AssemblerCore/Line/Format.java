@@ -4,12 +4,11 @@ import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
 
-import static AssemblerCore.SymbolTable.symbolIsExDed;
-
 /**
  * Created by louay on 3/26/2017.
  */
 public abstract class Format extends AssemblyLine {
+
     protected final String label, mnemonic, operand, comment;
 
     protected Format(int address, String line) {

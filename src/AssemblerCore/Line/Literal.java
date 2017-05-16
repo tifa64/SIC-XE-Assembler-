@@ -17,11 +17,6 @@ public class Literal extends AssemblyLine {
     }
 
     @Override
-    public int getType() {
-        return -2;
-    }
-
-    @Override
     public int getNextAddress() {
         int intLenghtOfMnemonic = mnemonic.length() - 4;
 
