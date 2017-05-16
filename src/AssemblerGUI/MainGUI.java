@@ -31,6 +31,9 @@ public class MainGUI extends JDialog {
         listingFileArea.setText("Listing file will be visible here");
         symbolTableArea.setText("Symbol table will be visible here");
         htmeRecordsArea.setText("HTME records will be visible here");
+        listingFileArea.setEditable(false);
+        symbolTableArea.setEditable(false);
+        htmeRecordsArea.setEditable(false);
         addActionListenersToUiComponents();
     }
 
