@@ -5,15 +5,18 @@ import AssemblerCore.Pass2;
 import AssemblerCore.Symbol;
 import AssemblerCore.SymbolTable;
 
-import static AssemblerCore.SymbolTable.symbolIsExDed;
 import java.util.ArrayList;
 
 /**
  * Created by louay on 3/26/2017.
  */
 public class Directive extends AssemblyLine {
-    private static boolean firstCSECTflag = true;
+
     public static int globalProgramStart = 0;
+
+    private static boolean firstCSECTflag = true;
+    private static int lastSavedAddress = 0;
+
     protected final String label, mnemonic, operand, comment;
     protected final int address;
 
@@ -35,11 +38,6 @@ public class Directive extends AssemblyLine {
 
     public static void reset() {
         firstCSECTflag = true;
-    }
-
-    @Override
-    public int getType() {
-        return -1;
     }
 
     @Override
@@ -100,8 +98,15 @@ public class Directive extends AssemblyLine {
             case "LTORG":
                 throw new Exception("LTORG");
 
-            case "ORG":
-                return Pass1.calculateOperandValue(operand);
+            case "ORG": {
+                if (operand.length() > 0) {
+                    int address = Pass1.calculateOperandValue(operand);
+                    lastSavedAddress = address;
+                    return lastSavedAddress;
+                }
+                return lastSavedAddress;
+            }
+
 
             case "EQU":
                 return this.address;
@@ -282,10 +287,10 @@ public class Directive extends AssemblyLine {
                 String[] refrences = (this.operand + this.comment).split(",");
                 for (String ref : refrences) {
                     sb.append(ref).append(" ");
-                    if(Pass1.isExternalDef(ref))
+                    if (Pass1.isExternalDef(ref))
                         Pass2.externalRef.add(ref);
                     else
-                      throw new Exception("Symbol doens't have an external definition");
+                        throw new Exception("Symbol doens't have an external definition");
                 }
                 return sb.toString();
             }

@@ -18,8 +18,10 @@ public class Pass2 {
 
     public static final ArrayList<String> MRecords = new ArrayList<>();
     public static final HashSet<String> externalRef = new HashSet<>();
+
     private static final ArrayList<String> fileLines = new ArrayList<>();
     private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
+
     public static int baseValue = -1;
     public static String nameCSECT;
 
@@ -98,20 +100,15 @@ public class Pass2 {
                             firstResFlag = false;
                         }
                         currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
-                    }
-                    else if(m.getMessage().startsWith("An EQU"))
-                    {
+                    } else if (m.getMessage().startsWith("An EQU")) {
                         successFlag = false;
                         errorMsg = m.getMessage();
                         break;
-                    }
-                    else if(m.getMessage().equals("Symbol doens't have an external definition"))
-                    {
+                    } else if (m.getMessage().equals("Symbol doens't have an external definition")) {
                         successFlag = false;
                         errorMsg = m.getMessage();
                         break;
-                    }
-                    else {
+                    } else {
                         successFlag = false;
                         errorMsg = m.getMessage();
                         m.printStackTrace();
@@ -156,10 +153,6 @@ public class Pass2 {
         }
     }
 
-    private static boolean isSymbolExists(String symbol) {
-        return Pass2.symbols.containsKey(symbol);
-    }
-
     public static Symbol getSymbol(String symbol) throws Exception {
         if (isSymbolExists(symbol)) {
             return Pass2.symbols.get(symbol);
@@ -176,5 +169,9 @@ public class Pass2 {
         } else {
             throw new Exception("Symbol " + symbol + " is not found.");
         }
+    }
+
+    private static boolean isSymbolExists(String symbol) {
+        return Pass2.symbols.containsKey(symbol);
     }
 }

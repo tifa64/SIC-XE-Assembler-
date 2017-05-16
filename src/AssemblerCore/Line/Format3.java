@@ -12,14 +12,8 @@ import static AssemblerCore.SymbolTable.symbolIsEqu;
  */
 public class Format3 extends Format {
 
-
     protected Format3(int address, String line) {
         super(address, line);
-    }
-
-    @Override
-    public int getType() {
-        return 3;
     }
 
     @Override
@@ -51,10 +45,10 @@ public class Format3 extends Format {
             String symbolOperand = operand.split(",")[0];
             if (!AssemblyLine.isInteger(symbolOperand.substring(1))) {
                 if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {
-                    if (symbolIsEqu(symbolOperand.substring(1,symbolOperand.length())) && symbolOperand.charAt(0) != '#') {
+                    if (symbolIsEqu(symbolOperand.substring(1, symbolOperand.length())) && symbolOperand.charAt(0) != '#') {
                         throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
                     }
-                } else if(symbolIsEqu(symbolOperand)) {
+                } else if (symbolIsEqu(symbolOperand)) {
                     throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
                 }
             }
@@ -73,7 +67,6 @@ public class Format3 extends Format {
                 modifiedOperand = operand.substring(0, operand.length() - 2);
                 x = '1';
             }
-
 
 
             if (isInteger(modifiedOperand)) {

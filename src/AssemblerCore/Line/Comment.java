@@ -8,14 +8,8 @@ import AssemblerCore.Symbol;
  */
 public class Comment extends AssemblyLine {
 
-
     protected Comment(int address, String line) {
         super(address, line);
-    }
-
-    @Override
-    public int getType() {
-        return 0;
     }
 
     @Override
