@@ -1,20 +1,15 @@
 package AssemblerCore.Line;
 
 import AssemblerCore.Pass2;
+import AssemblerCore.Symbol;
 
 /**
  * Created by louay on 3/26/2017.
  */
 public class Comment extends AssemblyLine {
 
-
     protected Comment(int address, String line) {
         super(address, line);
-    }
-
-    @Override
-    public int getType() {
-        return 0;
     }
 
     @Override
@@ -47,5 +42,10 @@ public class Comment extends AssemblyLine {
     @Override
     public void checkOperand() throws Exception {
 
+    }
+
+    @Override
+    public Symbol getSymbol() throws Exception {
+        return null;
     }
 }

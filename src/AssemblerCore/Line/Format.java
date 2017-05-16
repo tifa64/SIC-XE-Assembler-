@@ -1,11 +1,14 @@
 package AssemblerCore.Line;
 
+import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
+import AssemblerCore.Symbol;
 
 /**
  * Created by louay on 3/26/2017.
  */
 public abstract class Format extends AssemblyLine {
+
     protected final String label, mnemonic, operand, comment;
 
     protected Format(int address, String line) {
@@ -52,8 +55,13 @@ public abstract class Format extends AssemblyLine {
 
     @Override
     public void checkOperand() throws Exception {
-        if (!this.mnemonic.equals("RSUB") && this.operand.length() == 0){
+        if (!this.mnemonic.equals("RSUB") && this.operand.length() == 0) {
             throw new Exception("No Operand");
         }
+    }
+
+    @Override
+    public Symbol getSymbol() throws Exception {
+        return new Symbol(label, address, 'R', Pass1.nameCSECT, Pass1.isExternalDef(label), false);
     }
 }

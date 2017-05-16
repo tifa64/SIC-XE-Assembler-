@@ -43,10 +43,10 @@ public class InstructionSetLoader {
 
         String mnemonic = line.substring(9, 15).replaceAll("\\s+", "");
 
-        if (mnemonic.charAt(0) == '+' && this.instructionSet.containsKey(mnemonic.substring(1)) && this.instructionSet.get(mnemonic.substring(1)).frmt.equals("3/4")) {
+        if (mnemonic.charAt(0) == '+' && this.instructionSet.containsKey(mnemonic.substring(1)) && this.instructionSet.get(mnemonic.substring(1)).format.equals("3/4")) {
             return 4;
         } else if (this.instructionSet.containsKey(mnemonic)) {
-            String format = this.instructionSet.get(mnemonic).frmt;
+            String format = this.instructionSet.get(mnemonic).format;
             if (format.equals("3/4")) {
                 return 3;
             } else return Integer.parseInt(format);
@@ -60,7 +60,7 @@ public class InstructionSetLoader {
     }
 
     public int getRegOpCode(String register) throws Exception {
-        if (Regs.containsKey(register)){
+        if (Regs.containsKey(register)) {
             return Regs.get(register);
         } else {
             throw new Exception("Register " + register + " is unknown.");

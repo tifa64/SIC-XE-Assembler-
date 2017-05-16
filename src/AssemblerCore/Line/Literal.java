@@ -1,6 +1,8 @@
 package AssemblerCore.Line;
 
+import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
+import AssemblerCore.Symbol;
 
 /**
  * Created by Krietallo on 4/25/2017.
@@ -12,11 +14,6 @@ public class Literal extends AssemblyLine {
     public Literal(int address, String mnemonic) {
         super(address, mnemonic);
         this.mnemonic = mnemonic;
-    }
-
-    @Override
-    public int getType() {
-        return -2;
     }
 
     @Override
@@ -64,6 +61,11 @@ public class Literal extends AssemblyLine {
     @Override
     public void checkOperand() throws Exception {
 
+    }
+
+    @Override
+    public Symbol getSymbol() throws Exception {
+        return new Symbol(mnemonic, address, 'R', Pass1.nameCSECT, Pass1.isExternalDef(mnemonic), false);
     }
 
     @Override

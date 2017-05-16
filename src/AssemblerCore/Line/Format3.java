@@ -5,26 +5,21 @@ import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 
 import static AssemblerCore.Pass2.baseValue;
+import static AssemblerCore.SymbolTable.symbolIsEqu;
 
 /**
  * Created by louay on 3/25/2017.
  */
 public class Format3 extends Format {
 
-
     protected Format3(int address, String line) {
         super(address, line);
     }
 
     @Override
-    public int getType() {
-        return 3;
-    }
-
-    @Override
     public int getNextAddress() {
 
-        if(operand.length() > 0 && operand.charAt(0) == '=')
+        if (operand.length() > 0 && operand.charAt(0) == '=')
             Pass1.literals.add(operand);
         return this.address + 3;
     }
@@ -45,7 +40,19 @@ public class Format3 extends Format {
         int TA = 0;
         int displacement = 0;
 
-        if (operand.length() > 0){
+        if (operand.length() > 0) {
+
+            String symbolOperand = operand.split(",")[0];
+            if (!AssemblyLine.isInteger(symbolOperand.substring(1))) {
+                if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {
+                    if (symbolIsEqu(symbolOperand.substring(1, symbolOperand.length())) && symbolOperand.charAt(0) != '#') {
+                        throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
+                    }
+                } else if (symbolIsEqu(symbolOperand)) {
+                    throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
+                }
+            }
+
             if (operand.charAt(0) == '@') {
                 modifiedOperand = operand.substring(1, operand.length());
                 n = '1';
@@ -61,11 +68,12 @@ public class Format3 extends Format {
                 x = '1';
             }
 
+
             if (isInteger(modifiedOperand)) {
                 TA = Integer.parseInt(modifiedOperand);
                 isOperandNumber = true;
             } else {
-                TA = Pass1.getSymbolValue(modifiedOperand);
+                TA = Pass2.getSymbol(modifiedOperand).getValue();
             }
             displacement = TA - PC;
             if (!isOperandNumber) {

@@ -5,13 +5,13 @@ package AssemblerCore;
  */
 public class Instruction {
 
-    public final String inst, frmt, opcode;
+    public final String inst, format, opcode;
     public final int int_opcode;
 
 
     public Instruction(String inst, String frmt, String opcode) {
         this.inst = inst;
-        this.frmt = frmt;
+        this.format = frmt;
         this.opcode = opcode;
         int_opcode = Integer.parseInt(opcode, 16);
     }

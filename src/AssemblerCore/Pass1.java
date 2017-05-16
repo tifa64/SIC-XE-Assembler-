@@ -2,6 +2,7 @@ package AssemblerCore;
 
 import AssemblerCore.Line.AssemblyLine;
 import AssemblerCore.Line.Literal;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,36 +10,41 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
+
+import static AssemblerCore.SymbolTable.*;
 
 /**
  * Created by louay on 3/25/2017.
  */
 public class Pass1 {
 
-    public static int programLength;
-    public static int programStart;
-    public static final HashSet<String>  literals = new HashSet<>();
+    public static final HashSet<String> literals = new HashSet<>();
+    public static final HashSet<String> ExDef = new HashSet<String>();
 
-    static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
+    protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
 
-    private static final Hashtable<String, Integer> SYMTAB = new Hashtable<String, Integer>();
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
     private static final String spacesPadding = "                                                                      ";
+
+    public static Hashtable<String, Integer> programLength = new Hashtable<>();
+    public static int programsStart;
+    public static String nameCSECT;
+    public static int address;
+
     private static boolean success;
 
-    private Pass1() { }
+    private Pass1() {}
 
     public static void generatePass1Files(File file) {
-        SYMTAB.clear();
+        clearHashSet();
         assemblyLines.clear();
         listingFileLines.clear();
         SYMTAB_Lines.clear();
+        SYMTAB_Lines.add("Symbol\t\tType\t\tValue\t\tCSECT\n");
         success = true;
+        literals.clear();
         List<String> lines = null;
         try {
             lines = Files.readAllLines(Paths.get(file.getPath()));
@@ -48,7 +54,7 @@ public class Pass1 {
                     i--;
                 }
             }
-            int address = 0;
+            address = 0;
 
             for (String line : lines) {
                 AssemblyLine al = null;
@@ -59,12 +65,12 @@ public class Pass1 {
                         address = al.getNextAddress();
                         al.checkOperand();
                     } catch (Exception e) {
-                        if (e.getMessage().equals("No Operand")){
+                        if (e.getMessage().equals("No Operand")) {
                             listingFileLines.add("****** ERROR :: No Operand specified ******");
                             success = false;
                         } else if (e.getMessage().equals("LTORG") || e.getMessage().equals("End Of File")) {
                             address = insertLiterals(address);
-                            if (e.getMessage().equals("End Of File")){
+                            if (e.getMessage().equals("End Of File")) {
                                 listingFileLines.add("---- END OF FILE ----");
                             }
                         } else {
@@ -74,13 +80,12 @@ public class Pass1 {
                     }
                     String tempLabel = al.getLabel();
                     if (tempLabel != null) {
-                        if (SYMTAB.containsKey(tempLabel)) {
+                        if (containsKey(nameCSECT, tempLabel)) {
                             listingFileLines.add("****** ERROR :: Symbol " + tempLabel + " is already defined ******");
                             success = false;
-                        }
-                        else {
-                            SYMTAB.put(tempLabel, al.getAddress());
-                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getAddress()), 6) + "\t\t\t" + tempLabel);
+                        } else {
+                            insertInHashSet(al.getSymbol());
+                            SYMTAB_Lines.add(tempLabel + "\t\t" + al.getSymbol().getType() + "\t\t" + Pass2.padStringWithZeroes(Integer.toHexString(al.getSymbol().getValue()), 6) + "\t\t" + nameCSECT);
                         }
 
                     }
@@ -135,47 +140,217 @@ public class Pass1 {
         }
     }
 
-    public static boolean isSuccess(){
+    public static boolean isSuccess() {
         return success;
     }
 
-    public static String getListingFileLines(){
+    public static String getListingFileLines() {
         StringBuilder sb = new StringBuilder();
-        for (String str : listingFileLines){
+        for (String str : listingFileLines) {
             sb.append(str).append("\n");
         }
         return sb.toString();
     }
 
-    public static String getSymTableLines(){
+    public static String getSymTableLines() {
         StringBuilder sb = new StringBuilder();
-        for (String str : SYMTAB_Lines){
+        for (String str : SYMTAB_Lines) {
             sb.append(str).append("\n");
         }
         return sb.toString();
     }
 
-    public static int getSymbolValue(String symbol) throws Exception {
-        if (SYMTAB.containsKey(symbol)){
-            return SYMTAB.get(symbol);
-        } else {
-            throw new Exception("Symbol " + symbol + " is not found.");
-        }
+    public static boolean isExternalDef(String lbl) {
+        if (ExDef.contains(lbl))
+            return true;
+
+        return false;
     }
 
-    private static int insertLiterals(int address){
-        if (!literals.isEmpty()){
-            for (String lit : literals){
+    public static int calculateOperandValue(String str) throws Exception {
+        int result = 0;
+        ArrayList<String> tokens = getTokens(str);
+        result = calculateInfix(tokens);
+        return result;
+    }
+
+    public static char getExpressionType(String str) throws Exception {
+        ArrayList<String> tokens = getTokens(str);
+
+        Stack<Pair<String, Character>> operands = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+
+        for (String token : tokens) {
+            if (AssemblyLine.isInteger(token)) {
+                operands.push(new Pair<>(token, 'A'));
+            } else if (token.equals("(") || token.equals(")") || token.equals("+") || token.equals("-")) {
+                if (token.equals(")")) {
+                    while (operators.peek() != '(') {
+                        Pair b = operands.pop();
+                        Pair a = operands.pop();
+                        char op = operators.pop();
+                        switch (op) {
+                            case '+':
+                                if (a.getValue().equals('R') && b.getValue().equals('R')) {
+                                    throw new Exception("Relative + Relative");
+                                } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                                    operands.push(new Pair<>("ay 7aga", 'R'));
+                                } else if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                                    operands.push(new Pair<>("ay 7aga", 'R'));
+                                } else {
+                                    operands.push(new Pair<>("ay 7aga", 'A'));
+                                }
+                                break;
+                            case '-': {
+                                if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                                    throw new Exception("Absolute - Relative");
+                                } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                                    operands.push(new Pair<>("ay 7aga", 'R'));
+                                } else {
+                                    operands.push(new Pair<>("ay 7aga", 'A'));
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    operators.pop();
+                } else {
+                    operators.push(token.charAt(0));
+                }
+            } else {
+                operands.push(new Pair<>(token, 'R'));
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            Pair b = operands.pop();
+            Pair a = operands.pop();
+            char op = operators.pop();
+            switch (op) {
+                case '+':
+                    if (a.getValue().equals('R') && b.getValue().equals('R')) {
+                        throw new Exception("Relative + Relative");
+                    } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                        operands.push(new Pair<>("ay 7aga", 'R'));
+                    } else if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                        operands.push(new Pair<>("ay 7aga", 'R'));
+                    } else {
+                        operands.push(new Pair<>("ay 7aga", 'A'));
+                    }
+                    break;
+                case '-': {
+                    if (a.getValue().equals('A') && b.getValue().equals('R')) {
+                        throw new Exception("Absolute - Relative");
+                    } else if (a.getValue().equals('R') && b.getValue().equals('A')) {
+                        operands.push(new Pair<>("ay 7aga", 'R'));
+                    } else {
+                        operands.push(new Pair<>("ay 7aga", 'A'));
+                    }
+                    break;
+                }
+            }
+        }
+
+        return operands.pop().getValue();
+    }
+
+    public static int insertLiterals(int address) throws Exception {
+        int currentProgramLength = 0;
+        if (programLength.containsKey(nameCSECT)) {
+            currentProgramLength = programLength.get(nameCSECT);
+        }
+        if (!literals.isEmpty()) {
+            for (String lit : literals) {
                 Literal literal = new Literal(address, lit);
                 listingFileLines.add(literal.toString());
                 assemblyLines.add(literal);
-                SYMTAB.put(lit, address);
-                SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t\t" + lit);
+                insertInHashSet(literal.getSymbol());
+                SYMTAB_Lines.add(lit + "\t\tR" + "\t\t" + Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t" + nameCSECT);
                 address = literal.getNextAddress();
+                currentProgramLength += (literal.getObjectCode().length() / 2);
             }
             literals.clear();
+            if (programLength.containsKey(nameCSECT)) {
+                programLength.put(nameCSECT, currentProgramLength);
+            }
         }
+        literals.clear();
         return address;
+    }
+
+    private static ArrayList<String> getTokens(String str) throws Exception {
+        int n = str.length();
+        ArrayList<String> tokens = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            StringBuilder sb = new StringBuilder();
+            boolean flag = false;
+            while (i < n && (Character.isLetterOrDigit(str.charAt(i)) || str.charAt(i) == '*')) {
+                sb.append(str.charAt(i));
+                i++;
+                flag = true;
+            }
+            if (flag) {
+                if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
+                    tokens.add(sb.toString());
+                } else if (containsKey(nameCSECT, sb.toString())) {
+                    tokens.add(Integer.toString(getSymbol(nameCSECT, sb.toString()).getValue()));
+                } else if (Pass2.externalRef.contains(sb.toString())) {
+                    tokens.add("0");
+                } else {
+                    throw new Exception("Forward reference");
+                }
+            }
+            if (i < n) {
+                tokens.add(str.charAt(i) + "");
+            }
+        }
+        return tokens;
+    }
+
+    private static int calculateInfix(ArrayList<String> tokens) {
+        Stack<Integer> operands = new Stack<>();
+        Stack<Character> operators = new Stack<>();
+
+        for (String token : tokens) {
+            if (AssemblyLine.isInteger(token)) {
+                operands.push(Integer.parseInt(token));
+            } else {
+                if (token.equals(")")) {
+                    while (operators.peek() != '(') {
+                        int b = operands.pop();
+                        int a = operands.pop();
+                        char op = operators.pop();
+                        switch (op) {
+                            case '+':
+                                operands.push(a + b);
+                                break;
+                            case '-':
+                                operands.push(a - b);
+                                break;
+                        }
+                    }
+                    operators.pop();
+                } else {
+                    operators.push(token.charAt(0));
+                }
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            int b = operands.pop();
+            int a = operands.pop();
+            char op = operators.pop();
+            switch (op) {
+                case '+':
+                    operands.push(a + b);
+                    break;
+                case '-':
+                    operands.push(a - b);
+                    break;
+            }
+        }
+
+        return operands.pop();
     }
 
 }

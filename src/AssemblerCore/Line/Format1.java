@@ -14,11 +14,6 @@ public class Format1 extends Format {
     }
 
     @Override
-    public int getType() {
-        return 1;
-    }
-
-    @Override
     public int getNextAddress() {
         return this.address + 1;
     }
@@ -27,12 +22,9 @@ public class Format1 extends Format {
     public String getObjectCode() {
 
         InstructionSetLoader isl = InstructionSetLoader.getLoader();
-        String instOpCode = Pass2.padStringWithZeroes(isl.getInstOpCode(mnemonic), 2);
-        return instOpCode;
+        return Pass2.padStringWithZeroes(isl.getInstOpCode(mnemonic), 2);
     }
 
     @Override
-    public void checkOperand() throws Exception {
-
-    }
+    public void checkOperand() throws Exception {}
 }

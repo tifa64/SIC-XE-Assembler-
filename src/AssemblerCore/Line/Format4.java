@@ -6,6 +6,8 @@ import AssemblerCore.Pass2;
 
 import java.util.BitSet;
 
+import static AssemblerCore.SymbolTable.symbolIsEqu;
+
 /**
  * Created by louay on 3/25/2017.
  */
@@ -21,14 +23,9 @@ public class Format4 extends Format {
     }
 
     @Override
-    public int getType() {
-        return 4;
-    }
-
-    @Override
     public int getNextAddress() {
 
-        if(operand.charAt(0) == '=')
+        if (operand.charAt(0) == '=')
             Pass1.literals.add(operand);
 
         return this.address + 4;
@@ -43,6 +40,18 @@ public class Format4 extends Format {
         BitSet nixbpe = new BitSet(6);
         nixbpe.set(e);
         String value = operand;
+
+        String symbolOperand = operand.split(",")[0];
+        if (!AssemblyLine.isInteger(symbolOperand.substring(1))) {
+            if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {
+                if (symbolIsEqu(symbolOperand.substring(1, symbolOperand.length())) && symbolOperand.charAt(0) != '#') {
+                    throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
+                }
+            } else if (symbolIsEqu(symbolOperand)) {
+                throw new Exception("An EQU Symbol " + symbolOperand + " isn't immediate");
+            }
+        }
+
         if (operand.endsWith(",X")) {
             nixbpe.set(x);
             value = operand.substring(0, operand.length() - 2);
@@ -51,17 +60,17 @@ public class Format4 extends Format {
         if (operand.charAt(0) == '@') {
             nixbpe.set(n);
             value = value.substring(1);
-            addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
+            addressHex = Integer.toHexString(Pass2.getSymbolValue(value));
         } else if (operand.charAt(0) == '#') {
             nixbpe.set(i);
             value = value.substring(1);
             if (value.charAt(0) <= '9' && value.charAt(0) >= '0') {
                 addressHex = Integer.toHexString(Integer.parseInt(value));
             } else {
-                addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
+                addressHex = Integer.toHexString(Pass2.getSymbolValue(value));
             }
         } else {
-            addressHex = Integer.toHexString(Pass1.getSymbolValue(value));
+            addressHex = Integer.toHexString(Pass2.getSymbolValue(value));
             nixbpe.set(n);
             nixbpe.set(i);
         }
@@ -84,7 +93,14 @@ public class Format4 extends Format {
             mRecordSB.append("M ");
             String mAddressHex = Pass2.padStringWithZeroes(Integer.toHexString(this.address + 1).toUpperCase(), 6);
             mRecordSB.append(mAddressHex);
-            mRecordSB.append(" 05");
+            mRecordSB.append(" 05 +");
+            String mRecordExtra;
+            if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {
+                mRecordExtra = symbolOperand.substring(1);
+            } else {
+                mRecordExtra = symbolOperand;
+            }
+            mRecordSB.append(mRecordExtra);
             Pass2.MRecords.add(mRecordSB.toString());
         }
 

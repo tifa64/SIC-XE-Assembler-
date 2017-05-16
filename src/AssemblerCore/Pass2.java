@@ -1,12 +1,15 @@
 package AssemblerCore;
 
 import AssemblerCore.Line.AssemblyLine;
+import AssemblerCore.Line.Directive;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Hashtable;
 
 /**
  * Created by louay on 4/15/2017.
@@ -14,18 +17,25 @@ import java.util.ArrayList;
 public class Pass2 {
 
     public static final ArrayList<String> MRecords = new ArrayList<>();
+    public static final HashSet<String> externalRef = new HashSet<>();
+
     private static final ArrayList<String> fileLines = new ArrayList<>();
+    private static final Hashtable<String, Symbol> symbols = new Hashtable<>();
+
     public static int baseValue = -1;
+    public static String nameCSECT;
 
     public static void generateObjectCodes() {
+
         MRecords.clear();
         baseValue = -1;
         fileLines.clear();
+        Directive.reset();
 
         int recordSize = 0;
         String currentObjCode = "";
         StringBuilder objCodeSB = new StringBuilder();
-        String programStart = Integer.toHexString(Pass1.programStart).toUpperCase();
+        String programStart = Integer.toHexString(Directive.globalProgramStart).toUpperCase();
         String currentTRecordStart = padStringWithZeroes(programStart, 6);
         boolean successFlag = true;
         boolean firstResFlag = true;
@@ -38,7 +48,7 @@ public class Pass2 {
                     if (currentObjCode.startsWith("H")) {
                         fileLines.add(currentObjCode);
                     }
-                    /*Case END**/
+                    /*Case END or CSECT**/
                     /*It will add the last line of T before it then will the END line**/
                     else if (currentObjCode.startsWith("E ")) {
                         if (recordSize > 0) {
@@ -46,8 +56,15 @@ public class Pass2 {
                             fileLines.add("T" + " " + currentTRecordStart + " " + tRecSize + " " + objCodeSB.toString());
                         }
                         fileLines.addAll(MRecords);
+                        MRecords.clear();
                         fileLines.add(currentObjCode);
-                        break;
+                        currentTRecordStart = "000000";
+                        objCodeSB = new StringBuilder();
+                        recordSize = 0;
+                    }
+                    /*Case External Reference or definition*/
+                    else if (currentObjCode.startsWith("R ") || currentObjCode.startsWith("D ")) {
+                        fileLines.add(currentObjCode);
                     }
                     /*Case Comment**/
                     else if (currentObjCode.length() == 0) {
@@ -83,6 +100,14 @@ public class Pass2 {
                             firstResFlag = false;
                         }
                         currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
+                    } else if (m.getMessage().startsWith("An EQU")) {
+                        successFlag = false;
+                        errorMsg = m.getMessage();
+                        break;
+                    } else if (m.getMessage().equals("Symbol doens't have an external definition")) {
+                        successFlag = false;
+                        errorMsg = m.getMessage();
+                        break;
                     } else {
                         successFlag = false;
                         errorMsg = m.getMessage();
@@ -119,5 +144,34 @@ public class Pass2 {
             sb.append(str).append("\n");
         }
         return sb.toString();
+    }
+
+    public static void addToHashTable(HashSet<Symbol> symbols) {
+        Pass2.symbols.clear();
+        for (Symbol s : symbols) {
+            Pass2.symbols.put(s.getSymbolName(), s);
+        }
+    }
+
+    public static Symbol getSymbol(String symbol) throws Exception {
+        if (isSymbolExists(symbol)) {
+            return Pass2.symbols.get(symbol);
+        } else {
+            throw new Exception("Symbol " + symbol + " is not found.");
+        }
+    }
+
+    public static int getSymbolValue(String symbol) throws Exception {
+        if (isSymbolExists(symbol)) {
+            return Pass2.symbols.get(symbol).getValue();
+        } else if (externalRef.contains(symbol)) {
+            return 0;
+        } else {
+            throw new Exception("Symbol " + symbol + " is not found.");
+        }
+    }
+
+    private static boolean isSymbolExists(String symbol) {
+        return Pass2.symbols.containsKey(symbol);
     }
 }
