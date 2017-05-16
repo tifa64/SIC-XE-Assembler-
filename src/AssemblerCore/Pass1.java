@@ -39,6 +39,7 @@ public class Pass1 {
         assemblyLines.clear();
         listingFileLines.clear();
         SYMTAB_Lines.clear();
+        SYMTAB_Lines.add("Symbol\t\tType\t\tValue\t\tCSECT\n");
         success = true;
         literals.clear();
         List<String> lines = null;
@@ -81,7 +82,7 @@ public class Pass1 {
                             success = false;
                         } else {
                             insertInHashSet(al.getSymbol());
-                            SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(al.getSymbol().getValue()), 6) + "\t\t" + tempLabel + "\t\t" + al.getSymbol().getType() + "\t\t" + nameCSECT);
+                            SYMTAB_Lines.add(tempLabel + "\t\t" + al.getSymbol().getType() + "\t\t" + Pass2.padStringWithZeroes(Integer.toHexString(al.getSymbol().getValue()), 6) + "\t\t" + nameCSECT);
                         }
 
                     }
@@ -337,7 +338,7 @@ public class Pass1 {
                 listingFileLines.add(literal.toString());
                 assemblyLines.add(literal);
                 insertInHashSet(literal.getSymbol());
-                SYMTAB_Lines.add(Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t" + lit + "\t\tR" + "\t\t" + nameCSECT);
+                SYMTAB_Lines.add(lit + "\t\tR" + "\t\t" + Pass2.padStringWithZeroes(Integer.toHexString(address), 6) + "\t\t" + nameCSECT);
                 address = literal.getNextAddress();
                 currentProgramLength += (literal.getObjectCode().length() / 2);
             }
