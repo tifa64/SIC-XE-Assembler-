@@ -4,6 +4,7 @@ import AssemblerCore.Pass1;
 import AssemblerCore.Pass2;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -34,6 +35,9 @@ public class MainGUI extends JDialog {
         listingFileArea.setEditable(false);
         symbolTableArea.setEditable(false);
         htmeRecordsArea.setEditable(false);
+        listingFileArea.setFont(new Font("monospaced", Font.PLAIN, 12));
+        symbolTableArea.setFont(new Font("monospaced", Font.PLAIN, 12));
+        htmeRecordsArea.setFont(new Font("monospaced", Font.PLAIN, 12));
         addActionListenersToUiComponents();
     }
 
