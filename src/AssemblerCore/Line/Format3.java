@@ -12,7 +12,7 @@ import static AssemblerCore.SymbolTable.symbolIsEqu;
  */
 public class Format3 extends Format {
 
-    protected Format3(int address, String line) {
+    Format3(int address, String line) {
         super(address, line);
     }
 

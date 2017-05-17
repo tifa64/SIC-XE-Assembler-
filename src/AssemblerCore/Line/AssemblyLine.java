@@ -52,7 +52,7 @@ public abstract class AssemblyLine {
         }
     }
 
-    protected static ArrayList<String> getExtRefTokens(String str) throws Exception {
+    static ArrayList<String> getExtRefTokens(String str) throws Exception {
         int n = str.length();
         ArrayList<String> tokens = new ArrayList<>();
         char sign = '+';

@@ -65,7 +65,7 @@ public class Literal extends AssemblyLine {
 
     @Override
     public Symbol getSymbol() throws Exception {
-        return new Symbol(mnemonic, address, 'R', Pass1.nameCSECT, Pass1.isExternalDef(mnemonic), false);
+        return new Symbol(mnemonic, address, 'R', Pass1.nameCSECT, false);
     }
 
     @Override

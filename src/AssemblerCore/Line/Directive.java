@@ -16,12 +16,12 @@ public class Directive extends AssemblyLine {
 
     private static boolean firstCSECTflag = true;
     private static int lastSavedAddress = 0;
+    private final String label, mnemonic, operand, comment;
 
-    protected final String label, mnemonic, operand, comment;
     protected final int address;
 
 
-    protected Directive(int address, String line) {
+    Directive(int address, String line) {
         super(address, line);
         this.label = line.substring(0, 8).replaceAll("\\s+", "");
         this.mnemonic = line.substring(9, 15).replaceAll("\\s+", "");
@@ -331,7 +331,7 @@ public class Directive extends AssemblyLine {
         } else {
             value = this.address;
         }
-        return new Symbol(label, value, type, Pass1.nameCSECT, Pass1.isExternalDef(label), mnemonic.equals("EQU"));
+        return new Symbol(label, value, type, Pass1.nameCSECT, mnemonic.equals("EQU"));
 
     }
 

@@ -5,11 +5,11 @@ package AssemblerCore;
  */
 public class Instruction {
 
-    public final String inst, format, opcode;
-    public final int int_opcode;
+    final String inst, format, opcode;
+    private final int int_opcode;
 
 
-    public Instruction(String inst, String frmt, String opcode) {
+    Instruction(String inst, String frmt, String opcode) {
         this.inst = inst;
         this.format = frmt;
         this.opcode = opcode;

@@ -9,7 +9,7 @@ import AssemblerCore.Pass2;
 public class Format1 extends Format {
 
 
-    protected Format1(int address, String line) {
+    Format1(int address, String line) {
         super(address, line);
     }
 

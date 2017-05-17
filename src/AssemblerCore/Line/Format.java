@@ -9,9 +9,9 @@ import AssemblerCore.Symbol;
  */
 public abstract class Format extends AssemblyLine {
 
-    protected final String label, mnemonic, operand, comment;
+    final String label, mnemonic, operand, comment;
 
-    protected Format(int address, String line) {
+    Format(int address, String line) {
         super(address, line);
         this.label = line.substring(0, 8).replaceAll("\\s+", "");
         this.mnemonic = line.substring(9, 15).replaceAll("\\s+", "");
@@ -62,6 +62,6 @@ public abstract class Format extends AssemblyLine {
 
     @Override
     public Symbol getSymbol() throws Exception {
-        return new Symbol(label, address, 'R', Pass1.nameCSECT, Pass1.isExternalDef(label), false);
+        return new Symbol(label, address, 'R', Pass1.nameCSECT, false);
     }
 }
