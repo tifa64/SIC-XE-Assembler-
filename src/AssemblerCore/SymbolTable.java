@@ -18,15 +18,15 @@ public class SymbolTable {
         return CSECTsymbols;
     }
 
-    public static void insertInHashSet(Symbol symb) {
+    static void insertInHashSet(Symbol symb) {
         symbols.add(symb);
     }
 
-    public static void clearHashSet() {
+    static void clearHashSet() {
         symbols.clear();
     }
 
-    public static boolean containsKey(String nCSECT, String symb) {
+    static boolean containsKey(String nCSECT, String symb) {
         HashSet<Symbol> CSECTsymbols = getHashSetOfCSECT(nCSECT);
         for (Symbol s : CSECTsymbols) {
             if (s.getSymbolName().equals(symb))
@@ -35,7 +35,7 @@ public class SymbolTable {
         return false;
     }
 
-    public static Symbol getSymbol(String nCSECT, String symb) {
+    static Symbol getSymbol(String nCSECT, String symb) {
         HashSet<Symbol> CSECTsymbols = getHashSetOfCSECT(nCSECT);
         for (Symbol s : CSECTsymbols) {
             if (s.getSymbolName().equals(symb))

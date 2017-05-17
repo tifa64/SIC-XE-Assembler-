@@ -22,7 +22,7 @@ public class Pass1 {
     public static final HashSet<String> literals = new HashSet<>();
     public static final HashSet<String> ExDef = new HashSet<String>();
 
-    protected static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
+    static final ArrayList<AssemblyLine> assemblyLines = new ArrayList<>();
 
     private static final ArrayList<String> listingFileLines = new ArrayList<>();
     private static final ArrayList<String> SYMTAB_Lines = new ArrayList<>();
@@ -297,7 +297,7 @@ public class Pass1 {
                 } else if (Pass2.externalRef.contains(sb.toString())) {
                     tokens.add("0");
                 } else {
-                    throw new Exception("Forward reference");
+                    throw new Exception("Forward reference or symbol not found: " + sb.toString());
                 }
             }
             if (i < n) {
