@@ -8,7 +8,7 @@ import AssemblerCore.Symbol;
  */
 public class Comment extends AssemblyLine {
 
-    protected Comment(int address, String line) {
+    Comment(int address, String line) {
         super(address, line);
     }
 
