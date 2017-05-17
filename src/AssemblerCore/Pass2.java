@@ -100,14 +100,6 @@ public class Pass2 {
                             firstResFlag = false;
                         }
                         currentTRecordStart = padStringWithZeroes(Integer.toHexString(al.getNextAddress()).toUpperCase(), 6);
-                    } else if (m.getMessage().startsWith("An EQU")) {
-                        successFlag = false;
-                        errorMsg = m.getMessage();
-                        break;
-                    } else if (m.getMessage().equals("Symbol doens't have an external definition")) {
-                        successFlag = false;
-                        errorMsg = m.getMessage();
-                        break;
                     } else {
                         successFlag = false;
                         errorMsg = m.getMessage();

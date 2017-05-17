@@ -297,7 +297,7 @@ public class Pass1 {
                 } else if (Pass2.externalRef.contains(sb.toString())) {
                     tokens.add("0");
                 } else {
-                    throw new Exception("Forward reference");
+                    throw new Exception("Forward reference or symbol not found: " + sb.toString());
                 }
             }
             if (i < n) {

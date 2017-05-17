@@ -290,7 +290,7 @@ public class Directive extends AssemblyLine {
                     if (Pass1.isExternalDef(ref))
                         Pass2.externalRef.add(ref);
                     else
-                        throw new Exception("Symbol doens't have an external definition");
+                        throw new Exception("Symbol " + ref + " doesn't have an external definition");
                 }
                 return sb.toString();
             }
