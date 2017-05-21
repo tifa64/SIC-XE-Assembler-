@@ -163,6 +163,40 @@ public class Pass2 {
         }
     }
 
+    public static int calculateOperandValue(String str) throws Exception {
+        ArrayList<String> tokens = getTokens(str);
+        return Pass1.calculateInfix(tokens);
+    }
+
+    private static ArrayList<String> getTokens(String str) throws Exception {
+        int n = str.length();
+        ArrayList<String> tokens = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            StringBuilder sb = new StringBuilder();
+            boolean flag = false;
+            while (i < n && (Character.isLetterOrDigit(str.charAt(i)) || str.charAt(i) == '*')) {
+                sb.append(str.charAt(i));
+                i++;
+                flag = true;
+            }
+            if (flag) {
+                if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
+                    tokens.add(sb.toString());
+                } else if (symbols.containsKey(sb.toString())) {
+                    tokens.add(Integer.toString(symbols.get(sb.toString()).getValue()));
+                } else if (Pass2.externalRef.contains(sb.toString())) {
+                    tokens.add("0");
+                } else {
+                    throw new Exception("Forward reference or symbol not found: " + sb.toString());
+                }
+            }
+            if (i < n) {
+                tokens.add(str.charAt(i) + "");
+            }
+        }
+        return tokens;
+    }
+
     private static boolean isSymbolExists(String symbol) {
         return Pass2.symbols.containsKey(symbol);
     }

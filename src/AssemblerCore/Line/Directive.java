@@ -236,7 +236,7 @@ public class Directive extends AssemblyLine {
                     return hexa;
                 } else {
                     Pass1.getExpressionType(operand);
-                    String hexa = Pass2.padStringWithZeroes(Integer.toHexString(Pass1.calculateOperandValue(operand)), 6);
+                    String hexa = Pass2.padStringWithZeroes(Integer.toHexString(Pass2.calculateOperandValue(operand)), 6);
                     ArrayList<String> extRefTokens = getExtRefTokens(operand);
                     for (String str : extRefTokens) {
                         StringBuilder sb = new StringBuilder();
