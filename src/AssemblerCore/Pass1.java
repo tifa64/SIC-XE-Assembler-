@@ -168,10 +168,8 @@ public class Pass1 {
     }
 
     public static int calculateOperandValue(String str) throws Exception {
-        int result = 0;
         ArrayList<String> tokens = getTokens(str);
-        result = calculateInfix(tokens);
-        return result;
+        return calculateInfix(tokens);
     }
 
     public static char getExpressionType(String str) throws Exception {
@@ -278,36 +276,7 @@ public class Pass1 {
         return address;
     }
 
-    private static ArrayList<String> getTokens(String str) throws Exception {
-        int n = str.length();
-        ArrayList<String> tokens = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            StringBuilder sb = new StringBuilder();
-            boolean flag = false;
-            while (i < n && (Character.isLetterOrDigit(str.charAt(i)) || str.charAt(i) == '*')) {
-                sb.append(str.charAt(i));
-                i++;
-                flag = true;
-            }
-            if (flag) {
-                if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
-                    tokens.add(sb.toString());
-                } else if (containsKey(nameCSECT, sb.toString())) {
-                    tokens.add(Integer.toString(getSymbol(nameCSECT, sb.toString()).getValue()));
-                } else if (Pass2.externalRef.contains(sb.toString())) {
-                    tokens.add("0");
-                } else {
-                    throw new Exception("Forward reference or symbol not found: " + sb.toString());
-                }
-            }
-            if (i < n) {
-                tokens.add(str.charAt(i) + "");
-            }
-        }
-        return tokens;
-    }
-
-    private static int calculateInfix(ArrayList<String> tokens) {
+    public static int calculateInfix(ArrayList<String> tokens) {
         Stack<Integer> operands = new Stack<>();
         Stack<Character> operators = new Stack<>();
 
@@ -351,6 +320,35 @@ public class Pass1 {
         }
 
         return operands.pop();
+    }
+
+    private static ArrayList<String> getTokens(String str) throws Exception {
+        int n = str.length();
+        ArrayList<String> tokens = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            StringBuilder sb = new StringBuilder();
+            boolean flag = false;
+            while (i < n && (Character.isLetterOrDigit(str.charAt(i)) || str.charAt(i) == '*')) {
+                sb.append(str.charAt(i));
+                i++;
+                flag = true;
+            }
+            if (flag) {
+                if (AssemblyLine.isInteger(sb.toString()) || sb.toString().equals("*")) {
+                    tokens.add(sb.toString());
+                } else if (containsKey(nameCSECT, sb.toString())) {
+                    tokens.add(Integer.toString(getSymbol(nameCSECT, sb.toString()).getValue()));
+                } else if (Pass2.externalRef.contains(sb.toString())) {
+                    tokens.add("0");
+                } else {
+                    throw new Exception("Forward reference or symbol not found: " + sb.toString());
+                }
+            }
+            if (i < n) {
+                tokens.add(str.charAt(i) + "");
+            }
+        }
+        return tokens;
     }
 
 }

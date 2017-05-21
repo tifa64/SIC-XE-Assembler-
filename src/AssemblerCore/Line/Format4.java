@@ -95,12 +95,15 @@ public class Format4 extends Format {
             mRecordSB.append(mAddressHex);
             mRecordSB.append(" 05 +");
             String mRecordExtra;
-            if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {
+            if(!Pass2.externalRef.contains(symbolOperand))
+                mRecordExtra = Pass2.nameCSECT;
+            else if (symbolOperand.charAt(0) == '@' || symbolOperand.charAt(0) == '#') {
                 mRecordExtra = symbolOperand.substring(1);
             } else {
                 mRecordExtra = symbolOperand;
             }
             mRecordSB.append(mRecordExtra);
+
             Pass2.MRecords.add(mRecordSB.toString());
         }
 
