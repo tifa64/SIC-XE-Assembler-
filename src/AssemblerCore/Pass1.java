@@ -92,36 +92,40 @@ public class Pass1 {
                     assemblyLines.add(al);
                 } catch (Exception e) {
                     success = false;
-                    //printing unknown command to listing file.
-                    String lineWithPadding = line + spacesPadding;
-                    String label = lineWithPadding.substring(0, 8).replaceAll("\\s+", "");
-                    String mnemonic = lineWithPadding.substring(9, 15).replaceAll("\\s+", "");
-                    String operand = lineWithPadding.substring(17, 35).replaceAll("\\s+", "");
-                    String comment = lineWithPadding.substring(35, 66).replaceAll("\\s+", "");
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(Pass2.padStringWithZeroes(Integer.toHexString(address), 5));
-                    for (int i = sb.toString().length(); i <= 6; i++) {
-                        sb.append(" ");
+                    if (!e.getMessage().equals("Unknown instruction")) {
+                        listingFileLines.add("****** ERROR :: " + e.getMessage() + " ******");
+                    } else {
+                        //printing unknown command to listing file.
+                        String lineWithPadding = line + spacesPadding;
+                        String label = lineWithPadding.substring(0, 8).replaceAll("\\s+", "");
+                        String mnemonic = lineWithPadding.substring(9, 15).replaceAll("\\s+", "");
+                        String operand = lineWithPadding.substring(17, 35).replaceAll("\\s+", "");
+                        String comment = lineWithPadding.substring(35, 66).replaceAll("\\s+", "");
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(Pass2.padStringWithZeroes(Integer.toHexString(address), 5));
+                        for (int i = sb.toString().length(); i <= 6; i++) {
+                            sb.append(" ");
+                        }
+                        sb.append("\t");
+                        sb.append(label);
+                        for (int i = sb.toString().length(); i <= 15; i++) {
+                            sb.append(" ");
+                        }
+                        sb.append("\t");
+                        sb.append(mnemonic);
+                        for (int i = sb.toString().length(); i <= 22; i++) {
+                            sb.append(" ");
+                        }
+                        sb.append("\t");
+                        sb.append(operand);
+                        for (int i = sb.toString().length(); i <= 41; i++) {
+                            sb.append(" ");
+                        }
+                        sb.append("\t");
+                        sb.append(comment);
+                        listingFileLines.add(sb.toString());
+                        listingFileLines.add("****** ERROR :: Unknown Instruction: " + mnemonic + " ******");
                     }
-                    sb.append("\t");
-                    sb.append(label);
-                    for (int i = sb.toString().length(); i <= 15; i++) {
-                        sb.append(" ");
-                    }
-                    sb.append("\t");
-                    sb.append(mnemonic);
-                    for (int i = sb.toString().length(); i <= 22; i++) {
-                        sb.append(" ");
-                    }
-                    sb.append("\t");
-                    sb.append(operand);
-                    for (int i = sb.toString().length(); i <= 41; i++) {
-                        sb.append(" ");
-                    }
-                    sb.append("\t");
-                    sb.append(comment);
-                    listingFileLines.add(sb.toString());
-                    listingFileLines.add("****** ERROR :: Unknown Instruction: " + mnemonic + " ******");
                 }
             }
 
@@ -276,7 +280,7 @@ public class Pass1 {
         return address;
     }
 
-    public static int calculateInfix(ArrayList<String> tokens) {
+    public static int calculateInfix(ArrayList<String> tokens) throws Exception {
         Stack<Integer> operands = new Stack<>();
         Stack<Character> operators = new Stack<>();
 
@@ -296,6 +300,8 @@ public class Pass1 {
                             case '-':
                                 operands.push(a - b);
                                 break;
+                            default:
+                                throw new Exception("Invalid expression");
                         }
                     }
                     operators.pop();
@@ -316,6 +322,8 @@ public class Pass1 {
                 case '-':
                     operands.push(a - b);
                     break;
+                default:
+                    throw new Exception("Invalid expression");
             }
         }
 
@@ -328,7 +336,7 @@ public class Pass1 {
         for (int i = 0; i < n; i++) {
             StringBuilder sb = new StringBuilder();
             boolean flag = false;
-            while (i < n && (Character.isLetterOrDigit(str.charAt(i)) || str.charAt(i) == '*')) {
+            while (i < n && (Character.isLetterOrDigit(str.charAt(i)) || (str.charAt(i) == '*' && str.length() == 1))) {
                 sb.append(str.charAt(i));
                 i++;
                 flag = true;
