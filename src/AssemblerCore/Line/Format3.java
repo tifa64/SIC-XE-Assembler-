@@ -73,7 +73,15 @@ public class Format3 extends Format {
                 TA = Integer.parseInt(modifiedOperand);
                 isOperandNumber = true;
             } else {
-                TA = Pass2.getSymbol(modifiedOperand).getValue();
+                try {
+                    TA = Pass2.getSymbol(modifiedOperand).getValue();
+                } catch (Exception e1) {
+                    if (Pass2.externalRef.contains(modifiedOperand)) {
+                        throw new Exception("Symbol " + modifiedOperand + " is external reference. Please use format 4");
+                    } else {
+                        throw e1;
+                    }
+                }
             }
             displacement = TA - PC;
             if (!isOperandNumber) {
