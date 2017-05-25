@@ -159,7 +159,7 @@ public class Directive extends AssemblyLine {
             sb.append(" ");
         }
         sb.append("\t");
-        if (mnemonic.equals("EXTDEF") || mnemonic.equals("EXTREF")) {
+        if (mnemonic.equals("EXTDEF") || mnemonic.equals("EXTREF") || mnemonic.equals("EQU")) {
             sb.append(this.operand + this.comment);
         } else {
             sb.append(this.operand);
@@ -325,9 +325,9 @@ public class Directive extends AssemblyLine {
             if (operand.equals("*")) {
                 value = this.address;
             } else {
-                value = Pass1.calculateOperandValue(operand);
+                value = Pass1.calculateOperandValue(operand+comment);
             }
-            type = Pass1.getExpressionType(operand);
+            type = Pass1.getExpressionType(operand+comment);
         } else {
             value = this.address;
         }

@@ -1,5 +1,7 @@
 package AssemblerCore;
 
+import AssemblerCore.Line.AssemblyLine;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
@@ -60,6 +62,9 @@ public class InstructionSetLoader {
     }
 
     public int getRegOpCode(String register) throws Exception {
+        if (AssemblyLine.isInteger(register)) {
+            return Integer.parseInt(register);
+        }
         if (Regs.containsKey(register)) {
             return Regs.get(register);
         } else {

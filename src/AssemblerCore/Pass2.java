@@ -126,6 +126,8 @@ public class Pass2 {
                 sb.append("0");
             }
             str = sb.append(str).toString();
+        } else if (str.charAt(0) == 'F' || str.charAt(0) == 'f' ) {
+            return str.substring(2).toUpperCase();
         }
         return str.toUpperCase();
     }
